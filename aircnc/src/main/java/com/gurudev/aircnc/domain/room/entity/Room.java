@@ -7,9 +7,12 @@ import static org.springframework.util.StringUtils.hasText;
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Role;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,8 +41,11 @@ public class Room extends BaseIdEntity {
 
   private int reviewCount;
 
+  @OneToMany(mappedBy = "room")
+  private List<RoomPhoto> roomPhotos = new ArrayList<>();
+
   public Room(String name, Address address, String description, int pricePerDay, int capacity,
-      Member host) {
+      Member host, List<RoomPhoto> roomPhotos) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
 
     checkArgument(hasText(description), "설명은 공백이 될 수 없습니다");
@@ -61,5 +67,12 @@ public class Room extends BaseIdEntity {
     this.capacity = capacity;
     this.host = host;
     this.reviewCount = 0;
+
+    roomPhotos.forEach(this::addRoomPhoto);
+  }
+
+  private void addRoomPhoto(RoomPhoto roomPhoto){
+    roomPhoto.updateRoom(this);
+    roomPhotos.add(roomPhoto);
   }
 }
