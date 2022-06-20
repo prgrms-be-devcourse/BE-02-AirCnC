@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.room;
+package com.gurudev.aircnc.domain.room.entity;
 
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_CAPACITY_MIN_VALUE;
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_DESCRIPTION_MIN_LENGTH;
@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
+import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import java.util.ArrayList;
 import java.util.List;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
@@ -24,9 +26,9 @@ class RoomTest {
   private final String description = "아주 멋진 한옥마을입니다.";
   private final int capacity = 4;
   private final int pricePerDay = 100000;
+  private final List<RoomPhoto> roomPhotos = new ArrayList<>();
   private final Member host = createHost();
   private final Member guest = createGuest();
-
 
   @Test
   void 숙소_생성() {
