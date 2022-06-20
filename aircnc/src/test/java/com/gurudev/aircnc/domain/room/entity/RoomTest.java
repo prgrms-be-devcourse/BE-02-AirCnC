@@ -1,14 +1,15 @@
-package com.gurudev.aircnc.domain.room;
+package com.gurudev.aircnc.domain.room.entity;
 
-import static com.gurudev.aircnc.domain.room.Room.ROOM_CAPACITY_MIN_VALUE;
-import static com.gurudev.aircnc.domain.room.Room.ROOM_DESCRIPTION_MIN_LENGTH;
-import static com.gurudev.aircnc.domain.room.Room.ROOM_PRICE_PER_DAY_MIN_VALUE;
+import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_CAPACITY_MIN_VALUE;
+import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_DESCRIPTION_MIN_LENGTH;
+import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_PRICE_PER_DAY_MIN_VALUE;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
+import java.util.ArrayList;
 import java.util.List;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ class RoomTest {
   private final int pricePerDay = 100000;
   private final Member host = createHost();
   private final Member guest = createGuest();
-
 
   @Test
   void 숙소_생성() {
