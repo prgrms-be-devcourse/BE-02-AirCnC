@@ -12,11 +12,9 @@ class EmailTest {
 
   @Test
   void 이메일_생성_성공() {
-    String testEmail = "test@email.com";
+    Email email = new Email("test@email.com");
 
-    Email email = new Email(testEmail);
-
-    assertThat(email.getEmail()).isEqualTo(testEmail);
+    assertThat(email).isEqualTo(new Email("test@email.com"));
   }
 
   @ParameterizedTest

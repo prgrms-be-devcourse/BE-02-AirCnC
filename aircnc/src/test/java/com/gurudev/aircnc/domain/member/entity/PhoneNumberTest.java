@@ -14,7 +14,7 @@ class PhoneNumberTest {
   void 전화번호_생성_성공(String testPhoneNumber) {
     PhoneNumber phoneNumber = new PhoneNumber(testPhoneNumber);
 
-    assertThat(phoneNumber.getPhoneNumber()).isEqualTo(testPhoneNumber);
+    assertThat(phoneNumber).isEqualTo(new PhoneNumber(testPhoneNumber));
   }
 
   @ParameterizedTest

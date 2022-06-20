@@ -16,7 +16,7 @@ class PasswordTest {
   void 비밀번호_생성_성공(String rawPassword) {
     Password password = new Password(rawPassword);
 
-    assertThat(password.getPassword()).isEqualTo(rawPassword);
+    assertThat(password).isEqualTo(new Password(rawPassword));
   }
 
   @ParameterizedTest
