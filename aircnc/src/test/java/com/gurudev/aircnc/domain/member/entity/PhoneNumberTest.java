@@ -18,7 +18,7 @@ class PhoneNumberTest {
   }
 
   @ParameterizedTest
-  @CsvSource(value = {"0101234567", "010-12345678", "0-1234-5678"})
+  @CsvSource(value = {"0101234567", "010-12345678", "0-1234-5678", "070-123-4567"})
   void 전화번호_생성_실패(String testPhoneNumber) {
     assertThatIllegalArgumentException().isThrownBy(() -> new PhoneNumber(testPhoneNumber));
   }
