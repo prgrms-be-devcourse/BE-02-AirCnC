@@ -22,6 +22,7 @@ class PasswordTest {
   @ParameterizedTest
   @CsvSource(value = {"1234567", "1234567890123456"})
   void 비밀번호는_8자이상_15자이하(String invalidPassword) {
-    assertThatIllegalArgumentException().isThrownBy(() -> new Password(invalidPassword));
+    assertThatIllegalArgumentException()
+        .isThrownBy(() -> new Password(invalidPassword));
   }
 }

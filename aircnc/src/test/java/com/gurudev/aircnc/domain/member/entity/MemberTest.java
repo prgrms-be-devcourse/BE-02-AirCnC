@@ -29,14 +29,14 @@ class MemberTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 이름_공백_불가(String name) {
-    assertThatIllegalArgumentException().isThrownBy(
-        () -> new Member(email, password, name, birthDate, phoneNumber, Role.GUEST));
+    assertThatIllegalArgumentException()
+        .isThrownBy(() -> new Member(email, password, name, birthDate, phoneNumber, Role.GUEST));
   }
 
   @Test
   void 생일_공백_불가() {
-    assertThatIllegalArgumentException().isThrownBy(
-        () -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
+    assertThatIllegalArgumentException()
+        .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
   }
 
 }

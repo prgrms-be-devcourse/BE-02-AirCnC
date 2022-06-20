@@ -22,6 +22,7 @@ class EmailTest {
   @ParameterizedTest
   @CsvSource(value = {"test.email.com", "@email.com"})
   void 이메일_생성_실패(String invalidEmail) {
-    assertThatIllegalArgumentException().isThrownBy(() -> new Email(invalidEmail));
+    assertThatIllegalArgumentException()
+        .isThrownBy(() -> new Email(invalidEmail));
   }
 }
