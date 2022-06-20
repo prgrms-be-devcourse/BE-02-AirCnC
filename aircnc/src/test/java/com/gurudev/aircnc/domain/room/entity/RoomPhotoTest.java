@@ -13,7 +13,6 @@ class RoomPhotoTest {
 
   @Test
   void 숙소_사진_생성() {
-
     RoomPhoto roomPhoto = new RoomPhoto("photo.jpg", createRoom());
 
     assertThat(roomPhoto).extracting(RoomPhoto::getPhotoUrl, RoomPhoto::getRoom)
@@ -23,7 +22,6 @@ class RoomPhotoTest {
   @ParameterizedTest
   @NullAndEmptySource
   void URL_이_공백인_숙소_사진_생성_실패(String invalidPhotoUrl) {
-
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new RoomPhoto(invalidPhotoUrl, createRoom()));
   }

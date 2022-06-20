@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class Fixture {
 
   public static Member createHost() {
-
     return new Member(new Email("ndy@haha.com"),
         new Password("paSSword!"),
         "ndy",
@@ -23,7 +22,6 @@ public class Fixture {
   }
 
   public static Member createGuest() {
-
     return new Member(new Email("ndy@haha.com"),
         new Password("paSSword!"),
         "ndy",
@@ -34,7 +32,6 @@ public class Fixture {
 
 
   public static Room createRoom() {
-
     return new Room("전주 한옥마을",
         new Address("전라북도 전주시 완산구 풍산동 3가"),
         "아주 멋진 한옥마을입니다.",
@@ -43,8 +40,8 @@ public class Fixture {
         createHost());
   }
 
-  public static RoomPhoto createRoomPhoto(){
-
-    return new RoomPhoto("photo.jpg", createRoom());
+  public static RoomPhoto createRoomPhoto() {
+    return new RoomPhoto("photo.jpg",
+        createRoom());
   }
 }

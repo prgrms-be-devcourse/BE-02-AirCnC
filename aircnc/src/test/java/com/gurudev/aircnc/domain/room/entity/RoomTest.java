@@ -9,9 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
-import com.gurudev.aircnc.domain.room.entity.Address;
-import com.gurudev.aircnc.domain.room.entity.Room;
-import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import java.util.ArrayList;
 import java.util.List;
 import net.bytebuddy.utility.RandomString;
@@ -26,7 +23,6 @@ class RoomTest {
   private final String description = "아주 멋진 한옥마을입니다.";
   private final int capacity = 4;
   private final int pricePerDay = 100000;
-  private final List<RoomPhoto> roomPhotos = new ArrayList<>();
   private final Member host = createHost();
   private final Member guest = createGuest();
 
