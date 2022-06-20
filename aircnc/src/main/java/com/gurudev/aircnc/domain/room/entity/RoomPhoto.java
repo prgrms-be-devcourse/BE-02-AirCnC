@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.room.entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
+import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import javax.persistence.Entity;
@@ -21,13 +22,10 @@ public class RoomPhoto extends BaseIdEntity {
   private Room room;
 
   public RoomPhoto(String photoUrl, Room room) {
-    checkArgument(photoUrl != null, "사진의 주소는 공백이 될 수 없습니다");
+    checkArgument(hasText(photoUrl), "사진의 주소는 공백이 될 수 없습니다");
 
     this.photoUrl = photoUrl;
     this.room = room;
   }
 
-  public void updateRoom(Room room) {
-    this.room = room;
-  }
 }

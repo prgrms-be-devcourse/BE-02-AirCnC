@@ -41,11 +41,8 @@ public class Room extends BaseIdEntity {
 
   private int reviewCount;
 
-  @OneToMany(mappedBy = "room")
-  private List<RoomPhoto> roomPhotos = new ArrayList<>();
-
   public Room(String name, Address address, String description, int pricePerDay, int capacity,
-      Member host, List<RoomPhoto> roomPhotos) {
+      Member host) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
 
     checkArgument(hasText(description), "설명은 공백이 될 수 없습니다");
@@ -68,11 +65,6 @@ public class Room extends BaseIdEntity {
     this.host = host;
     this.reviewCount = 0;
 
-    roomPhotos.forEach(this::addRoomPhoto);
   }
 
-  private void addRoomPhoto(RoomPhoto roomPhoto){
-    roomPhoto.updateRoom(this);
-    roomPhotos.add(roomPhoto);
-  }
 }
