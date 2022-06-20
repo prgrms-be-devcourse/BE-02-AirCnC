@@ -6,6 +6,7 @@ import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.regex.Pattern;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class Email {
 
   private static final Pattern pattern = Pattern.compile(EMAIL);
 
+  @Column(unique = true, nullable = false)
   private String email;
 
   public Email(String email) {

@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.member.entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Password {
 
+  @Column(nullable = false)
   public String password;
 
   public Password(String password) {

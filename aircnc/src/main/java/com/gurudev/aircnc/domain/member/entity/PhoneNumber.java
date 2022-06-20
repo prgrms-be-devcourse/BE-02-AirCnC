@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.constant.Regex.PHONE_NUMBER;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.regex.Pattern;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ public class PhoneNumber {
 
   private static final Pattern pattern = Pattern.compile(PHONE_NUMBER);
 
+  @Column(nullable = false)
   private String phoneNumber;
 
   public PhoneNumber(String phoneNumber) {

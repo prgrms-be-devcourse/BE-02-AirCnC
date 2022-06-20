@@ -25,15 +25,17 @@ public class Member extends BaseIdEntity {
   @Embedded
   private Password password;
 
-  @Column(length = 20)
+  @Column(length = 20, nullable = false)
   private String name;
 
+  @Column(nullable = false)
   private LocalDate birthDate;
 
   @Embedded
   private PhoneNumber phoneNumber;
 
   @Enumerated(value = EnumType.STRING)
+  @Column(nullable = false)
   private Role role;
 
   public Member(Email email, Password password, String name, LocalDate birthDate,
