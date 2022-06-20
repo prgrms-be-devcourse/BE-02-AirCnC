@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.room;
+package com.gurudev.aircnc.domain.room.entity;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static lombok.AccessLevel.PROTECTED;
