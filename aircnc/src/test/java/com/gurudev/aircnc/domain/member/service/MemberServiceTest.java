@@ -7,14 +7,13 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
-import com.gurudev.aircnc.domain.util.Fixture;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
@@ -34,14 +33,20 @@ class MemberServiceTest {
   void 회원_생성_로직_테스트() {
     Member member = new Member(email, password, username, birthDate, phoneNumber, role);
 
-    memberService.registerMember(member);
-    Optional<Member> memberOptional = memberService.getMemberByEmail(member.getEmail());
+    memberService.register(member);
+    Member foundMember = memberService.getByEmail(member.getEmail());
 
-    assertThat(memberOptional).isPresent();
-    assertThat(memberOptional.get()).extracting(Member::getEmail, Member::getPassword,
+    assertThat(foundMember).extracting(Member::getEmail, Member::getPassword,
             Member::getName, Member::getBirthDate, Member::getPhoneNumber, Member::getRole)
         .isEqualTo(
             List.of(email, password, username, birthDate,
                 phoneNumber, role));
+  }
+
+  @Test
+  void 존재하지_않는_회원에_대한_조회() {
+    Member member = new Member(email, password, username, birthDate, phoneNumber, role);
+
+
   }
 }
