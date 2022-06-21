@@ -1,15 +1,19 @@
 package com.gurudev.aircnc.domain.room.entity;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Role;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,6 +50,9 @@ public class Room extends BaseIdEntity {
   /* 리뷰 총 숫자 */
   private int reviewCount;
 
+  @OneToMany(cascade = ALL)
+  private List<RoomPhoto> roomPhotos = new ArrayList<>();
+
   public Room(String name, Address address, String description, int pricePerDay, int capacity,
       Member host) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
@@ -70,6 +77,11 @@ public class Room extends BaseIdEntity {
     this.host = host;
     this.reviewCount = 0;
 
+  }
+
+  public void addRoomPhoto(RoomPhoto roomPhoto){
+    roomPhoto.updateRoom(this);
+    roomPhotos.add(roomPhoto);
   }
 
 }

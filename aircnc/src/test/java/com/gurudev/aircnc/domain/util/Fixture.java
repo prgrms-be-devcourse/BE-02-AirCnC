@@ -41,7 +41,6 @@ public class Fixture {
   }
 
   public static RoomPhoto createRoomPhoto() {
-    return new RoomPhoto("photo.jpg",
-        createRoom());
+    return new RoomPhoto("photo.jpg");
   }
 }

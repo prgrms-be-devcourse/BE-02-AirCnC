@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.room.entity;
 
-import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -13,16 +12,15 @@ class RoomPhotoTest {
 
   @Test
   void 숙소_사진_생성() {
-    RoomPhoto roomPhoto = new RoomPhoto("photo.jpg", createRoom());
+    RoomPhoto roomPhoto = new RoomPhoto("photo.jpg");
 
-    assertThat(roomPhoto).extracting(RoomPhoto::getPhotoUrl, RoomPhoto::getRoom)
-        .isEqualTo(List.of("photo.jpg", createRoom()));
+    assertThat(roomPhoto.getPhotoUrl()).isEqualTo("photo.jpg");
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void URL_이_공백인_숙소_사진_생성_실패(String invalidPhotoUrl) {
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> new RoomPhoto(invalidPhotoUrl, createRoom()));
+        .isThrownBy(() -> new RoomPhoto(invalidPhotoUrl));
   }
 }
