@@ -1,10 +1,11 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static java.lang.String.format;
+
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.exception.NoSuchMemberException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,6 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getByEmail(Email email) {
     return memberRepository.findByEmail(email)
-        .orElseThrow(() -> new NoSuchMemberException("해당하는 이메일 가진 멤버가 존재하지 않습니다"));
+        .orElseThrow(() -> new NoSuchMemberException(format("해당하는 이메일(%s) 가진 멤버가 존재하지 않습니다", email)));
   }
 }
