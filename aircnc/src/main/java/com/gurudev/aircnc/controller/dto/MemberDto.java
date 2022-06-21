@@ -1,5 +1,7 @@
 package com.gurudev.aircnc.controller.dto;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.member.entity.Email;
@@ -11,21 +13,22 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.apache.naming.factory.SendMailFactory;
-import org.springframework.format.annotation.DateTimeFormat;
 
+@NoArgsConstructor(access = PRIVATE)
 public class MemberDto {
 
   @Getter
-  public static class RegistMemberDto {
+  public static class RegisterMemberRequest {
 
     @JsonProperty("member")
     private Request request;
 
-    public Member convert(){
+    public Member convert() {
       return request.convert();
     }
+
     @Getter
     public static class Request {
 
@@ -38,19 +41,18 @@ public class MemberDto {
       private String phoneNumber;
       private String role;
 
-      public Member convert(){
+      public Member convert() {
         return new Member(new Email(email),
             new Password(password),
             name, birthDate, new PhoneNumber(phoneNumber),
             Role.valueOf(role));
       }
     }
-
   }
 
 
   @Getter
-  @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+  @RequiredArgsConstructor(access = PRIVATE)
   public static class MemberResponse {
 
     @JsonProperty("member")
@@ -69,14 +71,14 @@ public class MemberDto {
       private final String phoneNumber;
       private final String role;
 
-      @Builder(access = AccessLevel.PRIVATE)
+      @Builder(access = PRIVATE)
       private Response(String email, String name, LocalDate birthDate, String phoneNumber,
-          String role) {
+          Role role) {
         this.email = email;
         this.name = name;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
-        this.role = role;
+        this.role = role.name();
       }
 
       public static Response convert(Member member) {
@@ -85,7 +87,7 @@ public class MemberDto {
             .birthDate(member.getBirthDate())
             .email(Email.toString(member.getEmail()))
             .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
-            .role(member.getRole().name())
+            .role(member.getRole())
             .build();
       }
     }

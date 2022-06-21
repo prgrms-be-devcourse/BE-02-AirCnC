@@ -32,9 +32,9 @@ public class PhoneNumber {
     this.phoneNumber = phoneNumber;
   }
 
-  public static String toString(PhoneNumber phoneNumber){
+  public static String toString(PhoneNumber phoneNumber) {
     return Optional.ofNullable(phoneNumber)
         .map(wrapper -> wrapper.phoneNumber)
-        .orElseThrow(() -> new  IllegalStateException());
+        .orElseThrow(IllegalStateException::new);
   }
 }

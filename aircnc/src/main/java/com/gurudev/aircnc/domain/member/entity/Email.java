@@ -35,7 +35,7 @@ public class Email {
   public static String toString(Email email){
     return Optional.ofNullable(email)
         .map(wrapper -> wrapper.email)
-        .orElseThrow(() -> new  IllegalStateException());
+        .orElseThrow(IllegalStateException::new);
   }
 
 }
