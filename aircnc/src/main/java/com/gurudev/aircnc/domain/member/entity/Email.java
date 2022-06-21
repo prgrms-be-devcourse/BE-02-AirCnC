@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.constant.Regex.EMAIL;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -29,6 +30,12 @@ public class Email {
     checkArgument(pattern.matcher(email).find(), "이메일 형식이 잘못되었습니다");
 
     this.email = email;
+  }
+
+  public static String toString(Email email){
+    return Optional.ofNullable(email)
+        .map(wrapper -> wrapper.email)
+        .orElseThrow(() -> new  IllegalStateException());
   }
 
 }

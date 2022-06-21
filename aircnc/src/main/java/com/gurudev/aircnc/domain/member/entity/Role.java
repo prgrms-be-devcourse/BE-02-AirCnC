@@ -7,5 +7,8 @@ public enum Role {
   GUEST,
 
   /* 호스트 */
-  HOST
+  HOST;
+
+
+
 }
