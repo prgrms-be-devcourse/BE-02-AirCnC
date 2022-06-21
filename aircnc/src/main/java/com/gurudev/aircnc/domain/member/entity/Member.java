@@ -19,21 +19,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseIdEntity {
 
+  /* 이메일 */
   @Embedded
   private Email email;
 
+  /* 비밀번호 */
   @Embedded
   private Password password;
 
+  /* 이름 */
   @Column(length = 20, nullable = false)
   private String name;
 
+  /* 생일 */
   @Column(nullable = false)
   private LocalDate birthDate;
 
+  /* 휴대폰 번호 */
   @Embedded
   private PhoneNumber phoneNumber;
 
+  /* 멤버의 역할 */
   @Enumerated(value = EnumType.STRING)
   @Column(nullable = false)
   private Role role;
