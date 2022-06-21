@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 비밀번호 */
 @Getter
 @Embeddable
 @EqualsAndHashCode

@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 이메일 */
 @Getter
 @Embeddable
 @EqualsAndHashCode
