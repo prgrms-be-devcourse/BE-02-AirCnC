@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class LocalRoomPhotoServiceImpl implements RoomPhotoService {
+public class LocalRoomPhotoService implements RoomPhotoService {
 
   @Value("${room-photos.path}")
   private String roomPhotosPath;
@@ -34,17 +34,15 @@ public class LocalRoomPhotoServiceImpl implements RoomPhotoService {
   }
 
   private String getFileName(MultipartFile multipartFile) {
-    UUID photoName = UUID.randomUUID();
+    UUID uuid = UUID.randomUUID();
     String ext = getExtension(multipartFile);
 
-    String fileName = photoName + "." + ext;
-    return fileName;
+    return uuid + "." + ext;
   }
 
   private String getExtension(MultipartFile multipartFile) {
     String originalFilename = multipartFile.getOriginalFilename();
-    int lastIndexOfDot = originalFilename.lastIndexOf(".");
 
-    return originalFilename.substring(lastIndexOfDot + 1);
+    return originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
   }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 public interface RoomService {
 
   Room register(Room room, List<RoomPhoto> roomPhotos);
+
 }
