@@ -1,8 +1,13 @@
 package com.gurudev.aircnc.constant;
 
-public interface Regex {
+import static lombok.AccessLevel.PRIVATE;
 
-  String EMAIL = "[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]";
-  String PHONE_NUMBER = "^01\\d{1}-\\d{3,4}-\\d{4}$";
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = PRIVATE)
+public final class Regex {
+
+  public static final String EMAIL = "[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]";
+  public static final String PHONE_NUMBER = "^01\\d{1}-\\d{3,4}-\\d{4}$";
 
 }
