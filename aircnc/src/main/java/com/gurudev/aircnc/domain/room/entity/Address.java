@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 주소 */
 @Getter
 @Embeddable
 @EqualsAndHashCode

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 숙소 */
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -22,20 +23,27 @@ public class Room extends BaseIdEntity {
   public static final int ROOM_PRICE_PER_DAY_MIN_VALUE = 10000;
   public static final int ROOM_CAPACITY_MIN_VALUE = 1;
 
+  /* 이름 */
   private String name;
 
+  /* 주소 */
   @Embedded
   private Address address;
 
+  /* 설명 */
   private String description;
 
+  /* 설명 */
   private int pricePerDay;
 
+  /* 인원 수 */
   private int capacity;
 
+  /* 호스트 */
   @ManyToOne(optional = false)
   private Member host;
 
+  /* 리뷰 총 숫자 */
   private int reviewCount;
 
   public Room(String name, Address address, String description, int pricePerDay, int capacity,
