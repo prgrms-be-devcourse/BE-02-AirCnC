@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 회원 */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,7 +40,7 @@ public class Member extends BaseIdEntity {
   @Embedded
   private PhoneNumber phoneNumber;
 
-  /* 멤버의 역할 */
+  /* 역할 */
   @Enumerated(value = EnumType.STRING)
   @Column(nullable = false)
   private Role role;
