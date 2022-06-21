@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 숙소 사진 컬렉션 */
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class RoomPhotos {

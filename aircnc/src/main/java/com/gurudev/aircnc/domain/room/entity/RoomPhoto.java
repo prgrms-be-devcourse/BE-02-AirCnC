@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 숙소 사진 */
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
