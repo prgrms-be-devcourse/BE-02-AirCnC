@@ -8,6 +8,7 @@ import static org.springframework.util.StringUtils.hasText;
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = false, of = "photoUrl")
 public class RoomPhoto extends BaseIdEntity {
 
   private String photoUrl;
@@ -28,8 +30,8 @@ public class RoomPhoto extends BaseIdEntity {
     this.photoUrl = photoUrl;
   }
 
-
   public void updateRoom(Room room) {
     this.room = room;
   }
+
 }
