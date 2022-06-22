@@ -28,15 +28,21 @@ class MemberServiceTest {
   @Test
   void 회원_생성_조회_성공_테스트() {
     Member member = Fixture.createGuest();
-
     memberService.register(member);
+
     Member foundMember = memberService.getByEmail(member.getEmail());
 
-    assertThat(foundMember).extracting(Member::getEmail, Member::getPassword,
-            Member::getName, Member::getBirthDate, Member::getPhoneNumber, Member::getRole)
-        .isEqualTo(
-            List.of(member.getEmail(), member.getPassword(), member.getName(), member.getBirthDate(),
-                member.getPhoneNumber(), member.getRole()));
+    assertThat(foundMember).extracting(
+        Member::getEmail,
+        Member::getPassword,
+        Member::getName,
+        Member::getBirthDate,
+        Member::getPhoneNumber,
+        Member::getRole
+    ).isEqualTo(
+        List.of(member.getEmail(), member.getPassword(),
+            member.getName(), member.getBirthDate(),
+            member.getPhoneNumber(), member.getRole()));
   }
 
   @Test

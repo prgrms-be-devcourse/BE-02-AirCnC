@@ -30,20 +30,18 @@ public class Fixture {
         Role.GUEST);
   }
 
-  public static Room createRoom() {
-    return createRoom(createHost());
-  }
 
-  public static Room createRoom(Member member) {
+  public static Room createRoom() {
     return new Room("전주 한옥마을",
         new Address("전라북도 전주시 완산구 풍산동 3가"),
         "아주 멋진 한옥마을입니다.",
         100000,
         4,
-        member);
+        createHost());
   }
 
   public static RoomPhoto createRoomPhoto() {
-    return new RoomPhoto("photo.jpg");
+    return new RoomPhoto("photo.jpg",
+        createRoom());
   }
 }

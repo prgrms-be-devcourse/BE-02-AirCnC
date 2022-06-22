@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.gurudev.aircnc.constant.Regex.PHONE_NUMBER;
 import static org.springframework.util.StringUtils.hasText;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -29,5 +30,9 @@ public class PhoneNumber {
     checkArgument(pattern.matcher(phoneNumber).find(), "휴대폰 번호 형식이 잘못되었습니다");
 
     this.phoneNumber = phoneNumber;
+  }
+
+  public static String toString(PhoneNumber phoneNumber) {
+    return phoneNumber.getPhoneNumber();
   }
 }

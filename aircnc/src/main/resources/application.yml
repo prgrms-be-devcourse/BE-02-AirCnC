@@ -15,5 +15,3 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-room-photos:
-  path: src/main/resources/room-photos/dest/
