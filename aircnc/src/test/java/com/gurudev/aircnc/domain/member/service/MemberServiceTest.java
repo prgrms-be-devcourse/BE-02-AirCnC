@@ -53,4 +53,23 @@ class MemberServiceTest {
         NoSuchMemberException.class);
 
   }
+
+
 }
+
+/*
+* {
+    "member": {
+        "email": "abcd@gmail.com",
+        "password": "jakejake",
+    }
+}
+* {
+    "member": {
+        "email": "abcd@gmail.com",
+        "name": "득윤",
+        "role": "guest",
+        "token": "eksadfjalkdsf.klasdfjlaskdfjkl.qoiweuqwoieu"
+    }
+}
+* */

@@ -4,8 +4,10 @@ import static java.lang.String.format;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
+import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.exception.NoSuchMemberException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

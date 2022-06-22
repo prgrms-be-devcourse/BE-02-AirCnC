@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.member.entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
+import com.google.common.base.Function;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -25,6 +26,15 @@ public class Password {
     checkArgument(password.length() >= 8 && password.length() <= 15, "비밀번호는 8자이상 15자 이하여야 합니다");
 
     // TODO: password encoding
-    this.password = password;
+    encode();
+    //this.password = password;
+  }
+
+  public void encode(Function<String, String> passwordEncoder){
+    this.password = passwordEncoder.apply(this.password);
+  }
+
+  public boolean matches(Password password) {
+    return this.password.equals(password);
   }
 }

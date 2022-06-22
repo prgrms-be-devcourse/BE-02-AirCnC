@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /* 회원 */
 @Entity
@@ -58,4 +59,11 @@ public class Member extends BaseIdEntity {
     this.role = role;
   }
 
+  public boolean verifyPassword(PasswordEncoder passwordEncoder, Password password) {
+    this.password
+    passwordEncoder.matches(this.password, password);
+    this.password.matches(password);
+
+    return false;
+  }
 }
