@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class MemberTest {
 
@@ -39,4 +41,11 @@ class MemberTest {
         .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
   }
 
+  @Test
+  void name() {
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    String rawPassword = "abcd";
+    String encoded = encoder.encode(rawPassword);
+    System.out.println(encoder.matches(encoded, encoded));
+  }
 }

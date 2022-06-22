@@ -3,6 +3,8 @@ package com.gurudev.aircnc.domain.member.entity;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -26,5 +28,13 @@ public class Password {
 
     // TODO: password encoding
     this.password = password;
+  }
+
+  public static String toString(Password password) {
+    return password.getPassword();
+  }
+
+  public String encode(UnaryOperator<String> encoder) {
+    return encoder.apply(this.password);
   }
 }
