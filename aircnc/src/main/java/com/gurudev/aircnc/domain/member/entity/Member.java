@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /* 회원 */
 @Entity
@@ -60,14 +61,14 @@ public class Member extends BaseIdEntity {
     this.role = role;
   }
 
-  public void verifyPassword(Password rawPassword) {
-    if (!this.password.matches(rawPassword)) {
+  public void verifyPassword(PasswordEncoder passwordEncoder, Password rawPassword) {
+    if (!this.password.matches(passwordEncoder, rawPassword)) {
       throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
     }
   }
 
-  public Member encodePassword(){
-    this.password = this.password.encode();
+  public Member encodePassword(PasswordEncoder passwordEncoder) {
+    this.password.encode(passwordEncoder);
     return this;
   }
 }

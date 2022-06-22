@@ -53,10 +53,10 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
-    Password rawPassword = member.getPassword();
+    String rawPassword = Password.toString(member.getPassword());
     memberService.register(member);
 
-    Member loginMember = memberService.login(member.getEmail(), rawPassword);
+    Member loginMember = memberService.login(member.getEmail(), new Password(rawPassword));
 
     assertThat(loginMember.getEmail()).isEqualTo(member.getEmail());
   }

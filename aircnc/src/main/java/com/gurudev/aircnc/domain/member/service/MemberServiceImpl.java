@@ -6,6 +6,7 @@ import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ public class MemberServiceImpl implements MemberService {
 
   private final MemberRepository memberRepository;
 
+  private final PasswordEncoder passwordEncoder;
+
   @Override
   @Transactional
   public Member register(Member member) {
-    return memberRepository.save(member.encodePassword());
+    return memberRepository.save(member.encodePassword(passwordEncoder));
   }
 
   @Override
@@ -32,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
   public Member login(Email email, Password password) {
     Member member = getByEmail(email);
 
-    member.verifyPassword(password);
+    member.verifyPassword(passwordEncoder, password);
 
     return member;
   }
