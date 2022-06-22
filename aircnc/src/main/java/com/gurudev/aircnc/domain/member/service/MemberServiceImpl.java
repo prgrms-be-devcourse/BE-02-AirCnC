@@ -22,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public Member register(Member member) {
-    return memberRepository.save(member.encodePassword(passwordEncoder::encode));
+    return memberRepository.save(member.encodePassword(passwordEncoder));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
   public Member login(Email email, Password password) {
     Member member = getByEmail(email);
 
-    member.verifyPassword(encodedPassword -> passwordEncoder.matches(Password.toString(password), Password.toString(encodedPassword)));
+    member.verifyPassword(passwordEncoder, password);
 
     return member;
   }

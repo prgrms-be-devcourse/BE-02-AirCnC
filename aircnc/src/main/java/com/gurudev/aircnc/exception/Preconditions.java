@@ -1,7 +1,10 @@
 package com.gurudev.aircnc.exception;
 
 import javax.annotation.CheckForNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Preconditions {
 
   public static void checkArgument(boolean expression, @CheckForNull Object errorMessage) {
