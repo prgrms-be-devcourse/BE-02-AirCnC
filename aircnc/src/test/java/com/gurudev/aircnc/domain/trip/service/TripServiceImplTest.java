@@ -26,14 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class TripServiceImplTest {
 
-  private final LocalDate checkIn = now().plusDays(1);
-  private final LocalDate checkOut = now().plusDays(2);
   @Autowired
   private TripService tripService;
   @Autowired
   private MemberService memberService;
   @Autowired
   private RoomService roomService;
+
+  private LocalDate checkIn;
+  private LocalDate checkOut;
   private Member guest;
   private Room room;
   private int totalPrice;
@@ -43,14 +44,18 @@ class TripServiceImplTest {
   void setUp() {
     Member host = createHost();
     memberService.register(host);
+
     room = createRoom(host);
     roomService.register(room, Collections.emptyList());
 
     guest = createGuest();
     memberService.register(guest);
 
+    checkIn = now().plusDays(1);
+    checkOut = now().plusDays(2);
     headCount = room.getCapacity();
-    totalPrice = room.getPricePerDay() * between(checkIn, checkOut).getDays();
+    totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
+
   }
 
   @Test

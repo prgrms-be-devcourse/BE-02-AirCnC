@@ -24,13 +24,16 @@ class TripTest {
 
   private final Member guest = createGuest();
   private final Room room = createRoom();
-  private final LocalDate checkIn = now().plusDays(1);
-  private final LocalDate checkOut = now().plusDays(2);
+  private LocalDate checkIn;
+  private LocalDate checkOut;
   private int totalPrice;
   private int headCount;
 
   @BeforeEach
   void setUp() {
+    checkIn = now().plusDays(1);
+    checkOut = now().plusDays(2);
+
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
     headCount = room.getCapacity();
   }
@@ -57,23 +60,24 @@ class TripTest {
   void CheckIn이_CheckOut_이전_이여야_한다() {
     assertThatIllegalArgumentException()
         .isThrownBy(
-            () -> Trip.ofReserved(guest, room, now(), now().minusDays(1), totalPrice, headCount));
+            () -> Trip.ofReserved(guest, room, checkIn, checkIn.minusDays(1), totalPrice,
+                headCount));
   }
 
   @Test
   void 인원이_제한_인원_이하_일_수_없다() {
     assertThatIllegalArgumentException()
         .isThrownBy(
-            () -> Trip.ofReserved(guest, room, now().plusDays(1), now().plusDays(2),
-                totalPrice, TRIP_HEADCOUNT_MIN_VALUE - 1));
+            () -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice,
+                TRIP_HEADCOUNT_MIN_VALUE - 1));
   }
 
   @Test
   void 총_가격은_제한가격_미만일_수_없다() {
     assertThatIllegalArgumentException()
         .isThrownBy(
-            () -> Trip.ofReserved(guest, room, now().plusDays(1), now().plusDays(2),
-                TRIP_TOTAL_PRICE_MIN_VALUE - 1, headCount));
+            () -> Trip.ofReserved(guest, room, checkIn, checkOut, TRIP_TOTAL_PRICE_MIN_VALUE - 1,
+                headCount));
   }
 
   @Test
