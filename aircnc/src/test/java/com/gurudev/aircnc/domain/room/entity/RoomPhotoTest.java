@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.room.entity;
 
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -19,7 +20,7 @@ class RoomPhotoTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 파일_이름이_공백인_숙소_사진_생성_실패(String invalidFileName) {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new RoomPhoto(invalidFileName));
   }
 }

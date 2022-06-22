@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.member.entity;
 
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -32,13 +33,13 @@ class MemberTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 이름_공백_불가(String name) {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Member(email, password, name, birthDate, phoneNumber, Role.GUEST));
   }
 
   @Test
   void 생일_공백_불가() {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
   }
 }

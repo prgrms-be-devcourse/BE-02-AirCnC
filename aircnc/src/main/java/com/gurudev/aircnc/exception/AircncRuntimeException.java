@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.exception;
 
-public abstract class AircncRuntimeException extends RuntimeException{
+public class AircncRuntimeException extends RuntimeException{
 
   public AircncRuntimeException(String message) {
     super(message);
