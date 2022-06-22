@@ -33,8 +33,6 @@ public class PhoneNumber {
   }
 
   public static String toString(PhoneNumber phoneNumber) {
-    return Optional.ofNullable(phoneNumber)
-        .map(wrapper -> wrapper.phoneNumber)
-        .orElseThrow(IllegalStateException::new);
+    return phoneNumber.getPhoneNumber();
   }
 }
