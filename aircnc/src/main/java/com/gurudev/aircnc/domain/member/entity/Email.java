@@ -31,4 +31,8 @@ public class Email {
     this.email = email;
   }
 
+  public static String toString(Email email) {
+    return email.getEmail();
+  }
+
 }

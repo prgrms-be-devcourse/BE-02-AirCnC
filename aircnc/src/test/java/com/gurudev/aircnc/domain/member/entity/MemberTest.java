@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 class MemberTest {
 
@@ -39,5 +42,4 @@ class MemberTest {
     assertThatAircncRuntimeException()
         .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
   }
-
 }
