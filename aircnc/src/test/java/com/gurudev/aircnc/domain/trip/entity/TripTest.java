@@ -6,15 +6,14 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatTripReservationException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
-import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,15 +81,15 @@ class TripTest {
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
-    assertThatThrownBy(() -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice + 1,
-        headCount)).isInstanceOf(
-        TripReservationException.class);
+    assertThatTripReservationException()
+        .isThrownBy(
+            () -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice + 1, headCount));
   }
 
   @Test
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
-    assertThatThrownBy(() -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice,
-        room.getCapacity() + 1)).isInstanceOf(
-        TripReservationException.class);
+    assertThatTripReservationException()
+        .isThrownBy(() -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice,
+            room.getCapacity() + 1));
   }
 }

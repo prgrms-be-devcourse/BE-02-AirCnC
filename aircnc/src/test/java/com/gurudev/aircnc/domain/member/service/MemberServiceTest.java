@@ -1,18 +1,11 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
-import com.gurudev.aircnc.domain.member.entity.Password;
-import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
-import com.gurudev.aircnc.domain.member.entity.Role;
 import com.gurudev.aircnc.domain.util.Fixture;
-import com.gurudev.aircnc.exception.NoSuchMemberException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,8 +36,7 @@ class MemberServiceTest {
   void 존재하지_않는_회원에_대한_조회_실패() {
     Member member = Fixture.createGuest();
 
-    assertThatThrownBy(() -> memberService.getByEmail(member.getEmail())).isInstanceOf(
-        NoSuchMemberException.class);
-
+    assertThatNotFoundException()
+        .isThrownBy(() -> memberService.getByEmail(member.getEmail()));
   }
 }
