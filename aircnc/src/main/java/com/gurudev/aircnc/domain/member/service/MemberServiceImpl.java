@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public Member register(Member member) {
-    return memberRepository.save(member);
+    return memberRepository.save(member.encodePassword(passwordEncoder::encode));
   }
 
   @Override
