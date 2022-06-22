@@ -26,7 +26,6 @@ public class Password {
     checkArgument(hasText(password), "비밀번호는 공백이 될 수 없습니다");
     checkArgument(password.length() >= 8 && password.length() <= 15, "비밀번호는 8자이상 15자 이하여야 합니다");
 
-    // TODO: password encoding
     this.password = password;
   }
 

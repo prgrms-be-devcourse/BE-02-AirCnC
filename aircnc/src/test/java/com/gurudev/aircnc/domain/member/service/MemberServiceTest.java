@@ -58,12 +58,13 @@ class MemberServiceTest {
   @Test
   void 로그인_성공_테스트() {
     String beforeEncodingPassword = Password.toString(member.getPassword());
-    memberService.register(member.encodePassword(passwordEncoder::encode));
+    memberService.register(member);
 
     Member loginUser = memberService.login(member.getEmail(), new Password(beforeEncodingPassword));
 
-    assertThat(loginUser).extracting(Member::getEmail, Member::getPassword).isEqualTo(
-        List.of(member.getEmail(), member.getPassword()));
+    assertThat(loginUser.getEmail()).isEqualTo(member.getEmail());
+    assertThat(passwordEncoder.matches(beforeEncodingPassword,
+        Password.toString(loginUser.getPassword()))).isTrue();
   }
 
   @Test
