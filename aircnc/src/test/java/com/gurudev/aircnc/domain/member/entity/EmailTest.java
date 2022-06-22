@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class EmailTest {
 
   @Test
-  void 이메일_생성_성공() {
+   void 이메일_생성_성공() {
     Email email = new Email("test@email.com");
 
     assertThat(email).isEqualTo(new Email("test@email.com"));
