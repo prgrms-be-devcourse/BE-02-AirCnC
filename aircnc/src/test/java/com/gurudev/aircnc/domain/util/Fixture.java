@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Fixture {
 
   public static Member createHost() {
-    return new Member(new Email("ndy@haha.com"),
+    return new Member(new Email("host@haha.com"),
         new Password("paSSword!"),
         "ndy",
         LocalDate.of(1997, 8, 21),
@@ -22,7 +22,7 @@ public class Fixture {
   }
 
   public static Member createGuest() {
-    return new Member(new Email("ndy@haha.com"),
+    return new Member(new Email("guest@haha.com"),
         new Password("paSSword!"),
         "ndy",
         LocalDate.of(1997, 8, 21),
