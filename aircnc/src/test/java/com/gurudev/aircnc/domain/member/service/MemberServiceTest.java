@@ -1,19 +1,18 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
-import com.gurudev.aircnc.domain.util.Fixture;
 import com.gurudev.aircnc.exception.NoSuchMemberException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -23,10 +22,7 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  private final Member member = Fixture.createGuest();
+  private final Member member = createGuest();
 
   @Test
   void 회원_생성_조회_성공_테스트() {
@@ -57,15 +53,12 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
-    String beforeEncodingPassword = Password.toString(member.getPassword());
+    Password rawPassword = member.getPassword();
     memberService.register(member);
 
-    Member loginMember = memberService.login(member.getEmail(),
-        new Password(beforeEncodingPassword));
+    Member loginMember = memberService.login(member.getEmail(), rawPassword);
 
     assertThat(loginMember.getEmail()).isEqualTo(member.getEmail());
-    assertThat(passwordEncoder.matches(beforeEncodingPassword,
-        Password.toString(loginMember.getPassword()))).isTrue();
   }
 
   @Test

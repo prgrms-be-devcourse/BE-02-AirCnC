@@ -5,8 +5,6 @@ import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import java.time.LocalDate;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -61,14 +59,14 @@ public class Member extends BaseIdEntity {
     this.role = role;
   }
 
-  public void verifyPassword(Predicate<Password> passwordVerifier) {
-    if (passwordVerifier.negate().test(this.password)) {
+  public void verifyPassword(Password rawPassword) {
+    if (!this.password.matches(rawPassword)) {
       throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
     }
   }
 
-  public Member encodePassword(UnaryOperator<String> passwordEncoder) {
-    this.password.encode(passwordEncoder);
+  public Member encodePassword(){
+    this.password = this.password.encode();
     return this;
   }
 }
