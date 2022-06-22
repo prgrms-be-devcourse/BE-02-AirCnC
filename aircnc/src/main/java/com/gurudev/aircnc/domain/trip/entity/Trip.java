@@ -87,14 +87,17 @@ public class Trip extends BaseIdEntity {
 
   /* 서버의 총 가격과 요청 총 가격 검증 */
   private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int totalPrice, Room room) {
-    int calculatedTotalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
+    int calculatedTotalPrice = getDays(checkIn, checkOut) * room.getPricePerDay();
     if (totalPrice != calculatedTotalPrice) {
       throw new TripReservationException("총 가격이 유효하지 않습니다");
     }
   }
 
+  private int getDays(LocalDate from, LocalDate to) {
+    return between(from, to).getDays();
+  }
+
   public void changeStatus(TripStatus status) {
     this.status = status;
   }
-
 }
