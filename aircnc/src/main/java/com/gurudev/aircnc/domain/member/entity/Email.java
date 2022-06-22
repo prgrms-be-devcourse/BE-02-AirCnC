@@ -5,7 +5,6 @@ import static com.gurudev.aircnc.constant.Regex.EMAIL;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

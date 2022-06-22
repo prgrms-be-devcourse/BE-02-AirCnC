@@ -61,8 +61,8 @@ public class Member extends BaseIdEntity {
     this.role = role;
   }
 
-  public void verifyPassword(Predicate<Password> passwordVerifyFtn) {
-    if (passwordVerifyFtn.negate().test(this.password)) {
+  public void verifyPassword(Predicate<Password> passwordVerifier) {
+    if (passwordVerifier.negate().test(this.password)) {
       throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
     }
   }

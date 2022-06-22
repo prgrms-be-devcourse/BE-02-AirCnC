@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
-import static com.gurudev.aircnc.controller.dto.MemberDto.RegisterMemberRequest;
+import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
@@ -21,7 +21,7 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/members")
-  public ResponseEntity<MemberResponse> registerMember(@RequestBody RegisterMemberRequest memberDto) {
+  public ResponseEntity<MemberResponse> registerMember(@RequestBody MemberRegisterRequest memberDto) {
     Member registeredMember = memberService.register(memberDto.toEntity());
 
     return new ResponseEntity<>(MemberResponse.of(registeredMember), HttpStatus.CREATED);

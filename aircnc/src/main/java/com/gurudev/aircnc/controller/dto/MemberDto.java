@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberDto {
 
   @Getter
-  public static class RegisterMemberRequest {
+  public static class MemberRegisterRequest {
 
     @JsonProperty("member")
     private Request request;

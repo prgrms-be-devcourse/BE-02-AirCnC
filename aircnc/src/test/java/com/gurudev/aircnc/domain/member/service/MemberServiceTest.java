@@ -67,7 +67,7 @@ class MemberServiceTest {
   }
 
   @Test
-  void 로그인_싪패_테스트() {
+  void 로그인_실패_테스트() {
     memberService.register(member);
 
     Email email = member.getEmail();

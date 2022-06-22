@@ -8,7 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 class MemberTest {
@@ -39,13 +40,5 @@ class MemberTest {
   void 생일_공백_불가() {
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
-  }
-
-  @Test
-  void name() {
-    PasswordEncoder encoder = new BCryptPasswordEncoder();
-    String rawPassword = "abcd";
-    String encoded = encoder.encode(rawPassword);
-    System.out.println(encoder.matches(encoded, encoded));
   }
 }
