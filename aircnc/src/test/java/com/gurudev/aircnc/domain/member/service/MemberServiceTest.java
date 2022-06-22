@@ -60,11 +60,12 @@ class MemberServiceTest {
     String beforeEncodingPassword = Password.toString(member.getPassword());
     memberService.register(member);
 
-    Member loginUser = memberService.login(member.getEmail(), new Password(beforeEncodingPassword));
+    Member loginMember = memberService.login(member.getEmail(),
+        new Password(beforeEncodingPassword));
 
-    assertThat(loginUser.getEmail()).isEqualTo(member.getEmail());
+    assertThat(loginMember.getEmail()).isEqualTo(member.getEmail());
     assertThat(passwordEncoder.matches(beforeEncodingPassword,
-        Password.toString(loginUser.getPassword()))).isTrue();
+        Password.toString(loginMember.getPassword()))).isTrue();
   }
 
   @Test
