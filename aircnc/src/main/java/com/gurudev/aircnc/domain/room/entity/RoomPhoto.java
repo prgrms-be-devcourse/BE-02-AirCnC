@@ -8,6 +8,7 @@ import static org.springframework.util.StringUtils.hasText;
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,17 +16,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(callSuper = false, of = "fileName")
 public class RoomPhoto extends BaseIdEntity {
 
-  private String photoUrl;
+  private String fileName;
 
   @ManyToOne(optional = false, fetch = LAZY)
   private Room room;
 
-  public RoomPhoto(String photoUrl, Room room) {
-    checkArgument(hasText(photoUrl), "사진의 주소는 공백이 될 수 없습니다");
+  public RoomPhoto(String fileName) {
+    checkArgument(hasText(fileName), "파일 이름은 공백이 될 수 없습니다");
 
-    this.photoUrl = photoUrl;
+    this.fileName = fileName;
+  }
+
+  public void updateRoom(Room room) {
     this.room = room;
   }
 

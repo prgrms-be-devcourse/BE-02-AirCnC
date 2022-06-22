@@ -16,4 +16,4 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 room-photos:
-  path: src/main/resources/room-photos/dest/
+  path: src/test/resources/room-photos-dest/
