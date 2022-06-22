@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 여행 */
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -23,20 +24,27 @@ public class Trip extends BaseIdEntity {
   public static final int TRIP_TOTAL_PRICE_MIN_VALUE = 10000;
   public static final int TRIP_HEADCOUNT_MIN_VALUE = 1;
 
+  /* 게스트 */
   @ManyToOne(fetch = LAZY)
   private Member guest;
 
+  /* 숙소 */
   @ManyToOne(fetch = LAZY)
   private Room room;
 
+  /* 체크인 */
   private LocalDate checkIn;
 
+  /* 체크아웃 */
   private LocalDate checkOut;
 
+  /* 총 가격 */
   private int totalPrice;
 
+  /* 인원 수 */
   private int headCount;
 
+  /* 상태 */
   private TripStatus status;
 
   private Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
@@ -56,8 +64,10 @@ public class Trip extends BaseIdEntity {
     this.totalPrice = totalPrice;
     this.headCount = headCount;
     this.status = status;
+
   }
 
+  /* 예약 상태인 여행 생성 */
   public static Trip ofReserved(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
       int totalPrice, int headCount) {
     return new Trip(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED);
