@@ -32,10 +32,8 @@ public class Email {
     this.email = email;
   }
 
-  public static String toString(Email email){
-    return Optional.ofNullable(email)
-        .map(wrapper -> wrapper.email)
-        .orElseThrow(IllegalStateException::new);
+  public static String toString(Email email) {
+    return email.getEmail();
   }
 
 }

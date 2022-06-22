@@ -22,9 +22,9 @@ public class MemberController {
 
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(@RequestBody RegisterMemberRequest memberDto) {
-    final Member registeredMember = memberService.register(memberDto.convert());
+    Member registeredMember = memberService.register(memberDto.toEntity());
 
-    return new ResponseEntity<>(MemberResponse.convert(registeredMember), HttpStatus.CREATED);
+    return new ResponseEntity<>(MemberResponse.of(registeredMember), HttpStatus.CREATED);
   }
 
 }

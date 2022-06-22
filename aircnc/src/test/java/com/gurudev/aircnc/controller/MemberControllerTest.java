@@ -4,27 +4,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.UriComponentsBuilder;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class MemberControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+class MemberControllerTest extends BasicControllerTest {
 
   @Test
   void 회원가입_API() throws Exception {
-    final ObjectNode objectNode = new ObjectMapper().createObjectNode();
-    final ObjectNode member = objectNode.putObject("member");
+    ObjectNode objectNode = objectMapper.createObjectNode();
+    ObjectNode member = objectNode.putObject("member");
     member.put("email", "seunghan@gamil.com")
         .put("password", "pass12343")
         .put("name", "seunghan")
@@ -32,9 +22,7 @@ class MemberControllerTest {
         .put("phoneNumber", "010-1234-5678")
         .put("role", "GUEST");
 
-    mockMvc.perform(post(UriComponentsBuilder.fromUriString("/api/v1/members")
-            .build()
-            .toUri())
+    mockMvc.perform(post("/api/v1/members")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectNode.toString()))
         .andExpect(status().isCreated())

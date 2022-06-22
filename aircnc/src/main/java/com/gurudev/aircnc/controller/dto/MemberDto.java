@@ -2,7 +2,6 @@ package com.gurudev.aircnc.controller.dto;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -10,7 +9,6 @@ import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
 import java.time.LocalDate;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +23,8 @@ public class MemberDto {
     @JsonProperty("member")
     private Request request;
 
-    public Member convert() {
-      return request.convert();
+    public Member toEntity() {
+      return request.toEntity();
     }
 
     @Getter
@@ -35,13 +33,11 @@ public class MemberDto {
       private String email;
       private String password;
       private String name;
-
-      @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
       private LocalDate birthDate;
       private String phoneNumber;
       private String role;
 
-      public Member convert() {
+      public Member toEntity() {
         return new Member(new Email(email),
             new Password(password),
             name, birthDate, new PhoneNumber(phoneNumber),
@@ -58,8 +54,8 @@ public class MemberDto {
     @JsonProperty("member")
     private final Response response;
 
-    public static MemberResponse convert(Member member) {
-      return new MemberResponse(Response.convert(member));
+    public static MemberResponse of(Member member) {
+      return new MemberResponse(Response.of(member));
     }
 
     @Getter
@@ -81,7 +77,7 @@ public class MemberDto {
         this.role = role.name();
       }
 
-      public static Response convert(Member member) {
+      public static Response of(Member member) {
         return Response.builder()
             .name(member.getName())
             .birthDate(member.getBirthDate())
