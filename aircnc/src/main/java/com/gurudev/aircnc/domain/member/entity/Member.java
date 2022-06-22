@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.domain.member.entity;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkNotNull;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
@@ -51,7 +52,7 @@ public class Member extends BaseIdEntity {
   public Member(Email email, Password password, String name, LocalDate birthDate,
       PhoneNumber phoneNumber, Role role) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
-    checkArgument(birthDate != null, "생일은 null 이 될 수 없습니다");
+    checkNotNull(birthDate, "생일은 null 이 될 수 없습니다");
 
     this.email = email;
     this.name = name;

@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.domain.trip.entity;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
