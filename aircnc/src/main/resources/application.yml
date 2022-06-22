@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
-    username: gurudev
-    password: pass123
+    url: jdbc:mysql://218.145.103.213:3306/airCnC?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: idb1004#
 
 
   jpa:
