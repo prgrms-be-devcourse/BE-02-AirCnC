@@ -55,12 +55,12 @@ public class Trip extends BaseIdEntity {
     checkArgument(checkIn.isEqual(now()) || checkIn.isAfter(now()),
         "체크인 날짜는" + now() + " 이전이 될 수 없습니다.");
 
-    checkArgument(totalPrice >= 10000,
+    checkArgument(totalPrice >= TRIP_TOTAL_PRICE_MIN_VALUE,
         "총 가격은 %d원 미만이 될 수 없습니다".formatted(TRIP_TOTAL_PRICE_MIN_VALUE));
     checkTotalPrice(checkIn, checkOut, totalPrice, room);
     checkHeadCount(headCount, room);
 
-    checkArgument(headCount >= 1,
+    checkArgument(headCount >= TRIP_HEADCOUNT_MIN_VALUE,
         "인원은 %d명 이상이여야 합니다".formatted(TRIP_HEADCOUNT_MIN_VALUE));
 
     this.guest = guest;
