@@ -35,8 +35,7 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   public Member login(Email email, Password password) {
-    Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new NoSuchMemberException(format("해당하는 이메일(%s) 가진 멤버가 존재하지 않습니다", email)));
+    Member member = getByEmail(email);
 
     member.verifyPassword(encodedPassword -> passwordEncoder.matches(Password.toString(password), Password.toString(encodedPassword)));
 

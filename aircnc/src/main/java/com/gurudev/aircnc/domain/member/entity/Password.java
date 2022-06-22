@@ -34,7 +34,7 @@ public class Password {
     return password.getPassword();
   }
 
-  public String encode(UnaryOperator<String> encoder) {
-    return encoder.apply(this.password);
+  public void encode(UnaryOperator<String> encoder) {
+    this.password = encoder.apply(this.password);
   }
 }

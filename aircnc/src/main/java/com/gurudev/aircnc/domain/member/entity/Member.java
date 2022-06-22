@@ -68,7 +68,7 @@ public class Member extends BaseIdEntity {
   }
 
   public Member encodePassword(UnaryOperator<String> passwordEncoder) {
-    this.password = new Password(this.password.encode(passwordEncoder));
+    this.password.encode(passwordEncoder);
     return this;
   }
 }
