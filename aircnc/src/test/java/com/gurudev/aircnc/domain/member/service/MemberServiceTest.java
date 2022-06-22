@@ -66,8 +66,8 @@ class MemberServiceTest {
     memberService.register(member);
 
     Email email = member.getEmail();
-    Password wrongPassword = new Password("wrongpassword");
-    assertThatThrownBy(() -> memberService.login(email, wrongPassword)).isInstanceOf(
+    Password illegalPassword = new Password("wrongpassword");
+    assertThatThrownBy(() -> memberService.login(email, illegalPassword)).isInstanceOf(
         BadCredentialsException.class);
   }
 }
