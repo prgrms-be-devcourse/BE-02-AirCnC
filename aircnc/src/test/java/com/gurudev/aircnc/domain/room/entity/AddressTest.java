@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.room.entity;
 
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -19,7 +20,7 @@ class AddressTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 공백인_주소_생성_실패(String address) {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Address(address));
   }
 }

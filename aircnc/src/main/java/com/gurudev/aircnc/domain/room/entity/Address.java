@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.room.entity;
 
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
