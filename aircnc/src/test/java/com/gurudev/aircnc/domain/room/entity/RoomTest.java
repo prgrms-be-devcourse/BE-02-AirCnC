@@ -7,10 +7,8 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
-import java.util.ArrayList;
 import java.util.List;
 import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
