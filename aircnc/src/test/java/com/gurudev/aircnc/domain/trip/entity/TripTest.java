@@ -6,6 +6,7 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatTripReservationException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
@@ -57,7 +58,7 @@ class TripTest {
 
   @Test
   void CheckIn이_CheckOut_이전_이여야_한다() {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(
             () -> Trip.ofReserved(guest, room, checkIn, checkIn.minusDays(1), totalPrice,
                 headCount));
@@ -65,7 +66,7 @@ class TripTest {
 
   @Test
   void 인원이_제한_인원_이하_일_수_없다() {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(
             () -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice,
                 TRIP_HEADCOUNT_MIN_VALUE - 1));
@@ -73,7 +74,7 @@ class TripTest {
 
   @Test
   void 총_가격은_제한가격_미만일_수_없다() {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(
             () -> Trip.ofReserved(guest, room, checkIn, checkOut, TRIP_TOTAL_PRICE_MIN_VALUE - 1,
                 headCount));

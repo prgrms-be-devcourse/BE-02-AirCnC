@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_DESCRIPTION_MIN_LE
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_PRICE_PER_DAY_MIN_VALUE;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -38,14 +39,14 @@ class RoomTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 이름이_공백인_숙소_생성_실패(String invalidName) {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(invalidName, address, description, pricePerDay, capacity, host));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 설명이_공백인_숙소_생성_실패(String invalidDescription) {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity, host));
   }
 
@@ -53,7 +54,7 @@ class RoomTest {
   void 설명의_길이_제한에_맞지않는_숙소_생성_실패() {
     String invalidDescription = RandomString.make(ROOM_DESCRIPTION_MIN_LENGTH - 1);
 
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity, host));
   }
 
@@ -61,7 +62,7 @@ class RoomTest {
   void 가격이_제한에_맞지않는_숙소_생성_실패() {
     int invalidPricePerDay = ROOM_PRICE_PER_DAY_MIN_VALUE - 1;
 
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, description, invalidPricePerDay, capacity, host));
   }
 
@@ -70,13 +71,13 @@ class RoomTest {
   void 인원수가_제한에_맞지않는_숙소_생성_실패() {
     int invalidCapacity = ROOM_CAPACITY_MIN_VALUE - 1;
 
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, description, pricePerDay, invalidCapacity, host));
   }
 
   @Test
   void 게스트의_숙소_생성_실패() {
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, description, pricePerDay, capacity, guest));
   }
 }
