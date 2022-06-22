@@ -7,6 +7,7 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,14 @@ public class TripServiceImpl implements TripService {
     Room room = roomRepository.findById(roomId)
         .orElseThrow(() -> new NotFoundException(Room.class));
 
+    //TODO: 예약 겹치는지 검증 로직 필요
+
     return tripRepository.save(
         Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice, headCount));
+  }
+
+  @Override
+  public List<Trip> getByGuest(Member guest) {
+    return tripRepository.findByGuest(guest);
   }
 }
