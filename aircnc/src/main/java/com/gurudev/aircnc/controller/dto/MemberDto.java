@@ -47,7 +47,7 @@ public class MemberDto {
   }
 
   @Getter
-  public static class MemberLoginRequest {
+  public static class LoginRequest {
 
     @JsonProperty("member")
     private Request request;
@@ -113,13 +113,13 @@ public class MemberDto {
 
   @Getter
   @RequiredArgsConstructor(access = PRIVATE)
-  public static class MemberTokenResponse {
+  public static class LoginResponse {
 
     @JsonProperty("member")
     private final Response response;
 
-    public static MemberTokenResponse of(Member member, String token) {
-      return new MemberTokenResponse(Response.of(member, token));
+    public static LoginResponse of(Member member, String token) {
+      return new LoginResponse(Response.of(member, token));
     }
 
     @Getter

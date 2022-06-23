@@ -34,7 +34,7 @@ public final class Jwt {
     builder.withIssuer(issuer);
     builder.withIssuedAt(now);
     if (expirySeconds > 0) {
-      builder.withExpiresAt(new Date(now.getTime() + expirySeconds * 1_000L));
+      builder.withExpiresAt(new Date(now.getTime() + expirySeconds * 1000));
     }
     builder.withClaim("username", claims.username);
     builder.withArrayClaim("roles", claims.roles);
@@ -65,7 +65,7 @@ public final class Jwt {
     return jwtVerifier;
   }
 
-  static public class Claims {
+  public static class Claims {
 
     String username;
     String[] roles;
@@ -95,12 +95,7 @@ public final class Jwt {
     }
 
     public Map<String, Object> asMap() {
-      Map<String, Object> map = new HashMap<>();
-      map.put("username", username);
-      map.put("roles", roles);
-      map.put("iat", iat());
-      map.put("exp", exp());
-      return map;
+      return Map.of("username", username, "roles", roles, "iat", iat(), "exp", exp());
     }
 
     long iat() {

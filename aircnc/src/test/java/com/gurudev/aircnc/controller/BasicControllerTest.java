@@ -1,25 +1,24 @@
 package com.gurudev.aircnc.controller;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.assertj.core.api.Assertions;
+import com.gurudev.aircnc.exception.AircncRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 public class BasicControllerTest {
 
@@ -31,14 +30,14 @@ public class BasicControllerTest {
 
   @BeforeEach
   void setUp() {
-    유저_등록("guest@naver.com", "guest1234!", "guest", "GUEST");
-    유저_등록("host@naver.com", "host1234!", "host", "HOST");
+    멤버_등록("guest@naver.com", "guest1234!", "guest", "GUEST");
+    멤버_등록("host@naver.com", "host1234!", "host", "HOST");
   }
 
-  protected void 유저_등록(String email, String password, String name, String role) {
+  protected void 멤버_등록(String email, String password, String name, String role) {
     try {
-      ObjectNode objectNode = objectMapper.createObjectNode();
-      ObjectNode member = objectNode.putObject("member");
+      ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
+      ObjectNode member = memberRegisterRequest.putObject("member");
       member.put("email", email)
           .put("password", password)
           .put("name", name)
@@ -48,24 +47,24 @@ public class BasicControllerTest {
 
       mockMvc.perform(post("/api/v1/members")
               .contentType(MediaType.APPLICATION_JSON)
-              .content(objectNode.toString()))
+              .content(memberRegisterRequest.toString()))
           .andExpect(status().isCreated());
     } catch (Exception e) {
-      throw new RuntimeException("테스트 멤버 등록 실패입니다.");
+      throw new AircncRuntimeException("테스트 멤버 등록 실패입니다.");
     }
   }
 
 
   protected void 로그인(String email, String password) {
     try {
-      ObjectNode objectNode = objectMapper.createObjectNode();
-      ObjectNode member = objectNode.putObject("member");
+      ObjectNode loginRequest = objectMapper.createObjectNode();
+      ObjectNode member = loginRequest.putObject("member");
       member.put("email", email)
           .put("password", password);
 
       MockHttpServletResponse response = mockMvc.perform(post("/api/v1/login")
               .contentType(MediaType.APPLICATION_JSON)
-              .content(objectNode.toString()))
+              .content(loginRequest.toString()))
           .andExpect(status().isOk())
           .andReturn().getResponse();
 
@@ -75,7 +74,7 @@ public class BasicControllerTest {
       assertThat(token).isNotNull();
 
     } catch (Exception e) {
-      throw new RuntimeException("테스트 멤버 로그인 실패입니다.");
+      throw new AircncRuntimeException("테스트 멤버 로그인 실패입니다.");
     }
   }
 }

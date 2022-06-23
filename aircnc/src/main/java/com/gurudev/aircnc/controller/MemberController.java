@@ -5,9 +5,9 @@ import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
-import com.gurudev.aircnc.controller.dto.MemberDto.MemberLoginRequest;
-import com.gurudev.aircnc.controller.dto.MemberDto.MemberLoginRequest.Request;
-import com.gurudev.aircnc.controller.dto.MemberDto.MemberTokenResponse;
+import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
+import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
+import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,19 +37,17 @@ public class MemberController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<MemberTokenResponse> login(@RequestBody MemberLoginRequest request) {
-    final Request loginRequest = request.getRequest();
-    System.out.println(loginRequest.getEmail());
-    System.out.println(loginRequest.getPassword());
+  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    Request loginRequest = request.getRequest();
 
-    final JwtAuthenticationToken authToken =
+    JwtAuthenticationToken authToken =
         new JwtAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-    final Authentication resultToken = authenticationManager.authenticate(authToken);
-    final JwtAuthenticationToken authenticated = (JwtAuthenticationToken) resultToken;
-    final JwtAuthentication principal = (JwtAuthentication) authenticated.getPrincipal();
-    final Member member = (Member) authenticated.getDetails();
+    Authentication resultToken = authenticationManager.authenticate(authToken);
+    JwtAuthenticationToken authenticated = (JwtAuthenticationToken) resultToken;
+    JwtAuthentication principal = (JwtAuthentication) authenticated.getPrincipal();
+    Member member = (Member) authenticated.getDetails();
 
-    return new ResponseEntity<>(MemberTokenResponse.of(member, principal.token), HttpStatus.OK);
+    return ResponseEntity.ok(LoginResponse.of(member, principal.token));
   }
 
 }

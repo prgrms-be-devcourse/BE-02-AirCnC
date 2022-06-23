@@ -4,16 +4,16 @@ import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
 public class JwtAuthentication {
+
   public final String token;
+  public final String email;
 
-  public final String username;
-
-  JwtAuthentication(String token, String username) {
-    checkArgument(hasText(token), "token must be provided.");
-    checkArgument(hasText(username), "username must be provided.");
+  JwtAuthentication(String token, String email) {
+    checkArgument(hasText(token), "토큰은 null일 수 없습니다.");
+    checkArgument(hasText(email), "이메일은 null 일 수 없습니다.");
 
     this.token = token;
-    this.username = username;
+    this.email = email;
   }
 
 }

@@ -10,13 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Transactional
 class MemberControllerTest extends BasicControllerTest {
 
   @Test
   void 회원가입_API() throws Exception {
-    ObjectNode objectNode = objectMapper.createObjectNode();
-    ObjectNode member = objectNode.putObject("member");
+    ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
+    ObjectNode member = memberRegisterRequest.putObject("member");
     member.put("email", "seunghan@gamil.com")
         .put("password", "pass12343")
         .put("name", "seunghan")
@@ -26,7 +25,7 @@ class MemberControllerTest extends BasicControllerTest {
 
     mockMvc.perform(post("/api/v1/members")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectNode.toString()))
+            .content(memberRegisterRequest.toString()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.member.email").value("seunghan@gamil.com"))
         .andExpect(jsonPath("$.member.name").value("seunghan"))
@@ -42,16 +41,16 @@ class MemberControllerTest extends BasicControllerTest {
     String name = "seunghan";
     String role = "GUEST";
 
-    유저_등록(email,password,name,role);
+    멤버_등록(email,password,name,role);
 
-    ObjectNode objectNode = objectMapper.createObjectNode();
-    ObjectNode loginMember = objectNode.putObject("member");
+    ObjectNode loginRequest = objectMapper.createObjectNode();
+    ObjectNode loginMember = loginRequest.putObject("member");
     loginMember.put("email", email)
         .put("password", password);
 
     mockMvc.perform(post("/api/v1/login")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectNode.toString()))
+            .content(loginRequest.toString()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.member.email").value(email))
         .andExpect(jsonPath("$.member.name").value(name))

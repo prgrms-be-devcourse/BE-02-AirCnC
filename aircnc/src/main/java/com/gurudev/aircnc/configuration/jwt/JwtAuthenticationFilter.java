@@ -21,9 +21,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final String headerKey;
   private final Jwt jwt;
@@ -33,11 +34,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     this.jwt = jwt;
   }
 
+
   @Override
-  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-      throws IOException, ServletException {
-    HttpServletRequest request = (HttpServletRequest) req;
-    HttpServletResponse response = (HttpServletResponse) res;
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
 
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
       String token = getToken(request);
@@ -51,7 +51,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
           if (hasText(username) && authorities.size() > 0) {
             JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(new JwtAuthentication(token, username), null, authorities);
+                new JwtAuthenticationToken(new JwtAuthentication(token, username), null,
+                    authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
           }
@@ -60,11 +61,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
       }
     } else {
-      log.debug("SecurityContextHolder not populated with security token, as it already contained: '{}'",
+      log.debug(
+          "SecurityContextHolder not populated with security token, as it already contained: '{}'",
           SecurityContextHolder.getContext().getAuthentication());
     }
 
-    chain.doFilter(request, response);
+    filterChain.doFilter(request, response);
   }
 
   private String getToken(HttpServletRequest request) {
