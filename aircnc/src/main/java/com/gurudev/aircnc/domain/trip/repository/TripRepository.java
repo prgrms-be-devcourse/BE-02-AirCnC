@@ -13,9 +13,15 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
   @Query("select t "
       + "from Trip t "
-          + "join fetch t.guest "
-          + "join fetch t.room r "
-          + "join fetch r.roomPhotos "
+      + "join fetch t.guest "
+      + "join fetch t.room r "
+      + "join fetch r.roomPhotos "
       + "where t.id = :id")
   Optional<Trip> findById(Long id);
+
+  @Query("select t "
+      + "from Trip t "
+      + "join fetch t.guest "
+      + "where t.id = :id")
+  Optional<Trip> findByIdFetchGuest(Long id);
 }

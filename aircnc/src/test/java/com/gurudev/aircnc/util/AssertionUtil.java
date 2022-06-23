@@ -13,10 +13,6 @@ public class AssertionUtil {
     return assertThatExceptionOfType(AircncRuntimeException.class);
   }
 
-  public static ThrowableTypeAssert<TripReservationException> assertThatTripReservationException() {
-    return assertThatExceptionOfType(TripReservationException.class);
-  }
-
   public static ThrowableTypeAssert<NotFoundException> assertThatNotFoundException() {
     return assertThatExceptionOfType(NotFoundException.class);
   }

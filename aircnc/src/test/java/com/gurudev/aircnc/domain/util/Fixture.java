@@ -8,6 +8,7 @@ import com.gurudev.aircnc.domain.member.entity.Role;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
 
 public class Fixture {
@@ -45,5 +46,10 @@ public class Fixture {
 
   public static RoomPhoto createRoomPhoto() {
     return new RoomPhoto("photo.jpg");
+  }
+
+  public static Trip createTrip() {
+    return Trip.ofReserved(createGuest(), createRoom(), LocalDate.now(),
+        LocalDate.now().plusDays(1), 100000, 4);
   }
 }

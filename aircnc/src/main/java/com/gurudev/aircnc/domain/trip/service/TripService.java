@@ -10,7 +10,9 @@ public interface TripService {
   Trip reserve(Member guest, Long roomId, LocalDate checkIn, LocalDate checkOut, int headCount,
       int totalPrice);
 
+  Trip getById(Long id);
+
   List<Trip> getByGuest(Member guest);
 
-  Trip getById(Long id);
+  Trip cancel(Member guest, Long tripId);
 }

@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.trip.service;
 
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
@@ -17,6 +18,7 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,16 +39,19 @@ class TripServiceImplTest {
   @Autowired
   private RoomService roomService;
 
-  private Member guest;
   private Room room;
+  private RoomPhoto roomPhoto;
+
+  private Member guest;
+
   private LocalDate checkIn;
   private LocalDate checkOut;
+
   private int headCount;
   private int totalPrice;
 
   private Trip trip1;
   private Trip trip2;
-  private RoomPhoto roomPhoto;
 
   @BeforeEach
   void setUp() {
@@ -103,5 +108,12 @@ class TripServiceImplTest {
 
     assertThatNotFoundException()
         .isThrownBy(() -> tripService.getById(invalidTripId));
+  }
+
+  @Test
+  void 예약_상태의_여행_취소_성공() {
+    Trip cancelledTrip = tripService.cancel(guest, trip1.getId());
+
+    assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
 }
