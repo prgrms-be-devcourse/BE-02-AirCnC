@@ -102,13 +102,10 @@ public class Room extends BaseIdEntity {
   }
 
   /* 숙소의 이름, 1박 당 가격, 설명을 변경 할 수 있다 */
-  public Room update(String name, String description, int pricePerDay) {
+  public Room update(String name, String description, Integer pricePerDay) {
     Optional.ofNullable(name).ifPresent(this::setName);
     Optional.ofNullable(description).ifPresent(this::setDescription);
-
-    if (pricePerDay != 0) {
-      setPricePerDay(pricePerDay);
-    }
+    Optional.ofNullable(pricePerDay).ifPresent(this::setPricePerDay);
 
     return this;
   }
