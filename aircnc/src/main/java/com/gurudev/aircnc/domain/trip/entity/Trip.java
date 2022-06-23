@@ -105,6 +105,7 @@ public class Trip extends BaseIdEntity {
   }
 
   public void cancel(Member guest) {
+    // TODO - Role 로 api 의 접근을 제한 하게되면 아래 검증 코드 제거 하기
     if (!isTripOf(guest)) {
       throw new NotFoundException(Trip.class);
     }

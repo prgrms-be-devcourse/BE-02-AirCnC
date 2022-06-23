@@ -24,4 +24,8 @@ public class Address {
 
     this.address = address;
   }
+
+  public static String toString(Address address) {
+    return address.getAddress();
+  }
 }

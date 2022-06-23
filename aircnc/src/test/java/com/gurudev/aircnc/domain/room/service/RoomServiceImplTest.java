@@ -38,8 +38,8 @@ class RoomServiceImplTest {
     host = createHost();
     memberService.register(host);
 
-    room1 = createRoom(host);
-    room2 = createRoom(host);
+    room1 = createRoom();
+    room2 = createRoom();
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
@@ -49,7 +49,7 @@ class RoomServiceImplTest {
 
   @Test
   void 숙소_등록_성공() {
-    Room room = createRoom(host);
+    Room room = createRoom();
 
     Room registeredRoom = roomService.register(room, roomPhotos, host);
 

@@ -32,10 +32,6 @@ public class Fixture {
   }
 
   public static Room createRoom() {
-    return createRoom(createHost());
-  }
-
-  public static Room createRoom(Member member) {
     return new Room("전주 한옥마을",
         new Address("전라북도 전주시 완산구 풍산동 3가"),
         "아주 멋진 한옥마을입니다.",

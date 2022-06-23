@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_DESCRIPTION_MIN_LE
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_PRICE_PER_DAY_MIN_VALUE;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
+import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,16 +23,14 @@ class RoomTest {
   private final String description = "아주 멋진 한옥마을입니다.";
   private final int capacity = 4;
   private final int pricePerDay = 100000;
-  private final Member host = createHost();
-  private final Member guest = createGuest();
-
 
   @Test
   void 숙소_생성() {
     Room room = new Room(name, address, description, pricePerDay, capacity);
 
-    assertThat(room).extracting(Room::getName, Room::getAddress, Room::getDescription,
-            Room::getPricePerDay, Room::getCapacity)
+    assertThat(room)
+        .extracting(Room::getName, Room::getAddress, Room::getDescription, Room::getPricePerDay,
+            Room::getCapacity)
         .isEqualTo(List.of(name, address, description, pricePerDay, capacity));
   }
 
@@ -74,12 +73,23 @@ class RoomTest {
   }
 
   @Test
-  void 호스트는_숙소의_이름_설명_가격을_변경할_수_있다() {
-    Room room = new Room(name, address, description, pricePerDay, capacity);
+  void 숙소의_이름_설명_가격을_변경할_수_있다() {
+    Room room = createRoom();
 
     room.update("변경된 숙소 이름", "변경된 숙소 설명입니다", 20000);
 
-    assertThat(room).extracting(Room::getName, Room::getDescription, Room::getPricePerDay)
+    assertThat(room)
+        .extracting(Room::getName, Room::getDescription, Room::getPricePerDay)
         .isEqualTo(List.of("변경된 숙소 이름", "변경된 숙소 설명입니다", 20000));
+  }
+
+  @Test
+  void 숙소의_호스트_변경_revision() {
+    Room room = createRoom();
+    Member host = createHost();
+
+    room.revision(host);
+
+    assertThat(room.getHost()).isEqualTo(host);
   }
 }
