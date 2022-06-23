@@ -40,8 +40,7 @@ public class Fixture {
         new Address("전라북도 전주시 완산구 풍산동 3가"),
         "아주 멋진 한옥마을입니다.",
         100000,
-        4,
-        member);
+        4);
   }
 
   public static RoomPhoto createRoomPhoto() {

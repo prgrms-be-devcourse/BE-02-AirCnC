@@ -28,25 +28,25 @@ class RoomTest {
 
   @Test
   void 숙소_생성() {
-    Room room = new Room(name, address, description, pricePerDay, capacity, host);
+    Room room = new Room(name, address, description, pricePerDay, capacity);
 
     assertThat(room).extracting(Room::getName, Room::getAddress, Room::getDescription,
-            Room::getPricePerDay, Room::getCapacity, Room::getHost)
-        .isEqualTo(List.of(name, address, description, pricePerDay, capacity, host));
+            Room::getPricePerDay, Room::getCapacity)
+        .isEqualTo(List.of(name, address, description, pricePerDay, capacity));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 이름이_공백인_숙소_생성_실패(String invalidName) {
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(invalidName, address, description, pricePerDay, capacity, host));
+        .isThrownBy(() -> new Room(invalidName, address, description, pricePerDay, capacity));
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 설명이_공백인_숙소_생성_실패(String invalidDescription) {
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity, host));
+        .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity));
   }
 
   @Test
@@ -54,7 +54,7 @@ class RoomTest {
     String invalidDescription = RandomString.make(ROOM_DESCRIPTION_MIN_LENGTH - 1);
 
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity, host));
+        .isThrownBy(() -> new Room(name, address, invalidDescription, pricePerDay, capacity));
   }
 
   @Test
@@ -62,7 +62,7 @@ class RoomTest {
     int invalidPricePerDay = ROOM_PRICE_PER_DAY_MIN_VALUE - 1;
 
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(name, address, description, invalidPricePerDay, capacity, host));
+        .isThrownBy(() -> new Room(name, address, description, invalidPricePerDay, capacity));
   }
 
   @Test
@@ -70,18 +70,12 @@ class RoomTest {
     int invalidCapacity = ROOM_CAPACITY_MIN_VALUE - 1;
 
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(name, address, description, pricePerDay, invalidCapacity, host));
-  }
-
-  @Test
-  void 게스트의_숙소_생성_실패() {
-    assertThatAircncRuntimeException()
-        .isThrownBy(() -> new Room(name, address, description, pricePerDay, capacity, guest));
+        .isThrownBy(() -> new Room(name, address, description, pricePerDay, invalidCapacity));
   }
 
   @Test
   void 호스트는_숙소의_이름_설명_가격을_변경할_수_있다() {
-    Room room = new Room(name, address, description, pricePerDay, capacity, host);
+    Room room = new Room(name, address, description, pricePerDay, capacity);
 
     room.update("변경된 숙소 이름", "변경된 숙소 설명입니다", 20000);
 

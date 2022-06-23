@@ -54,16 +54,18 @@ public class Room extends BaseIdEntity {
   @OneToMany(cascade = ALL)
   private List<RoomPhoto> roomPhotos = new ArrayList<>();
 
-  public Room(String name, Address address, String description, int pricePerDay, int capacity,
-      Member host) {
+  public Room(String name, Address address, String description, int pricePerDay, int capacity) {
     setName(name);
     setDescription(description);
     setPricePerDay(pricePerDay);
     setCapacity(capacity);
-    setHost(host);
 
     this.address = address;
     this.reviewCount = 0;
+  }
+
+  public void revision(Member host){
+    setHost(host);
   }
 
   private void setHost(Member host) {
