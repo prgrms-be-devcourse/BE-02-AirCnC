@@ -7,7 +7,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public final class Jwt {
@@ -96,9 +95,17 @@ public final class Jwt {
 
     public Map<String, Object> asMap() {
       return Map.of("username", username,
-                    "roles", roles,
-                    "iat", iat(),
-                    "exp", exp());
+          "roles", roles,
+          "iat", iat(),
+          "exp", exp());
+    }
+
+    public String getUsername() {
+      return this.username;
+    }
+
+    public String[] getRoles() {
+      return this.roles;
     }
 
     long iat() {
