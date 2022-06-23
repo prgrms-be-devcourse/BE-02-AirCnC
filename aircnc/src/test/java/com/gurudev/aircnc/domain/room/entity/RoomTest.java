@@ -25,6 +25,7 @@ class RoomTest {
   private final Member host = createHost();
   private final Member guest = createGuest();
 
+
   @Test
   void 숙소_생성() {
     Room room = new Room(name, address, description, pricePerDay, capacity, host);
@@ -64,7 +65,6 @@ class RoomTest {
         .isThrownBy(() -> new Room(name, address, description, invalidPricePerDay, capacity, host));
   }
 
-
   @Test
   void 인원수가_제한에_맞지않는_숙소_생성_실패() {
     int invalidCapacity = ROOM_CAPACITY_MIN_VALUE - 1;
@@ -77,5 +77,15 @@ class RoomTest {
   void 게스트의_숙소_생성_실패() {
     assertThatAircncRuntimeException()
         .isThrownBy(() -> new Room(name, address, description, pricePerDay, capacity, guest));
+  }
+
+  @Test
+  void 호스트는_숙소의_이름_설명_가격을_변경할_수_있다() {
+    Room room = new Room(name, address, description, pricePerDay, capacity, host);
+
+    room.update("변경된 숙소 이름", "변경된 숙소 설명입니다", 20000);
+
+    assertThat(room).extracting(Room::getName, Room::getDescription, Room::getPricePerDay)
+        .isEqualTo(List.of("변경된 숙소 이름", "변경된 숙소 설명입니다", 20000));
   }
 }
