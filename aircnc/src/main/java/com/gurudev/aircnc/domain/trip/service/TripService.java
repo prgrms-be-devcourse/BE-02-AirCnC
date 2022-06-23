@@ -11,4 +11,6 @@ public interface TripService {
       int totalPrice);
 
   List<Trip> getByGuest(Member guest);
+
+  Trip cancel(Member guest, Long tripId);
 }

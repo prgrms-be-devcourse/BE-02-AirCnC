@@ -24,8 +24,7 @@ public class TripServiceImpl implements TripService {
   @Override
   public Trip reserve(Member guest, Long roomId, LocalDate checkIn, LocalDate checkOut,
       int headCount, int totalPrice) {
-    Room room = roomRepository.findById(roomId)
-        .orElseThrow(() -> new NotFoundException(Room.class));
+    Room room = findRoomById(roomId);
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
@@ -37,4 +36,22 @@ public class TripServiceImpl implements TripService {
   public List<Trip> getByGuest(Member guest) {
     return tripRepository.findByGuest(guest);
   }
+
+  @Override
+  public Trip cancel(Member guest, Long tripId) {
+    Trip trip = findTripByIdFetchGuest(tripId);
+
+    trip.cancel(guest);
+
+    return trip;
+  }
+
+  private Room findRoomById(Long roomId) {
+    return roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException(Room.class));
+  }
+
+  private Trip findTripByIdFetchGuest(Long id) {
+    return tripRepository.findByIdFetchGuest(id).orElseThrow(() -> new NotFoundException(Trip.class));
+  }
+
 }
