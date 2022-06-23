@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtConfigure {
 
-  private String header;
-
   private String issuer;
 
   private String clientSecret;

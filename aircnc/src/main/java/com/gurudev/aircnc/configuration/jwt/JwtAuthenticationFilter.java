@@ -2,6 +2,7 @@ package com.gurudev.aircnc.configuration.jwt;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;
@@ -11,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +19,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final String headerKey;
   private final Jwt jwt;
 
-  public JwtAuthenticationFilter(String headerKey, Jwt jwt) {
-    this.headerKey = headerKey;
+  public JwtAuthenticationFilter(Jwt jwt) {
     this.jwt = jwt;
   }
-
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -51,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
           if (hasText(username) && authorities.size() > 0) {
             JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(new JwtAuthentication(token, username), null,
+                new JwtAuthenticationToken(new JwtAuthenticationToken(token, username), null,
                     authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -70,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private String getToken(HttpServletRequest request) {
-    String token = request.getHeader(headerKey);
+    String token = request.getHeader(AUTHORIZATION);
     if (hasText(token)) {
       log.debug("Jwt authorization api detected: {}", token);
       try {
