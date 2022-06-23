@@ -1,7 +1,8 @@
 package com.gurudev.aircnc.domain.trip.entity;
 
-import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static javax.persistence.FetchType.LAZY;
@@ -10,6 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
+import com.gurudev.aircnc.exception.TripCancelException;
 import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;
 import javax.persistence.Entity;
@@ -99,5 +101,13 @@ public class Trip extends BaseIdEntity {
 
   public void changeStatus(TripStatus status) {
     this.status = status;
+  }
+
+  public void cancel(){
+    if(status != RESERVED){
+      throw new TripCancelException(status);
+    }
+
+    this.status = CANCELLED;
   }
 }
