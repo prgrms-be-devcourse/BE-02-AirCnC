@@ -8,4 +8,5 @@ public interface RoomService {
 
   Room register(Room room, List<RoomPhoto> roomPhotos);
 
+  List<Room> getAll();
 }
