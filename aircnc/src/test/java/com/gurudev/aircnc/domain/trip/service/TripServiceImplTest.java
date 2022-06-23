@@ -39,6 +39,8 @@ class TripServiceImplTest {
   private Room room;
   private int totalPrice;
   private int headCount;
+  private Trip trip1;
+  private Trip trip2;
 
   @BeforeEach
   void setUp() {
@@ -56,6 +58,8 @@ class TripServiceImplTest {
     headCount = room.getCapacity();
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
 
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
   }
 
   @Test
@@ -67,5 +71,12 @@ class TripServiceImplTest {
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
             Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
         .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
+  }
+
+  @Test
+  void 게스트의_여행_목록_조회() {
+    List<Trip> findTrips = tripService.getByGuest(guest);
+
+    assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
   }
 }
