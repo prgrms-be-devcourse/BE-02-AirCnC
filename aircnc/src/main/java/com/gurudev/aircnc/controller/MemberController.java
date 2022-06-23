@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
+import com.gurudev.aircnc.configuration.resolver.LoginMember;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,4 +52,10 @@ public class MemberController {
     return ResponseEntity.ok(LoginResponse.of(member, principal.token));
   }
 
+  @GetMapping("/me")
+  public ResponseEntity<MemberResponse> memberInfo(@LoginMember Member member) {
+    Member getMember = memberService.getByEmail(member.getEmail());
+
+    return ResponseEntity.ok(MemberResponse.of(getMember));
+  }
 }

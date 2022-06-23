@@ -23,7 +23,7 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig{
+public class SecurityConfig {
 
   private final JwtConfigure jwtConfigure;
   private final ApplicationContext applicationContext;
@@ -65,7 +65,7 @@ public class SecurityConfig{
 
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
     final Jwt jwt = applicationContext.getBean(Jwt.class);
-    return new JwtAuthenticationFilter(jwtConfigure.getHeader(), jwt);
+    return new JwtAuthenticationFilter(jwt);
   }
 
   @Bean

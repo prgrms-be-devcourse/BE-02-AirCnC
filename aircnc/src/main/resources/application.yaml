@@ -16,7 +16,6 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 jwt:
-  header: "token"
   issuer: "gurudev"
   client-secret: "EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ"
   expiry-seconds: 60
