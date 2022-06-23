@@ -9,7 +9,6 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createTrip;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatTripReservationException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
+import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,14 +89,14 @@ class TripTest {
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
-    assertThatTripReservationException()
+    assertThatExceptionOfType(TripReservationException.class)
         .isThrownBy(
             () -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice + 1, headCount));
   }
 
   @Test
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
-    assertThatTripReservationException()
+    assertThatExceptionOfType(TripReservationException.class)
         .isThrownBy(() -> Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice,
             room.getCapacity() + 1));
   }
