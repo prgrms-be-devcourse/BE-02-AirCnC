@@ -51,9 +51,10 @@ public class SecurityConfig{
     http.getSharedObject(AuthenticationManagerBuilder.class)
         .authenticationProvider(jwtAuthenticationProvider);
 
-//    http
-//        .authorizeHttpRequests()
-//        .antMatchers("/api/v1/members", "/api/v1/login").permitAll()
+    // 개발 중
+    http
+        .authorizeHttpRequests()
+        .antMatchers("/api/v1/members", "/api/v1/login").permitAll();
 //        .anyRequest().authenticated();
 
     http.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class);

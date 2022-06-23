@@ -9,7 +9,7 @@ public class JwtAuthentication {
   public final String email;
 
   JwtAuthentication(String token, String email) {
-    checkArgument(hasText(token), "토큰은 null일 수 없습니다.");
+    checkArgument(hasText(token), "토큰은 null 일 수 없습니다.");
     checkArgument(hasText(email), "이메일은 null 일 수 없습니다.");
 
     this.token = token;

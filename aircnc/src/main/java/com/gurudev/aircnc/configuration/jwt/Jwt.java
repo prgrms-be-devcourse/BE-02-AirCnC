@@ -95,7 +95,10 @@ public final class Jwt {
     }
 
     public Map<String, Object> asMap() {
-      return Map.of("username", username, "roles", roles, "iat", iat(), "exp", exp());
+      return Map.of("username", username,
+                    "roles", roles,
+                    "iat", iat(),
+                    "exp", exp());
     }
 
     long iat() {
