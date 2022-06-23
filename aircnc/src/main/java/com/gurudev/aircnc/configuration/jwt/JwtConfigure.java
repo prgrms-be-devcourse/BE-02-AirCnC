@@ -1,20 +1,21 @@
 package com.gurudev.aircnc.configuration.jwt;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
-//@Setter
-//@EnableConfigurationProperties
-//@ConfigurationProperties(prefix = "jwt")
+@Setter
+@ConfigurationProperties(prefix = "jwt")
 public class JwtConfigure {
 
-  private String header = "token";
+  private String header;
 
-  private String issuer = "gurudev";
+  private String issuer;
 
-  private String clientSecret = "EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ";
+  private String clientSecret;
 
-  private int expirySeconds = 60;
+  private int expirySeconds;
 }
