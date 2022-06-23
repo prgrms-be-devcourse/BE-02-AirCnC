@@ -37,4 +37,9 @@ public class TripServiceImpl implements TripService {
   public List<Trip> getByGuest(Member guest) {
     return tripRepository.findByGuest(guest);
   }
+
+  @Override
+  public Trip getById(Long id) {
+    return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));
+  }
 }
