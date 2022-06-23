@@ -46,6 +46,28 @@ public class MemberDto {
     }
   }
 
+  @Getter
+  public static class MemberLoginRequest {
+
+    @JsonProperty("member")
+    private Request request;
+
+    @Getter
+    public static class Request {
+
+      private String email;
+      private String password;
+
+      public String getEmail(){
+        return this.email;
+      }
+
+      public String getPassword(){
+        return this.password;
+      }
+    }
+  }
+
 
   @Getter
   @RequiredArgsConstructor(access = PRIVATE)
@@ -84,6 +106,44 @@ public class MemberDto {
             .email(Email.toString(member.getEmail()))
             .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
             .role(member.getRole())
+            .build();
+      }
+    }
+  }
+
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class MemberTokenResponse {
+
+    @JsonProperty("member")
+    private final Response response;
+
+    public static MemberTokenResponse of(Member member, String token) {
+      return new MemberTokenResponse(Response.of(member, token));
+    }
+
+    @Getter
+    public static class Response {
+
+      private final String email;
+      private final String name;
+      private final String role;
+      private final String token;
+
+      @Builder(access = PRIVATE)
+      private Response(String email, String name, Role role, String token) {
+        this.email = email;
+        this.name = name;
+        this.role = role.name();
+        this.token = token;
+      }
+
+      public static Response of(Member member, String token) {
+        return Response.builder()
+            .email(Email.toString(member.getEmail()))
+            .name(member.getName())
+            .role(member.getRole())
+            .token(token)
             .build();
       }
     }
