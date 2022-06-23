@@ -37,41 +37,26 @@ class MemberControllerTest extends BasicControllerTest {
 
   @Test
   void 로그인_API() throws Exception {
-    // 로그인
-    ObjectNode objectNode = objectMapper.createObjectNode();
-    ObjectNode member = objectNode.putObject("member");
-    member.put("email", "seunghan@gamil.com")
-        .put("password", "pass12343")
-        .put("name", "seunghan")
-        .put("birthDate", "1998-04-21")
-        .put("phoneNumber", "010-1234-5678")
-        .put("role", "GUEST");
-
-    mockMvc.perform(post("/api/v1/members")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectNode.toString()))
-        .andExpect(status().isCreated());
-
-    ObjectNode objectNode2 = objectMapper.createObjectNode();
-
     String email = "seunghan@gamil.com";
     String password = "pass12343";
     String name = "seunghan";
+    String role = "GUEST";
 
-    ObjectNode loginMember = objectNode2.putObject("member");
+    유저_등록(email,password,name,role);
+
+    ObjectNode objectNode = objectMapper.createObjectNode();
+    ObjectNode loginMember = objectNode.putObject("member");
     loginMember.put("email", email)
         .put("password", password);
 
     mockMvc.perform(post("/api/v1/login")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectNode2.toString()))
+            .content(objectNode.toString()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.member.email").value(email))
         .andExpect(jsonPath("$.member.name").value(name))
         .andExpect(jsonPath("$.member.role").value("GUEST"))
         .andExpect(jsonPath("$.member.token").exists());
-
   }
-
 
 }
