@@ -9,6 +9,7 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createTrip;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class TripTest {
 
@@ -105,7 +107,7 @@ class TripTest {
   void 예약_상태의_여행_취소_성공() {
     Trip trip = createTrip();
 
-    trip.cancel();
+    trip.cancel(guest);
 
     assertThat(trip.getStatus()).isEqualTo(CANCELLED);
   }
@@ -113,9 +115,21 @@ class TripTest {
   @Test
   void 취소_상태의_여행_취소_실패() {
     Trip trip = createTrip();
-    trip.cancel(); // -> trip.status = CANCELLED
+    trip.cancel(guest); // -> trip.status = CANCELLED
 
     assertThatExceptionOfType(TripCancelException.class)
-        .isThrownBy(trip::cancel);
+        .isThrownBy(() -> trip.cancel(guest));
+  }
+
+  @Test
+  void 남의_여행_취소_실패() {
+    Trip trip = createTrip();
+
+    //도메인 계층에서 아이디가 다른 사용자를 생성하기 위해 ReflectionTestUtils 활용
+    Member anotherGuest = createGuest();
+    ReflectionTestUtils.setField(anotherGuest, "id", 1L);
+
+    assertThatNotFoundException()
+        .isThrownBy(() -> trip.cancel(anotherGuest));
   }
 }
