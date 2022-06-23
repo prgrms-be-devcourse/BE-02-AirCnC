@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.trip.service;
 
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
@@ -28,17 +29,23 @@ class TripServiceImplTest {
 
   @Autowired
   private TripService tripService;
+
   @Autowired
   private MemberService memberService;
+
   @Autowired
   private RoomService roomService;
 
+  private Room room;
+
+  private Member guest;
+
   private LocalDate checkIn;
   private LocalDate checkOut;
-  private Member guest;
-  private Room room;
-  private int totalPrice;
+
   private int headCount;
+  private int totalPrice;
+
   private Trip trip1;
   private Trip trip2;
 
@@ -55,6 +62,7 @@ class TripServiceImplTest {
 
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
+
     headCount = room.getCapacity();
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
 
@@ -79,4 +87,12 @@ class TripServiceImplTest {
 
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
   }
+
+  @Test
+  void 예약_상태의_여행_취소_성공() {
+    Trip cancelledTrip = tripService.cancel(guest, trip1.getId());
+
+    assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
+  }
+
 }
