@@ -14,8 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+
 public class RoomDto {
 
+  /**
+   * form-data 바인딩을 위해 게터, 세터, 기본생성자 추가
+   */
   @Getter
   @Setter
   @NoArgsConstructor
@@ -46,7 +50,6 @@ public class RoomDto {
   }
 
   @Getter
-  @Setter
   @RequiredArgsConstructor(access = PRIVATE)
   public static class RoomRegisterResponse {
 
@@ -58,7 +61,6 @@ public class RoomDto {
     }
 
     @Getter
-    @Setter
     public static class Response {
 
       private final long id;
