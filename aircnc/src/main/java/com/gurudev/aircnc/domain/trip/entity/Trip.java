@@ -104,12 +104,12 @@ public class Trip extends BaseIdEntity {
     this.status = status;
   }
 
-  public void cancel(Member guest){
-    if(!isTripOf(guest)){
+  public void cancel(Member guest) {
+    if (!isTripOf(guest)) {
       throw new NotFoundException(Trip.class);
     }
 
-    if(status != RESERVED){
+    if (status != RESERVED) {
       throw new TripCancelException(status);
     }
 

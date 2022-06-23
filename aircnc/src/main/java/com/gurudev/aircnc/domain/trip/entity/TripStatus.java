@@ -16,8 +16,8 @@ public enum TripStatus {
 
   /* 완료 */
   DONE("완료"),
-  /* 취소 */
 
+  /* 취소 */
   CANCELLED("취소");
 
   private final String status;
