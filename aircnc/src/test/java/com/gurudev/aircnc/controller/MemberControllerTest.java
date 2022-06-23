@@ -8,12 +8,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.net.HttpHeaders;
+import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 
 
-class MemberControllerTest extends BasicControllerTest {
+class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 회원가입_API() throws Exception {

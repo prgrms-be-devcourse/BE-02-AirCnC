@@ -6,6 +6,8 @@ import com.gurudev.aircnc.domain.member.service.MemberService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -30,22 +32,20 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
   @Override
   public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
       NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-    String token = Tokens.get((HttpServletRequest) webRequest.getNativeRequest());
+    String token = getToken((HttpServletRequest) webRequest.getNativeRequest());
 
-    if (token != null) {
+    if (StringUtils.hasText(token)) {
       try {
         Jwt.Claims claims = jwt.verify(token);
-
-        String username = claims.getUsername();
-
-        return memberService.getByEmail(new Email(username));
-
+        return memberService.getByEmail(new Email(claims.getUsername()));
       } catch (Exception e) {
         return null;
       }
-
     }
-
     return null;
+  }
+
+  private String getToken(HttpServletRequest request){
+    return request.getHeader(HttpHeaders.AUTHORIZATION);
   }
 }

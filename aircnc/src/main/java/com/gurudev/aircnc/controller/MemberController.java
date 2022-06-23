@@ -54,8 +54,8 @@ public class MemberController {
 
   @GetMapping("/me")
   public ResponseEntity<MemberResponse> registerMember(@LoginMember Member member) {
-    final Member fidnMember = memberService.getByEmail(member.getEmail());
+    Member getMember = memberService.getByEmail(member.getEmail());
 
-    return ResponseEntity.ok(MemberResponse.of(fidnMember));
+    return ResponseEntity.ok(MemberResponse.of(getMember));
   }
 }
