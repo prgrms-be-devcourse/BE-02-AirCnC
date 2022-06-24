@@ -20,21 +20,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-  private /*final*/ Jwt jwt;
-  private /*final*/ MemberService memberService;
-
-  @Autowired
-  public void setJwt(Jwt jwt) {
-    this.jwt = jwt;
-  }
-
-  @Autowired
-  public void setMemberService(MemberService memberService) {
-    this.memberService = memberService;
-  }
+  private final Jwt jwt;
+  private final MemberService memberService;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
