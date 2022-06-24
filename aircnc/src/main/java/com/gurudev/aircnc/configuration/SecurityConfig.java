@@ -19,8 +19,7 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final Jwt jwt;
-  private final JwtAuthenticationProvider jwtAuthenticationProvider;
+  private final JwtConfig jwtConfig;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,21 +33,18 @@ public class SecurityConfig {
         .rememberMe().disable()
         .logout().disable()
         .requestCache().disable()
-        .anonymous().disable()
 
-        .authenticationProvider(jwtAuthenticationProvider)
-
-        .authorizeRequests(authz -> authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll())
+        .authorizeRequests(authz -> {
+            authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
+            authz.anyRequest().permitAll();
+            }
+        )
 
         .sessionManagement().sessionCreationPolicy(STATELESS)
 
-        .and().addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class)
+        .and().apply(jwtConfig)
 
-        .build();
-  }
-
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwt);
+        .and().build();
   }
 
   @Bean
