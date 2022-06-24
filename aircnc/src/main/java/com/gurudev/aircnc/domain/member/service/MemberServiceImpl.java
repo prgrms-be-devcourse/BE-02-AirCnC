@@ -4,6 +4,7 @@ import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
+import com.gurudev.aircnc.exception.AircncRuntimeException;
 import com.gurudev.aircnc.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,12 @@ public class MemberServiceImpl implements MemberService {
   private final MemberRepository memberRepository;
 
   private final PasswordEncoder passwordEncoder;
+
+  @Override
+  public Member getById(Long id) {
+    return memberRepository.findById(id)
+        .orElseThrow(() -> new AircncRuntimeException("멤버 없음"));
+  }
 
   @Override
   @Transactional

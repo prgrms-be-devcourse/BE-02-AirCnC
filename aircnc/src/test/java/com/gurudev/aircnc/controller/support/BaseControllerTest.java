@@ -12,6 +12,7 @@ import com.gurudev.aircnc.exception.AircncRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -36,52 +37,43 @@ public class BaseControllerTest {
   }
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws Exception {
     멤버_등록("guest@naver.com", "guest1234!", "guest", "GUEST");
     멤버_등록("host@naver.com", "host1234!", "host", "HOST");
   }
 
-  protected void 멤버_등록(String email, String password, String name, String role) {
-    try {
-      ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
-      ObjectNode member = memberRegisterRequest.putObject("member");
-      member.put("email", email)
-          .put("password", password)
-          .put("name", name)
-          .put("birthDate", "1998-04-21") // random date
-          .put("phoneNumber", "010-1234-5678") // random number
-          .put("role", role);
+  protected void 멤버_등록(String email, String password, String name, String role) throws Exception {
+    ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
+    ObjectNode member = memberRegisterRequest.putObject("member");
+    member.put("email", email)
+        .put("password", password)
+        .put("name", name)
+        .put("birthDate", "1998-04-21") // random date
+        .put("phoneNumber", "010-1234-5678") // random number
+        .put("role", role);
 
-      mockMvc.perform(post("/api/v1/members")
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(memberRegisterRequest.toString()))
-          .andExpect(status().isCreated());
-    } catch (Exception e) {
-      throw new AircncRuntimeException("테스트 멤버 등록 실패입니다.");
-    }
+    mockMvc.perform(post("/api/v1/members")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(memberRegisterRequest.toString()))
+        .andExpect(status().isCreated());
   }
 
+  protected void 로그인(String email, String password) throws Exception {
+    ObjectNode loginRequest = objectMapper.createObjectNode();
+    ObjectNode member = loginRequest.putObject("member");
+    member.put("email", email)
+        .put("password", password);
 
-  protected void 로그인(String email, String password) {
-    try {
-      ObjectNode loginRequest = objectMapper.createObjectNode();
-      ObjectNode member = loginRequest.putObject("member");
-      member.put("email", email)
-          .put("password", password);
+    MockHttpServletResponse response = mockMvc.perform(post("/api/v1/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest.toString()))
+        .andExpect(status().isOk())
+        .andReturn().getResponse();
 
-      MockHttpServletResponse response = mockMvc.perform(post("/api/v1/login")
-              .contentType(MediaType.APPLICATION_JSON)
-              .content(loginRequest.toString()))
-          .andExpect(status().isOk())
-          .andReturn().getResponse();
+    token = objectMapper.readValue(response.getContentAsString(),
+        JsonNode.class).get("member").get("token").asText();
 
-      token = objectMapper.readValue(response.getContentAsString(),
-          JsonNode.class).get("member").get("token").asText();
+    assertThat(token).isNotNull();
 
-      assertThat(token).isNotNull();
-
-    } catch (Exception e) {
-      throw new AircncRuntimeException("테스트 멤버 로그인 실패입니다.");
-    }
   }
 }

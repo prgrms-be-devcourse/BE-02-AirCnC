@@ -43,15 +43,15 @@ class RoomServiceImplTest {
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    roomService.register(room1, roomPhotos, host);
-    roomService.register(room2, Collections.emptyList(), host);
+    roomService.register(room1, roomPhotos, host.getId());
+    roomService.register(room2, Collections.emptyList(), host.getId());
   }
 
   @Test
   void 숙소_등록_성공() {
     Room room = createRoom();
 
-    Room registeredRoom = roomService.register(room, roomPhotos, host);
+    Room registeredRoom = roomService.register(room, roomPhotos, host.getId());
 
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(room1.getHost());

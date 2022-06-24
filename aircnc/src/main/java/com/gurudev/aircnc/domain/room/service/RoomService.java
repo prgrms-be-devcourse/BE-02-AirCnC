@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RoomService {
 
-  Room register(Room room, List<RoomPhoto> roomPhotos, Member host);
+  Room register(Room room, List<RoomPhoto> roomPhotos, Long hostId);
 
   List<Room> getAll();
 }

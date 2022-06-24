@@ -35,7 +35,7 @@ public final class Jwt {
     if (expirySeconds > 0) {
       builder.withExpiresAt(new Date(now.getTime() + expirySeconds * 1000));
     }
-    builder.withClaim("username", claims.username);
+    builder.withClaim("id", claims.id);
     builder.withArrayClaim("roles", claims.roles);
     return builder.sign(algorithm);
   }
@@ -66,7 +66,7 @@ public final class Jwt {
 
   public static class Claims {
 
-    String username;
+    Long id;
     String[] roles;
     Date iat;
     Date exp;
@@ -74,9 +74,9 @@ public final class Jwt {
     private Claims() {/*no-op*/}
 
     Claims(DecodedJWT decodedJWT) {
-      Claim username = decodedJWT.getClaim("username");
-      if (!username.isNull()) {
-        this.username = username.asString();
+      Claim id = decodedJWT.getClaim("id");
+      if (!id.isNull()) {
+        this.id = id.asLong();
       }
       Claim roles = decodedJWT.getClaim("roles");
       if (!roles.isNull()) {
@@ -86,22 +86,22 @@ public final class Jwt {
       this.exp = decodedJWT.getExpiresAt();
     }
 
-    public static Claims from(String username, String[] roles) {
+    public static Claims from(Long id, String[] roles) {
       Claims claims = new Claims();
-      claims.username = username;
+      claims.id = id;
       claims.roles = roles;
       return claims;
     }
 
     public Map<String, Object> asMap() {
-      return Map.of("username", username,
+      return Map.of("username", id,
           "roles", roles,
           "iat", iat(),
           "exp", exp());
     }
 
-    public String getUsername() {
-      return this.username;
+    public Long getUsername() {
+      return this.id;
     }
 
     public String[] getRoles() {

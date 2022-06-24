@@ -1,11 +1,10 @@
 package com.gurudev.aircnc.controller;
 
-import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
+import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
 
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
-import com.gurudev.aircnc.configuration.resolver.LoginMember;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,8 +53,8 @@ public class MemberController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<MemberResponse> memberInfo(@LoginMember Member member) {
-    Member getMember = memberService.getByEmail(member.getEmail());
+  public ResponseEntity<MemberResponse> memberInfo(@AuthenticationPrincipal JwtAuthentication authentication) {
+    Member getMember = memberService.getById(authentication.id);
 
     return ResponseEntity.ok(MemberResponse.of(getMember));
   }
