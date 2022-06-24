@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.domain.member.entity;
 
 
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -22,7 +21,7 @@ class EmailTest {
   @ParameterizedTest
   @CsvSource(value = {"test.email.com", "@email.com"})
   void 이메일_생성_실패(String invalidEmail) {
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> new Email(invalidEmail));
   }
 }

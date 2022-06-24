@@ -6,48 +6,54 @@ import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import java.time.LocalDate;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/* 회원 */
+/**
+ * 회원
+ * <li> 이메일은 중복될 수 없다. </li>
+ * <li> 이메일은 로그인시 아이디로 활용된다. </li>
+ */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseIdEntity {
 
-  /* 이메일 */
   @Embedded
   private Email email;
 
-  /* 비밀번호 */
   @Embedded
   private Password password;
 
-  /* 이름 */
   @Column(length = 20, nullable = false)
   private String name;
 
-  /* 생일 */
   @Column(nullable = false)
   private LocalDate birthDate;
 
-  /* 휴대폰 번호 */
   @Embedded
   private PhoneNumber phoneNumber;
 
-  /* 역할 */
   @Enumerated(value = EnumType.STRING)
   @Column(nullable = false)
   private Role role;
 
+  /**
+   * 회원 가입시 사용되는 생성자 <br>
+   * 회원 가입을 위해 이메일, 비밀번호, 이름, 생년월일, 전화번호, 역할을 제공해야 한다.
+   */
   public Member(Email email, Password password, String name, LocalDate birthDate,
       PhoneNumber phoneNumber, Role role) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
@@ -59,6 +65,10 @@ public class Member extends BaseIdEntity {
     this.birthDate = birthDate;
     this.phoneNumber = phoneNumber;
     this.role = role;
+  }
+
+  public boolean isHost(){
+    return role == Role.HOST;
   }
 
   public void verifyPassword(PasswordEncoder passwordEncoder, Password rawPassword) {
