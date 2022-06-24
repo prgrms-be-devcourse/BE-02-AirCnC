@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,12 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           Jwt.Claims claims = verify(token);
           log.debug("Jwt parse result: {}", claims);
 
-          String username = claims.username;
+          Long id = claims.id;
           List<GrantedAuthority> authorities = getAuthorities(claims);
 
-          if (hasText(username) && authorities.size() > 0) {
+          if (Objects.nonNull(id) && authorities.size() > 0) {
             JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(new JwtAuthentication(token, username), null,
+                new JwtAuthenticationToken(new JwtAuthentication(token, id), null,
                     authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
