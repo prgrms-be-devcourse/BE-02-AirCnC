@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -49,7 +50,8 @@ public class Room extends BaseIdEntity {
 
   private int reviewCount;
 
-  @OneToMany(cascade = ALL, mappedBy = "room")
+  @OneToMany(cascade = ALL)
+  @JoinColumn
   private List<RoomPhoto> roomPhotos = new ArrayList<>();
 
   public Room(String name, Address address, String description, int pricePerDay, int capacity) {
