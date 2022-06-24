@@ -34,8 +34,9 @@ public class RoomDto {
     private int pricePerDay;
     private int capacity;
 
-    public Room toEntity() {
-      return new Room(name, new Address(lotAddress, roadAddress, detailedAddress, postCode),
+    public com.gurudev.aircnc.domain.room.dto.RoomDto toDto() {
+      return new com.gurudev.aircnc.domain.room.dto.RoomDto(
+          name, lotAddress, roadAddress, detailedAddress, postCode,
           description, pricePerDay, capacity);
     }
   }

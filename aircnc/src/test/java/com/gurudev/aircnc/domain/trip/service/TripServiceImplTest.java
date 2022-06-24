@@ -17,6 +17,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.util.Dto;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,10 +60,10 @@ class TripServiceImplTest {
 
     room = createRoom();
     roomPhoto = createRoomPhoto();
-    roomService.register(room, List.of(roomPhoto), host.getId());
+    room = roomService.register(Dto.of(room), Dto.listOf(List.of(this.roomPhoto)), host.getId());
 
     guest = createGuest();
-    memberService.register(guest);
+    guest = memberService.register(guest);
 
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
