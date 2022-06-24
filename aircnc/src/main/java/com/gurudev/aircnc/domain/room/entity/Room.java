@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class Room extends BaseIdEntity {
   @Embedded
   private Address address;
 
+  @Lob
   private String description;
 
   private int pricePerDay;
@@ -47,7 +49,7 @@ public class Room extends BaseIdEntity {
 
   private int reviewCount;
 
-  @OneToMany(cascade = ALL)
+  @OneToMany(cascade = ALL, mappedBy = "room")
   private List<RoomPhoto> roomPhotos = new ArrayList<>();
 
   public Room(String name, Address address, String description, int pricePerDay, int capacity) {
