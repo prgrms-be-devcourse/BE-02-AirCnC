@@ -59,7 +59,7 @@ class TripServiceImplTest {
 
     room = createRoom();
     roomPhoto = createRoomPhoto();
-    roomService.register(room, List.of(roomPhoto), host);
+    roomService.register(room, List.of(roomPhoto), host.getId());
 
     guest = createGuest();
     memberService.register(guest);
