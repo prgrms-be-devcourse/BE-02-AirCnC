@@ -12,7 +12,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* 숙소 사진 */
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -21,17 +20,9 @@ public class RoomPhoto extends BaseIdEntity {
 
   private String fileName;
 
-  @ManyToOne(optional = false, fetch = LAZY)
-  private Room room;
-
   public RoomPhoto(String fileName) {
     checkArgument(hasText(fileName), "파일 이름은 공백이 될 수 없습니다");
 
     this.fileName = fileName;
   }
-
-  public void updateRoom(Room room) {
-    this.room = room;
-  }
-
 }

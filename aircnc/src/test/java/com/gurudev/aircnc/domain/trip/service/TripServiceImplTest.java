@@ -111,7 +111,7 @@ class TripServiceImplTest {
 
   @Test
   void 예약_상태의_여행_취소_성공() {
-    Trip cancelledTrip = tripService.cancel(guest, trip1.getId());
+    Trip cancelledTrip = tripService.cancel(trip1.getId());
 
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }

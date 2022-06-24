@@ -20,7 +20,11 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* 여행 */
+/**
+ * 여행
+ * <li> 총 가격은 (checkOut 날짜 - checkIn 날짜) * (숙소의 1박당 가격) 로 계산한다</li>
+ * <li> 가격 기준은 원화(₩) </li>
+ */
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
@@ -29,31 +33,24 @@ public class Trip extends BaseIdEntity {
   public static final int TRIP_TOTAL_PRICE_MIN_VALUE = 10000;
   public static final int TRIP_HEADCOUNT_MIN_VALUE = 1;
 
-  /* 게스트 */
   @ManyToOne(fetch = LAZY)
   private Member guest;
 
-  /* 숙소 */
   @ManyToOne(fetch = LAZY)
   private Room room;
 
-  /* 체크인 */
   private LocalDate checkIn;
 
-  /* 체크아웃 */
   private LocalDate checkOut;
 
-  /* 총 가격 */
   private int totalPrice;
 
-  /* 인원 수 */
   private int headCount;
 
-  /* 상태 */
   private TripStatus status;
 
-  private Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
-      int totalPrice, int headCount, TripStatus status) {
+  public Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
+      int totalPrice, int headCount) {
     checkArgument(checkOut.isAfter(checkIn), "체크아웃은 체크인 이전이 될 수 없습니다");
     checkArgument(checkIn.isEqual(now()) || checkIn.isAfter(now()),
         "체크인 날짜는" + now() + " 이전이 될 수 없습니다.");
@@ -72,14 +69,7 @@ public class Trip extends BaseIdEntity {
     this.checkOut = checkOut;
     this.totalPrice = totalPrice;
     this.headCount = headCount;
-    this.status = status;
-
-  }
-
-  /* 예약 상태인 여행 생성 */
-  public static Trip ofReserved(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
-      int totalPrice, int headCount) {
-    return new Trip(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED);
+    this.status = RESERVED;
   }
 
   private void checkHeadCount(int headCount, Room room) {
@@ -88,10 +78,12 @@ public class Trip extends BaseIdEntity {
     }
   }
 
-  /* 서버의 총 가격과 요청 총 가격 검증 */
-  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int totalPrice, Room room) {
+  /**
+   * 서버의 총 가격과 요청 총 가격 검증
+   */
+  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int requestTotalPrice, Room room) {
     int calculatedTotalPrice = getDays(checkIn, checkOut) * room.getPricePerDay();
-    if (totalPrice != calculatedTotalPrice) {
+    if (requestTotalPrice != calculatedTotalPrice) {
       throw new TripReservationException("총 가격이 유효하지 않습니다");
     }
   }
@@ -100,16 +92,10 @@ public class Trip extends BaseIdEntity {
     return between(from, to).getDays();
   }
 
-  public void changeStatus(TripStatus status) {
-    this.status = status;
-  }
-
-  public void cancel(Member guest) {
-    // TODO - Role 로 api 의 접근을 제한 하게되면 아래 검증 코드 제거 하기
-    if (!isTripOf(guest)) {
-      throw new NotFoundException(Trip.class);
-    }
-
+  /**
+   * 예약 상태의 여행만 취소 할 수 있다
+   */
+  public void cancel() {
     if (status != RESERVED) {
       throw new TripCancelException(status);
     }
@@ -117,7 +103,4 @@ public class Trip extends BaseIdEntity {
     this.status = CANCELLED;
   }
 
-  private boolean isTripOf(Member guest) {
-    return guest.equals(this.guest);
-  }
 }

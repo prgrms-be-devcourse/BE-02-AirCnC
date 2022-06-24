@@ -36,7 +36,10 @@ class RoomControllerTest extends RestDocsTestSupport {
     mockMvc.perform(multipart("/api/v1/rooms")
             .file(requestImage)
             .param("name","나의 숙소")
-            .param("address","달나라 1번지")
+            .param("lotAddress","달나라 1번지")
+            .param("roadAddress","달나라 1길")
+            .param("detailedAddress","100호")
+            .param("postCode","1234")
             .param("description","달토끼가 사는 나의 숙소")
             .param("pricePerDay","100000")
             .param("capacity","2")
@@ -45,7 +48,7 @@ class RoomControllerTest extends RestDocsTestSupport {
         .andExpectAll(
             jsonPath("$.room.id").exists(),
             jsonPath("$.room.name").value("나의 숙소"),
-            jsonPath("$.room.address").value("달나라 1번지"),
+            jsonPath("$.room.address").value("달나라 1길 100호"),
             jsonPath("$.room.description").value("달토끼가 사는 나의 숙소"),
             jsonPath("$.room.pricePerDay").value("100000"),
             jsonPath("$.room.capacity").value("2"),
@@ -58,7 +61,10 @@ class RoomControllerTest extends RestDocsTestSupport {
                 ),
                 requestParameters(
                     parameterWithName("name").description("이름")
-                    ,parameterWithName("address").description("주소")
+                    ,parameterWithName("lotAddress").description("지번 주소")
+                    ,parameterWithName("roadAddress").description("도로명 주소")
+                    ,parameterWithName("detailedAddress").description("상세 주소")
+                    ,parameterWithName("postCode").description("우편 번호")
                     ,parameterWithName("description").description("설명")
                     ,parameterWithName("pricePerDay").description("1박당 가격")
                     ,parameterWithName("capacity").description("인원 수")

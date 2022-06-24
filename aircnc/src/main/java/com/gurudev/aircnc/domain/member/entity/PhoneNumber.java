@@ -13,7 +13,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* 휴대폰 번호 */
+/**
+ * 휴대폰 번호
+ * <li> 01x-xxx(x)-xxxx 형식을 가진다. </li>
+ */
 @Getter
 @Embeddable
 @EqualsAndHashCode

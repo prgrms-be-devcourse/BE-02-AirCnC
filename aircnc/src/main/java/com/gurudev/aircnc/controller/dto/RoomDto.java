@@ -26,13 +26,17 @@ public class RoomDto {
   public static class RoomRegisterRequest {
 
     private String name;
-    private String address;
+    private String lotAddress;
+    private String roadAddress;
+    private String detailedAddress;
+    private String postCode;
     private String description;
     private int pricePerDay;
     private int capacity;
 
     public Room toEntity() {
-      return new Room(name, new Address(address), description, pricePerDay, capacity);
+      return new Room(name, new Address(lotAddress, roadAddress, detailedAddress, postCode),
+          description, pricePerDay, capacity);
     }
   }
 
@@ -58,9 +62,11 @@ public class RoomDto {
       private final int capacity;
       private final List<String> fileNames;
 
-      @Builder(access = PRIVATE)
-      public Response(long id, String name, String address, String description, int pricePerDay,
-          int capacity, List<String> fileNames) {
+      @Builder
+      public Response(long id, String name, String address, String roadAddress,
+          String detailedAddress, String postCode, String description, int pricePerDay,
+          int capacity,
+          List<String> fileNames) {
         this.id = id;
         this.name = name;
         this.address = address;

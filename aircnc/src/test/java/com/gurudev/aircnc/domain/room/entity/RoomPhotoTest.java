@@ -20,7 +20,7 @@ class RoomPhotoTest {
   @ParameterizedTest
   @NullAndEmptySource
   void 파일_이름이_공백인_숙소_사진_생성_실패(String invalidFileName) {
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> new RoomPhoto(invalidFileName));
   }
 }
