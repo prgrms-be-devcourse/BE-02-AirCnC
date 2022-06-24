@@ -1,20 +1,23 @@
 package com.gurudev.aircnc.controller;
 
-import static com.google.common.net.HttpHeaders.*;
+import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.net.HttpHeaders;
 import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 
 
 class MemberControllerTest extends RestDocsTestSupport {
+
+  private String email = "seunghan@gamil.com";
+  private String password = "pass12343";
+  private String name = "seunghan";
+  private String role = "GUEST";
 
   @Test
   void 회원가입_API() throws Exception {
@@ -40,12 +43,8 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 로그인_API() throws Exception {
-    String email = "seunghan@gamil.com";
-    String password = "pass12343";
-    String name = "seunghan";
-    String role = "GUEST";
 
-    멤버_등록(email,password,name,role);
+    멤버_등록(email, password, name, role);
 
     ObjectNode loginRequest = objectMapper.createObjectNode();
     ObjectNode loginMember = loginRequest.putObject("member");
@@ -62,19 +61,14 @@ class MemberControllerTest extends RestDocsTestSupport {
         .andExpect(jsonPath("$.member.token").exists());
   }
 
-
   @Test
   void 정보조회_API() throws Exception {
-    String email = "seunghan@gamil.com";
-    String password = "pass12343";
-    String name = "seunghan";
-    String role = "GUEST";
 
-    멤버_등록(email,password,name,role);
+    멤버_등록(email, password, name, role);
     로그인(email, password);
 
     mockMvc.perform(get("/api/v1/me")
-            .header(AUTHORIZATION,token))
+            .header(AUTHORIZATION, token))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.member.email").value(email))
         .andExpect(jsonPath("$.member.name").value(name))
@@ -82,6 +76,5 @@ class MemberControllerTest extends RestDocsTestSupport {
         .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
         .andExpect(jsonPath("$.member.role").value(role));
   }
-
 
 }
