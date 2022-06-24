@@ -1,10 +1,8 @@
 package com.gurudev.aircnc.configuration.jwt;
 
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
-import static java.util.Objects.*;
+import static java.util.Objects.nonNull;
 import static org.springframework.util.StringUtils.hasText;
-
-import java.util.Objects;
 
 public class JwtAuthentication {
 
