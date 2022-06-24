@@ -7,6 +7,7 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -16,15 +17,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+@RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
   private final Jwt jwt;
   private final MemberService memberService;
-
-  public JwtAuthenticationProvider(Jwt jwt, MemberService memberService) {
-    this.jwt = jwt;
-    this.memberService = memberService;
-  }
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -43,13 +40,18 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
   private Authentication processUserAuthentication(String principal, String credentials) {
     try {
       Member member = memberService.login(new Email(principal), new Password(credentials));
-      List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getRole().name()));
+
+      List<GrantedAuthority> authorities = List.of(
+          new SimpleGrantedAuthority(member.getRole().name()));
+
       String token = getToken(member.getId(), authorities);
+
       JwtAuthenticationToken authenticated =
           new JwtAuthenticationToken(
-              new JwtAuthentication(token, member.getId()), null,
-              authorities);
+              new JwtAuthentication(token, member.getId()), null, authorities);
+
       authenticated.setDetails(member);
+
       return authenticated;
     } catch (IllegalArgumentException e) {
       throw new BadCredentialsException(e.getMessage());
@@ -62,6 +64,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     String[] roles = authorities.stream()
         .map(GrantedAuthority::getAuthority)
         .toArray(String[]::new);
+
     return jwt.sign(Jwt.Claims.from(id, roles));
   }
 }

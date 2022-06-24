@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
+
   private final Object principal;
 
   private String credentials;
@@ -47,5 +48,4 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     super.eraseCredentials();
     credentials = null;
   }
-
 }
