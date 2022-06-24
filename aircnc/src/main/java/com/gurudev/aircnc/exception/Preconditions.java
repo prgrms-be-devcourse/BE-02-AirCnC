@@ -13,6 +13,12 @@ public class Preconditions {
     }
   }
 
+  public static void checkState(boolean expression, @CheckForNull Object errorMessage) {
+    if (!expression) {
+      throw new AircncRuntimeException(String.valueOf(errorMessage));
+    }
+  }
+
   public static <T> void checkNotNull(@CheckForNull T reference,
       @CheckForNull Object errorMessage) {
     if (reference == null) {

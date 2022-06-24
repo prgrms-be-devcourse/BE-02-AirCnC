@@ -36,15 +36,15 @@ public class Password {
     return password.getPassword();
   }
 
-  public void encode(PasswordEncoder encoder) {
-    this.password = encoder.encode(this.password);
+  public void encode(PasswordEncryptor encoder) {
+    this.password = encoder.encrypt(this.password);
   }
 
-  public boolean matches(PasswordEncoder encoder, Password rawPassword) {
+  public boolean matches(PasswordMatcher matcher, Password rawPassword) {
     if (!isEncoded()) {
       throw new IllegalStateException("비밀번호가 암호화되지 않았습니다");
     }
-    return encoder.matches(rawPassword.getPassword(), this.password);
+    return matcher.match(rawPassword.getPassword(), this.password);
   }
 
   public boolean isEncoded() {

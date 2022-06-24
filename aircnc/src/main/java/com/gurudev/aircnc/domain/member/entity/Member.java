@@ -67,7 +67,9 @@ public class Member extends BaseIdEntity {
     }
   }
 
-  public Member encodePassword(PasswordEncoder passwordEncoder) {
+  public Member encodePassword(PasswordEncryptor encryptor) {
+    encryptor.encrypt(this.password.getPassword())
+
     this.password.encode(passwordEncoder);
     return this;
   }

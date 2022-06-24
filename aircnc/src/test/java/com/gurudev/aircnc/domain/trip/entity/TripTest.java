@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class TripTest {
@@ -57,11 +59,17 @@ class TripTest {
         .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
-  @Test
-  void Trip_status를_변경할_수_있다() {
+  @ParameterizedTest
+  @CsvSource({
+          "RESERVED, TRAVELLING"
+  })
+  void Trip_status를_변경할_수_있다(before, after) {
     Trip trip = Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice, headCount);
 
-    trip.changeStatus(TRAVELLING);
+    trip.changeStatus(before);
+
+
+    trip.changeStatus(after);
 
     assertThat(trip.getStatus()).isEqualTo(TRAVELLING);
   }

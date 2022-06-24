@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.member.entity;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -24,13 +25,12 @@ class PasswordTest {
         .isThrownBy(() -> new Password(invalidPassword));
   }
 
-  @ParameterizedTest
-  @CsvSource(value = {"12345678", "123456789012345"})
-  void 비밀번호_암호화_테스트(String rawPassword) {
-    Password password = new Password(rawPassword);
+  @Test
+  void 비밀번호_암호화_테스트() {
+    Password password = new Password("1234");
 
-    password.encode(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+    password.encode(rawPassword1 -> "123456789012345");
 
-    assertThat(password.isEncoded()).isTrue();
+    assertThat(password.getPassword()).isNotEqualTo("1234");
   }
 }
