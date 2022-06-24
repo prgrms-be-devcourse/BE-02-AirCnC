@@ -5,7 +5,6 @@ spring:
     username: gurudev
     password: pass123
 
-
   jpa:
     show-sql: true
     hibernate:
@@ -18,7 +17,7 @@ spring:
 jwt:
   issuer: "gurudev"
   client-secret: "EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ"
-  expiry-seconds: 60
+  expiry-seconds: 1800
 
 room-photos:
-  path: src/main/resources/room-photos/dest/
+  path: src/main/resources/room-photos/

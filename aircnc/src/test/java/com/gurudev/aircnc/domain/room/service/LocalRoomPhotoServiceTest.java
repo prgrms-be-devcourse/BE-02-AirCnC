@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-class LocalRoomPhotoServiceImplTest {
+class LocalRoomPhotoServiceTest {
 
   @Autowired
   private RoomPhotoService roomPhotoService;

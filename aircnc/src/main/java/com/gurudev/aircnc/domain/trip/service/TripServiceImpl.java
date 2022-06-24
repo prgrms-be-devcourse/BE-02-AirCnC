@@ -28,8 +28,7 @@ public class TripServiceImpl implements TripService {
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
-    return tripRepository.save(
-        Trip.ofReserved(guest, room, checkIn, checkOut, totalPrice, headCount));
+    return tripRepository.save(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
 
   @Override
@@ -43,10 +42,10 @@ public class TripServiceImpl implements TripService {
   }
 
   @Override
-  public Trip cancel(Member guest, Long tripId) {
+  public Trip cancel(Long tripId) {
     Trip trip = findTripByIdFetchGuest(tripId);
 
-    trip.cancel(guest);
+    trip.cancel();
 
     return trip;
   }

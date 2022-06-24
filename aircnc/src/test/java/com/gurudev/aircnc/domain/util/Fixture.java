@@ -31,17 +31,19 @@ public class Fixture {
         Role.GUEST);
   }
 
-  public static Room createRoom() {
-    return createRoom(createHost());
+  public static Address createAddress() {
+    return new Address("전라북도 전주시 완산구 풍산동 123-1",
+        "전라북도 전주시 완산구 풍산1로 1길",
+        "123호",
+        "12345");
   }
 
-  public static Room createRoom(Member member) {
+  public static Room createRoom() {
     return new Room("전주 한옥마을",
-        new Address("전라북도 전주시 완산구 풍산동 3가"),
+        createAddress(),
         "아주 멋진 한옥마을입니다.",
         100000,
-        4,
-        member);
+        4);
   }
 
   public static RoomPhoto createRoomPhoto() {
@@ -49,7 +51,7 @@ public class Fixture {
   }
 
   public static Trip createTrip() {
-    return Trip.ofReserved(createGuest(), createRoom(), LocalDate.now(),
+    return new Trip(createGuest(), createRoom(), LocalDate.now(),
         LocalDate.now().plusDays(1), 100000, 4);
   }
 }

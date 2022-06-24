@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.room.service;
 
+import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
@@ -17,8 +18,10 @@ public class RoomServiceImpl implements RoomService {
 
   @Transactional
   @Override
-  public Room register(Room room, List<RoomPhoto> roomPhotos) {
+  public Room register(Room room, List<RoomPhoto> roomPhotos, Member host) {
     roomPhotos.forEach(room::addRoomPhoto);
+
+    room.assignHost(host);
 
     return roomRepository.save(room);
   }
