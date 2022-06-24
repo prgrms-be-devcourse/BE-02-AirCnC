@@ -12,8 +12,9 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Getter
+@Component
 public final class Jwt {
 
   private final String issuer;
@@ -22,10 +23,10 @@ public final class Jwt {
   private final Algorithm algorithm;
   private final JWTVerifier jwtVerifier;
 
-  public Jwt(String issuer, String clientSecret, int expirySeconds) {
-    this.issuer = issuer;
-    this.clientSecret = clientSecret;
-    this.expirySeconds = expirySeconds;
+  public Jwt(JwtConfigure jwtConfigure) {
+    this.issuer = jwtConfigure.getIssuer();
+    this.clientSecret = jwtConfigure.getClientSecret();
+    this.expirySeconds = jwtConfigure.getExpirySeconds();
     this.algorithm = Algorithm.HMAC512(clientSecret);
     this.jwtVerifier = com.auth0.jwt.JWT.require(algorithm)
         .withIssuer(issuer)

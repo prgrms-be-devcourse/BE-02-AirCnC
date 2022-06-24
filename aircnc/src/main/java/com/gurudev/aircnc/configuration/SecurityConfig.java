@@ -24,19 +24,11 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final JwtConfigure jwtConfigure;
-  private final ApplicationContext ac;
-
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
+  private final Jwt jwt;
+  private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    JwtAuthenticationProvider jwtAuthenticationProvider = ac.getBean(
-        JwtAuthenticationProvider.class);
-
     // REST API 애플리케이션이기 때문에 불필요한 기능 Disable
     http
         .formLogin().disable()
@@ -48,8 +40,7 @@ public class SecurityConfig {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    http.getSharedObject(AuthenticationManagerBuilder.class)
-        .authenticationProvider(jwtAuthenticationProvider);
+    http.authenticationProvider(jwtAuthenticationProvider);
 
     http
         .authorizeHttpRequests()
@@ -63,22 +54,7 @@ public class SecurityConfig {
   }
 
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    Jwt jwt = ac.getBean(Jwt.class);
     return new JwtAuthenticationFilter(jwt);
-  }
-
-  @Bean
-  public Jwt jwt() {
-    return new Jwt(
-        jwtConfigure.getIssuer(),
-        jwtConfigure.getClientSecret(),
-        jwtConfigure.getExpirySeconds()
-    );
-  }
-
-  @Bean
-  public JwtAuthenticationProvider jwtAuthenticationProvider(MemberService memberService, Jwt jwt) {
-    return new JwtAuthenticationProvider(jwt, memberService);
   }
 
   @Bean
