@@ -21,7 +21,7 @@ public class RoomServiceImpl implements RoomService {
   public Room register(Room room, List<RoomPhoto> roomPhotos, Member host) {
     roomPhotos.forEach(room::addRoomPhoto);
 
-    room.revision(host);
+    room.assignHost(host);
 
     return roomRepository.save(room);
   }

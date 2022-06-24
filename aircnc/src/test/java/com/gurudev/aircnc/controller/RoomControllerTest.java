@@ -35,11 +35,11 @@ class RoomControllerTest extends RestDocsTestSupport {
 
     mockMvc.perform(multipart("/api/v1/rooms")
             .file(requestImage)
-            .param("request.name","나의 숙소")
-            .param("request.address","달나라 1번지")
-            .param("request.description","달토끼가 사는 나의 숙소")
-            .param("request.pricePerDay","100000")
-            .param("request.capacity","2")
+            .param("name","나의 숙소")
+            .param("address","달나라 1번지")
+            .param("description","달토끼가 사는 나의 숙소")
+            .param("pricePerDay","100000")
+            .param("capacity","2")
         .header(AUTHORIZATION, token))
         .andExpect(status().isCreated())
         .andExpectAll(
@@ -57,11 +57,11 @@ class RoomControllerTest extends RestDocsTestSupport {
                     headerWithName(AUTHORIZATION).description("인증 토큰")
                 ),
                 requestParameters(
-                    parameterWithName("request.name").description("이름")
-                    ,parameterWithName("request.address").description("주소")
-                    ,parameterWithName("request.description").description("설명")
-                    ,parameterWithName("request.pricePerDay").description("1박당 가격")
-                    ,parameterWithName("request.capacity").description("인원 수")
+                    parameterWithName("name").description("이름")
+                    ,parameterWithName("address").description("주소")
+                    ,parameterWithName("description").description("설명")
+                    ,parameterWithName("pricePerDay").description("1박당 가격")
+                    ,parameterWithName("capacity").description("인원 수")
                 ),
                 requestParts(
                     partWithName("roomPhotosFile").description("숙소 사진")

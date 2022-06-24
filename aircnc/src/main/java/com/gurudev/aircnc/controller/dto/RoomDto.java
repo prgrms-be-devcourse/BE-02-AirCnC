@@ -25,27 +25,14 @@ public class RoomDto {
   @NoArgsConstructor
   public static class RoomRegisterRequest {
 
-    @JsonProperty("room")
-    private Request request;
+    private String name;
+    private String address;
+    private String description;
+    private int pricePerDay;
+    private int capacity;
 
     public Room toEntity() {
-      return request.toEntity();
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class Request {
-
-      private String name;
-      private String address;
-      private String description;
-      private int pricePerDay;
-      private int capacity;
-
-      public Room toEntity() {
-        return new Room(name, new Address(address), description, pricePerDay, capacity);
-      }
+      return new Room(name, new Address(address), description, pricePerDay, capacity);
     }
   }
 

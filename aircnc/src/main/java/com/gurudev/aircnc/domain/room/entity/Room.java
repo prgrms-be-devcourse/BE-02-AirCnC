@@ -64,7 +64,7 @@ public class Room extends BaseIdEntity {
     this.reviewCount = 0;
   }
 
-  public void revision(Member host){
+  public void assignHost(Member host){
     setHost(host);
   }
 

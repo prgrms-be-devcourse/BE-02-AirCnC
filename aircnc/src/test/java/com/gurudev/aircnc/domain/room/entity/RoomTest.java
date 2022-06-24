@@ -3,7 +3,6 @@ package com.gurudev.aircnc.domain.room.entity;
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_CAPACITY_MIN_VALUE;
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_DESCRIPTION_MIN_LENGTH;
 import static com.gurudev.aircnc.domain.room.entity.Room.ROOM_PRICE_PER_DAY_MIN_VALUE;
-import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
@@ -84,11 +83,11 @@ class RoomTest {
   }
 
   @Test
-  void 숙소의_호스트_변경_revision() {
+  void 숙소의_호스트_할당() {
     Room room = createRoom();
     Member host = createHost();
 
-    room.revision(host);
+    room.assignHost(host);
 
     assertThat(room.getHost()).isEqualTo(host);
   }

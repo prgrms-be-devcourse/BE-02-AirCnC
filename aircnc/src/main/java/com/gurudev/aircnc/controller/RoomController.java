@@ -48,4 +48,5 @@ public class RoomController {
 
     return new ResponseEntity<>(of(room, roomPhotos), CREATED);
   }
+
 }
