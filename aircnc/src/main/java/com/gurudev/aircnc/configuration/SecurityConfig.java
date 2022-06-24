@@ -1,22 +1,17 @@
 package com.gurudev.aircnc.configuration;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.*;
+
 import com.gurudev.aircnc.configuration.jwt.Jwt;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationFilter;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationProvider;
-import com.gurudev.aircnc.configuration.jwt.JwtConfigure;
-import com.gurudev.aircnc.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
@@ -29,28 +24,27 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // REST API 애플리케이션이기 때문에 불필요한 기능 Disable
-    http
+
+    return http
+        // REST API 애플리케이션이기 때문에 불필요한 기능 Disable
         .formLogin().disable()
         .csrf().disable()
         .headers().disable()
         .httpBasic().disable()
         .rememberMe().disable()
         .logout().disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .requestCache().disable()
+        .anonymous().disable()
 
-    http.authenticationProvider(jwtAuthenticationProvider);
+        .authenticationProvider(jwtAuthenticationProvider)
 
-    http
-        .authorizeHttpRequests()
-        .antMatchers("/api/v1/members", "/api/v1/login").permitAll();
-    // 현재 개발 단계 이므로 주석 처리
-    //   .anyRequest().authenticated();
+        .authorizeRequests(authz -> authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll())
 
-    http.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class);
+        .sessionManagement().sessionCreationPolicy(STATELESS)
 
-    return http.build();
+        .and().addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class)
+
+        .build();
   }
 
   public JwtAuthenticationFilter jwtAuthenticationFilter() {

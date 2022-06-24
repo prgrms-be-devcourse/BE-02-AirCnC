@@ -8,9 +8,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
-import java.util.Map;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +15,13 @@ import org.springframework.stereotype.Component;
 public final class Jwt {
 
   private final String issuer;
-  private final String clientSecret;
   private final int expirySeconds;
   private final Algorithm algorithm;
   private final JWTVerifier jwtVerifier;
 
-  public Jwt(JwtConfigure jwtConfigure) {
+  public Jwt(JwtProperties jwtConfigure) {
     this.issuer = jwtConfigure.getIssuer();
-    this.clientSecret = jwtConfigure.getClientSecret();
+    String clientSecret = jwtConfigure.getClientSecret();
     this.expirySeconds = jwtConfigure.getExpirySeconds();
     this.algorithm = Algorithm.HMAC512(clientSecret);
     this.jwtVerifier = com.auth0.jwt.JWT.require(algorithm)
