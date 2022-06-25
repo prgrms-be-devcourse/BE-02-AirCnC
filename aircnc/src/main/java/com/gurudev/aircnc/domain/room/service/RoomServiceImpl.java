@@ -9,6 +9,7 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,8 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public Room register(RoomDto roomDto, List<RoomPhotoDto> roomPhotoDtos, Long hostId) {
     Room room = roomDto.toEntity();
-    List<RoomPhoto> roomPhotos = roomPhotoDtos.stream().map(RoomPhotoDto::toEntity).toList();
+    List<RoomPhoto> roomPhotos = roomPhotoDtos.stream().map(RoomPhotoDto::toEntity).collect(
+        Collectors.toUnmodifiableList());
 
     roomPhotos.forEach(room::addRoomPhoto);
 
