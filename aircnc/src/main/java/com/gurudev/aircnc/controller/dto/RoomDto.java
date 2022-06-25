@@ -65,9 +65,9 @@ public class RoomDto {
 
       @Builder
       public Response(long id, String name, String address, String roadAddress,
-                      String detailedAddress, String postCode, String description, int pricePerDay,
-                      int capacity,
-                      List<String> fileNames) {
+          String detailedAddress, String postCode, String description, int pricePerDay,
+          int capacity,
+          List<String> fileNames) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -79,14 +79,14 @@ public class RoomDto {
 
       public static Response of(Room room, List<RoomPhoto> roomPhotos) {
         return Response.builder()
-                       .id(room.getId())
-                       .name(room.getName())
-                       .address(Address.toString(room.getAddress()))
-                       .description(room.getDescription())
-                       .pricePerDay(room.getPricePerDay())
-                       .capacity(room.getCapacity())
-                       .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
-                       .build();
+            .id(room.getId())
+            .name(room.getName())
+            .address(Address.toString(room.getAddress()))
+            .description(room.getDescription())
+            .pricePerDay(room.getPricePerDay())
+            .capacity(room.getCapacity())
+            .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
+            .build();
       }
     }
   }

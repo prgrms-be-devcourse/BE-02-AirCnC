@@ -29,7 +29,7 @@ class RoomTest {
 
     assertThat(room)
         .extracting(Room::getName, Room::getAddress, Room::getDescription, Room::getPricePerDay,
-                    Room::getCapacity)
+                Room::getCapacity)
         .isEqualTo(List.of(name, address, description, pricePerDay, capacity));
   }
 

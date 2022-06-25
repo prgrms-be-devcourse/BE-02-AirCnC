@@ -27,11 +27,11 @@ public abstract class RestDocsTestSupport extends BaseControllerTest {
   @BeforeEach
   void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                                  .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
-                                  .apply(springSecurity())
-                                  .alwaysDo(print())
-                                  .alwaysDo(restDocs)
-                                  .addFilters(new CharacterEncodingFilter("UTF-8", true)) // 한글 깨짐 방지
-                                  .build();
+        .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
+        .apply(springSecurity())
+        .alwaysDo(print())
+        .alwaysDo(restDocs)
+        .addFilters(new CharacterEncodingFilter("UTF-8", true)) // 한글 깨짐 방지
+        .build();
   }
 }

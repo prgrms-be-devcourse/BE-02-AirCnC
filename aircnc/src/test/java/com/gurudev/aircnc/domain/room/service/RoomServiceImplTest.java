@@ -64,6 +64,6 @@ class RoomServiceImplTest {
     List<Room> rooms = roomService.getAll();
 
     assertThat(rooms).hasSize(2)
-                     .containsExactly(room1, room2);
+        .containsExactly(room1, room2);
   }
 }

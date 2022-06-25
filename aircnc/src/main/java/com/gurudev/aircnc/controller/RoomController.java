@@ -40,12 +40,12 @@ public class RoomController {
       @RequestPart List<MultipartFile> roomPhotosFile) {
 
     List<RoomPhoto> roomPhotos = roomPhotosFile.stream()
-                                               .map(roomPhotoService::upload)
-                                               .collect(toList());
+        .map(roomPhotoService::upload)
+        .collect(toList());
 
     List<RoomPhotoDto> roomPhotoDtos = roomPhotos.stream()
-                                                 .map(RoomPhotoDto::of)
-                                                 .collect(toList());
+        .map(RoomPhotoDto::of)
+        .collect(toList());
 
     Room room = roomService.register(roomDto.toDto(), roomPhotoDtos, authentication.id);
 

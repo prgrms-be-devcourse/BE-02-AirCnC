@@ -49,18 +49,18 @@ public class Trip extends BaseIdEntity {
   private TripStatus status;
 
   public Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
-              int totalPrice, int headCount) {
+          int totalPrice, int headCount) {
     checkArgument(checkOut.isAfter(checkIn), "체크아웃은 체크인 이전이 될 수 없습니다");
     checkArgument(checkIn.isEqual(now()) || checkIn.isAfter(now()),
-                  "체크인 날짜는" + now() + " 이전이 될 수 없습니다.");
+            "체크인 날짜는" + now() + " 이전이 될 수 없습니다.");
 
     checkArgument(totalPrice >= TRIP_TOTAL_PRICE_MIN_VALUE,
-                  "총 가격은 %d원 미만이 될 수 없습니다".formatted(TRIP_TOTAL_PRICE_MIN_VALUE));
+            "총 가격은 %d원 미만이 될 수 없습니다".formatted(TRIP_TOTAL_PRICE_MIN_VALUE));
     checkTotalPrice(checkIn, checkOut, totalPrice, room);
     checkHeadCount(headCount, room);
 
     checkArgument(headCount >= TRIP_HEADCOUNT_MIN_VALUE,
-                  "인원은 %d명 이상이여야 합니다".formatted(TRIP_HEADCOUNT_MIN_VALUE));
+            "인원은 %d명 이상이여야 합니다".formatted(TRIP_HEADCOUNT_MIN_VALUE));
 
     this.guest = guest;
     this.room = room;
@@ -80,7 +80,8 @@ public class Trip extends BaseIdEntity {
   /**
    * 서버의 총 가격과 요청 총 가격 검증
    */
-  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int requestTotalPrice, Room room) {
+  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int requestTotalPrice,
+          Room room) {
     int calculatedTotalPrice = getDays(checkIn, checkOut) * room.getPricePerDay();
     if (requestTotalPrice != calculatedTotalPrice) {
       throw new TripReservationException("총 가격이 유효하지 않습니다");

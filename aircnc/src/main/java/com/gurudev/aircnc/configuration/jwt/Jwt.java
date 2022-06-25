@@ -25,8 +25,8 @@ public final class Jwt {
     this.expirySeconds = jwtConfigure.getExpirySeconds();
     this.algorithm = Algorithm.HMAC512(clientSecret);
     this.jwtVerifier = com.auth0.jwt.JWT.require(algorithm)
-                                        .withIssuer(issuer)
-                                        .build();
+        .withIssuer(issuer)
+        .build();
   }
 
   public String sign(Claims claims) {
@@ -34,12 +34,12 @@ public final class Jwt {
     long validity = expirySeconds * 1000L;
 
     return com.auth0.jwt.JWT.create()
-                            .withIssuer(issuer)
-                            .withIssuedAt(now)
-                            .withExpiresAt(new Date(now.getTime() + validity))
-                            .withClaim("id", claims.id)
-                            .withArrayClaim("roles", claims.roles)
-                            .sign(algorithm);
+        .withIssuer(issuer)
+        .withIssuedAt(now)
+        .withExpiresAt(new Date(now.getTime() + validity))
+        .withClaim("id", claims.id)
+        .withArrayClaim("roles", claims.roles)
+        .sign(algorithm);
   }
 
   public Claims verify(String token) throws JWTVerificationException {

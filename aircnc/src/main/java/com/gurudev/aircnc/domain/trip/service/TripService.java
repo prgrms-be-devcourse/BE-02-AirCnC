@@ -8,7 +8,7 @@ import java.util.List;
 public interface TripService {
 
   Trip reserve(Member guest, Long roomId, LocalDate checkIn, LocalDate checkOut, int headCount,
-               int totalPrice);
+      int totalPrice);
 
   Trip getById(Long id);
 

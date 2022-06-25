@@ -53,7 +53,8 @@ public class MemberController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<MemberResponse> memberInfo(@AuthenticationPrincipal JwtAuthentication authentication) {
+  public ResponseEntity<MemberResponse> memberInfo(
+      @AuthenticationPrincipal JwtAuthentication authentication) {
     Member getMember = memberService.getById(authentication.id);
 
     return ResponseEntity.ok(MemberResponse.of(getMember));

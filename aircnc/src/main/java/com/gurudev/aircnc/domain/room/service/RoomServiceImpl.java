@@ -30,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
     roomPhotos.forEach(room::addRoomPhoto);
 
     Member host = memberRepository.findById(hostId)
-                                  .orElseThrow(() -> new NotFoundException(Member.class));
+        .orElseThrow(() -> new NotFoundException(Member.class));
 
     room.assignHost(host);
 

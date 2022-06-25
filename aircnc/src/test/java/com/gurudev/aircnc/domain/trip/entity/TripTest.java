@@ -50,8 +50,8 @@ class TripTest {
     Trip trip = new Trip(guest, room, checkIn, checkOut, totalPrice, headCount);
 
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
-                                Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
-                    .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
+                    Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
+            .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
   @Test
@@ -66,7 +66,7 @@ class TripTest {
     assertThatIllegalArgumentException()
             .isThrownBy(
                     () -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                                   TRIP_HEADCOUNT_MIN_VALUE - 1));
+                            TRIP_HEADCOUNT_MIN_VALUE - 1));
   }
 
   @Test
@@ -74,7 +74,7 @@ class TripTest {
     assertThatIllegalArgumentException()
             .isThrownBy(
                     () -> new Trip(guest, room, checkIn, checkOut, TRIP_TOTAL_PRICE_MIN_VALUE - 1,
-                                   headCount));
+                            headCount));
   }
 
   @Test
@@ -88,7 +88,7 @@ class TripTest {
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
     assertThatExceptionOfType(TripReservationException.class)
             .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                                       room.getCapacity() + 1));
+                    room.getCapacity() + 1));
   }
 
   @Test

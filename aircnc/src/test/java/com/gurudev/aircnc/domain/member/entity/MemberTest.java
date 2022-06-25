@@ -22,8 +22,8 @@ class MemberTest {
     Member member = new Member(email, password, name, birthDate, phoneNumber, Role.GUEST);
 
     assertThat(member).extracting(Member::getEmail, Member::getPassword, Member::getName,
-                                  Member::getBirthDate, Member::getPhoneNumber)
-                      .isEqualTo(List.of(email, password, name, birthDate, phoneNumber));
+            Member::getBirthDate, Member::getPhoneNumber)
+        .isEqualTo(List.of(email, password, name, birthDate, phoneNumber));
   }
 
   @ParameterizedTest

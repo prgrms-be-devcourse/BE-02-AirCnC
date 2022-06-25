@@ -13,13 +13,13 @@ public class Dto {
     Address address = room.getAddress();
 
     return new RoomDto(room.getName(),
-                       address.getLotAddress(),
-                       address.getRoadAddress(),
-                       address.getDetailedAddress(),
-                       address.getPostCode(),
-                       room.getDescription(),
-                       room.getPricePerDay(),
-                       room.getCapacity());
+        address.getLotAddress(),
+        address.getRoadAddress(),
+        address.getDetailedAddress(),
+        address.getPostCode(),
+        room.getDescription(),
+        room.getPricePerDay(),
+        room.getCapacity());
   }
 
   public static List<RoomPhotoDto> listOf(List<RoomPhoto> roomPhotos) {

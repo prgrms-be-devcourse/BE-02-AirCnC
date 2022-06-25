@@ -13,31 +13,31 @@ import org.springframework.http.MediaType;
 
 class MemberControllerTest extends RestDocsTestSupport {
 
-  private String email = "seunghan@gamil.com";
-  private String password = "pass12343";
-  private String name = "seunghan";
-  private String role = "GUEST";
+  private final String email = "seunghan@gamil.com";
+  private final String password = "pass12343";
+  private final String name = "seunghan";
+  private final String role = "GUEST";
 
   @Test
   void 회원가입_API() throws Exception {
     ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
     ObjectNode member = memberRegisterRequest.putObject("member");
     member.put("email", "seunghan@gamil.com")
-          .put("password", "pass12343")
-          .put("name", "seunghan")
-          .put("birthDate", "1998-04-21")
-          .put("phoneNumber", "010-1234-5678")
-          .put("role", "GUEST");
+        .put("password", "pass12343")
+        .put("name", "seunghan")
+        .put("birthDate", "1998-04-21")
+        .put("phoneNumber", "010-1234-5678")
+        .put("role", "GUEST");
 
     mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(memberRegisterRequest.toString()))
-           .andExpect(status().isCreated())
-           .andExpect(jsonPath("$.member.email").value("seunghan@gamil.com"))
-           .andExpect(jsonPath("$.member.name").value("seunghan"))
-           .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
-           .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
-           .andExpect(jsonPath("$.member.role").value("GUEST"));
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(memberRegisterRequest.toString()))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.member.email").value("seunghan@gamil.com"))
+        .andExpect(jsonPath("$.member.name").value("seunghan"))
+        .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
+        .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
+        .andExpect(jsonPath("$.member.role").value("GUEST"));
   }
 
   @Test
@@ -48,16 +48,16 @@ class MemberControllerTest extends RestDocsTestSupport {
     ObjectNode loginRequest = objectMapper.createObjectNode();
     ObjectNode loginMember = loginRequest.putObject("member");
     loginMember.put("email", email)
-               .put("password", password);
+        .put("password", password);
 
     mockMvc.perform(post("/api/v1/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginRequest.toString()))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath("$.member.email").value(email))
-           .andExpect(jsonPath("$.member.name").value(name))
-           .andExpect(jsonPath("$.member.role").value("GUEST"))
-           .andExpect(jsonPath("$.member.token").exists());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.member.email").value(email))
+        .andExpect(jsonPath("$.member.name").value(name))
+        .andExpect(jsonPath("$.member.role").value("GUEST"))
+        .andExpect(jsonPath("$.member.token").exists());
   }
 
   @Test
@@ -67,13 +67,13 @@ class MemberControllerTest extends RestDocsTestSupport {
     로그인(email, password);
 
     mockMvc.perform(get("/api/v1/me")
-                        .header(AUTHORIZATION, token))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath("$.member.email").value(email))
-           .andExpect(jsonPath("$.member.name").value(name))
-           .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
-           .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
-           .andExpect(jsonPath("$.member.role").value(role));
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.member.email").value(email))
+        .andExpect(jsonPath("$.member.name").value(name))
+        .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
+        .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
+        .andExpect(jsonPath("$.member.role").value(role));
   }
 
 }

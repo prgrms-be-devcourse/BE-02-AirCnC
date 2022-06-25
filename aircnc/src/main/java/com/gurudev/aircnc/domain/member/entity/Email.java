@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 이메일
- * <li> RFC 5322 의 포맷으로 검증한다. @see <a href="https://datatracker.ietf.org/doc/html/rfc5322/">RFC 5322</a> </li>
+ * <li> RFC 5322 의 포맷으로 검증한다. @see <a href="https://datatracker.ietf.org/doc/html/rfc5322/">RFC
+ * 5322</a> </li>
  */
 @Getter
 @Embeddable

@@ -89,14 +89,14 @@ public class Room extends BaseIdEntity {
   private void setDescription(String description) {
     checkArgument(hasText(description), "설명은 공백이 될 수 없습니다");
     checkArgument(description.length() >= ROOM_DESCRIPTION_MIN_LENGTH,
-                  "설명은 %d 자 이상이어야 합니다".formatted(ROOM_DESCRIPTION_MIN_LENGTH));
+            "설명은 %d 자 이상이어야 합니다".formatted(ROOM_DESCRIPTION_MIN_LENGTH));
 
     this.description = description;
   }
 
   private void setPricePerDay(int pricePerDay) {
     checkArgument(pricePerDay >= ROOM_PRICE_PER_DAY_MIN_VALUE,
-                  "가격은 %d원 이상이어야 합니다".formatted(ROOM_PRICE_PER_DAY_MIN_VALUE));
+            "가격은 %d원 이상이어야 합니다".formatted(ROOM_PRICE_PER_DAY_MIN_VALUE));
 
     this.pricePerDay = pricePerDay;
   }

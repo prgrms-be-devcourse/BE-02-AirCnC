@@ -39,9 +39,9 @@ public class MemberDto {
 
       public Member toEntity() {
         return new Member(new Email(email),
-                          new Password(password),
-                          name, birthDate, new PhoneNumber(phoneNumber),
-                          Role.valueOf(role));
+                new Password(password),
+                name, birthDate, new PhoneNumber(phoneNumber),
+                Role.valueOf(role));
       }
     }
   }
@@ -83,7 +83,7 @@ public class MemberDto {
 
       @Builder(access = PRIVATE)
       private Response(String email, String name, LocalDate birthDate, String phoneNumber,
-                       Role role) {
+              Role role) {
         this.email = email;
         this.name = name;
         this.birthDate = birthDate;
@@ -93,12 +93,12 @@ public class MemberDto {
 
       public static Response of(Member member) {
         return Response.builder()
-                       .name(member.getName())
-                       .birthDate(member.getBirthDate())
-                       .email(Email.toString(member.getEmail()))
-                       .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
-                       .role(member.getRole())
-                       .build();
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .email(Email.toString(member.getEmail()))
+                .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
+                .role(member.getRole())
+                .build();
       }
     }
   }
@@ -132,11 +132,11 @@ public class MemberDto {
 
       public static Response of(Member member, String token) {
         return Response.builder()
-                       .email(Email.toString(member.getEmail()))
-                       .name(member.getName())
-                       .role(member.getRole())
-                       .token(token)
-                       .build();
+                .email(Email.toString(member.getEmail()))
+                .name(member.getName())
+                .role(member.getRole())
+                .token(token)
+                .build();
       }
     }
   }
