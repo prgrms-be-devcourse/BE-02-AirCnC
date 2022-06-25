@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.member.entity;
 
-import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static com.gurudev.aircnc.constant.Regex.EMAIL;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 

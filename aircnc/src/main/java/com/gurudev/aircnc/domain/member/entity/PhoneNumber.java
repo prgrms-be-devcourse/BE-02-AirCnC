@@ -1,10 +1,9 @@
 package com.gurudev.aircnc.domain.member.entity;
 
-import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static com.gurudev.aircnc.constant.Regex.PHONE_NUMBER;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

@@ -51,7 +51,7 @@ public class Room extends BaseIdEntity {
   private int reviewCount;
 
   @OneToMany(cascade = ALL)
-  @JoinColumn
+  @JoinColumn(name = "room_id")
   private List<RoomPhoto> roomPhotos = new ArrayList<>();
 
   public Room(String name, Address address, String description, int pricePerDay, int capacity) {
