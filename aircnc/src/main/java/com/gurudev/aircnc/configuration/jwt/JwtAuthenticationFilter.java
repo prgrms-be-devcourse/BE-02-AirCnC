@@ -47,8 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
           if (Objects.nonNull(id) && authorities.size() > 0) {
             JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(new JwtAuthentication(token, id), null,
-                    authorities);
+                new JwtAuthenticationToken(new JwtAuthentication(token, id), null, authorities);
+
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
           }
@@ -67,8 +67,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private String getToken(HttpServletRequest request) {
     String token = request.getHeader(AUTHORIZATION);
+
     if (hasText(token)) {
       log.debug("Jwt authorization api detected: {}", token);
+
       try {
         return URLDecoder.decode(token, "UTF-8");
       } catch (UnsupportedEncodingException e) {
@@ -84,6 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private List<GrantedAuthority> getAuthorities(Jwt.Claims claims) {
     String[] roles = claims.roles;
+
     return roles == null || roles.length == 0 ?
         emptyList() :
         Arrays.stream(roles).map(SimpleGrantedAuthority::new).collect(toList());

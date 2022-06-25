@@ -1,85 +1,50 @@
 package com.gurudev.aircnc.configuration;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.*;
+
 import com.gurudev.aircnc.configuration.jwt.Jwt;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationFilter;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationProvider;
-import com.gurudev.aircnc.configuration.jwt.JwtConfigure;
-import com.gurudev.aircnc.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-@Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final JwtConfigure jwtConfigure;
-  private final ApplicationContext applicationContext;
-
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
+  private final JwtConfig jwtConfig;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    final JwtAuthenticationProvider jwtAuthenticationProvider = applicationContext.getBean(
-        JwtAuthenticationProvider.class);
 
-    http
+    return http
+        // REST API 애플리케이션이기 때문에 불필요한 기능 Disable
         .formLogin().disable()
         .csrf().disable()
         .headers().disable()
         .httpBasic().disable()
         .rememberMe().disable()
         .logout().disable()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .requestCache().disable()
 
-    http.getSharedObject(AuthenticationManagerBuilder.class)
-        .authenticationProvider(jwtAuthenticationProvider);
+        .authorizeRequests(authz -> {
+            authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
+            authz.anyRequest().permitAll();
+            }
+        )
 
-    // 개발 중
-    http
-        .authorizeHttpRequests()
-        .antMatchers("/api/v1/members", "/api/v1/login").permitAll();
-//        .anyRequest().authenticated();
+        .sessionManagement().sessionCreationPolicy(STATELESS)
 
-    http.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class);
+        .and().apply(jwtConfig)
 
-    return http.build();
-  }
-
-
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    final Jwt jwt = applicationContext.getBean(Jwt.class);
-    return new JwtAuthenticationFilter(jwt);
-  }
-
-  @Bean
-  public Jwt jwt() {
-    return new Jwt(
-        jwtConfigure.getIssuer(),
-        jwtConfigure.getClientSecret(),
-        jwtConfigure.getExpirySeconds()
-    );
-  }
-
-  @Bean
-  public JwtAuthenticationProvider jwtAuthenticationProvider(MemberService memberService, Jwt jwt) {
-    return new JwtAuthenticationProvider(jwt, memberService);
+        .and().build();
   }
 
   @Bean
