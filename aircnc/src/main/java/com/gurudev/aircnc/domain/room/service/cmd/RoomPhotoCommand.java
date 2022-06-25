@@ -1,18 +1,24 @@
 package com.gurudev.aircnc.domain.room.service.cmd;
 
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class RoomPhotoCommand {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class RoomPhotoCommand {
 
-  private final String fileName;
+  @RequiredArgsConstructor
+  public static class RoomPhotoCreateCommand {
 
-  public static RoomPhotoCommand of(RoomPhoto roomPhoto) {
-    return new RoomPhotoCommand(roomPhoto.getFileName());
-  }
+    private final String fileName;
 
-  public RoomPhoto toEntity() {
-    return new RoomPhoto(fileName);
+    public static RoomPhotoCreateCommand of(RoomPhoto roomPhoto) {
+      return new RoomPhotoCreateCommand(roomPhoto.getFileName());
+    }
+
+    public RoomPhoto toEntity() {
+      return new RoomPhoto(fileName);
+    }
   }
 }

@@ -5,16 +5,16 @@ import static java.util.stream.Collectors.toList;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomPhotoCommand;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand.RoomCreateCommand;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomPhotoCommand.RoomPhotoCreateCommand;
 import java.util.List;
 
 public class Dto {
 
-  public static RoomCommand of(Room room) {
+  public static RoomCreateCommand of(Room room) {
     Address address = room.getAddress();
 
-    return new RoomCommand(room.getName(),
+    return new RoomCreateCommand(room.getName(),
         address.getLotAddress(),
         address.getRoadAddress(),
         address.getDetailedAddress(),
@@ -24,9 +24,10 @@ public class Dto {
         room.getCapacity());
   }
 
-  public static List<RoomPhotoCommand> listOf(List<RoomPhoto> roomPhotos) {
-    return roomPhotos.stream().map(roomPhoto -> new RoomPhotoCommand(roomPhoto.getFileName()))
-        .collect(
-            toList());
+  public static List<RoomPhotoCreateCommand> listOf(List<RoomPhoto> roomPhotos) {
+    return roomPhotos.stream()
+        .map(roomPhoto -> new RoomPhotoCreateCommand(roomPhoto.getFileName()) {
+        })
+        .collect(toList());
   }
 }

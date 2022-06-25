@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand.RoomCreateCommand;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-
-public class RoomDto {
+@NoArgsConstructor(access = PRIVATE)
+public final class RoomDto {
 
   /**
    * form-data 바인딩을 위해 게터, 세터, 기본생성자 추가
@@ -35,8 +35,8 @@ public class RoomDto {
     private int pricePerDay;
     private int capacity;
 
-    public RoomCommand toDto() {
-      return new RoomCommand(
+    public RoomCreateCommand toDto() {
+      return new RoomCreateCommand(
           name, lotAddress, roadAddress, detailedAddress, postCode,
           description, pricePerDay, capacity);
     }

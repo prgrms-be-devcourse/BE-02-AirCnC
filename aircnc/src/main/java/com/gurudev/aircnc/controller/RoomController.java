@@ -11,7 +11,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
 import com.gurudev.aircnc.domain.room.service.RoomService;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomPhotoCommand;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomPhotoCommand.RoomPhotoCreateCommand;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +43,11 @@ public class RoomController {
         .map(roomPhotoService::upload)
         .collect(toList());
 
-    List<RoomPhotoCommand> roomPhotoDtos = roomPhotos.stream()
-        .map(RoomPhotoCommand::of)
+    List<RoomPhotoCreateCommand> roomPhotoCmds = roomPhotos.stream()
+        .map(RoomPhotoCreateCommand::of)
         .collect(toList());
 
-    Room room = roomService.register(roomDto.toDto(), roomPhotoDtos, authentication.id);
+    Room room = roomService.register(roomDto.toDto(), roomPhotoCmds, authentication.id);
 
     return new ResponseEntity<>(of(room, roomPhotos), CREATED);
   }
