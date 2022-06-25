@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -87,6 +88,51 @@ public class RoomDto {
             .capacity(room.getCapacity())
             .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
             .build();
+      }
+    }
+  }
+
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class RoomResponses {
+
+    @JsonProperty("rooms")
+    private final List<RoomInfo> roomInfos;
+
+    public static RoomResponses of(List<Room> room) {
+      List<RoomInfo> roomInfos = room.stream().map(r -> RoomInfo.of(r))
+          .collect(Collectors.toList());
+      return new RoomResponses(roomInfos);
+    }
+
+    @Getter
+    public static class RoomInfo {
+
+      private final long id;
+      private final String address;
+      private final int pricePerDay;
+      private String photoUrl;
+//      private final String wishListId;
+
+      @Builder(access = PRIVATE)
+      public RoomInfo(long id, String address, int pricePerDay, String photoUrl) {
+        this.id = id;
+        this.address = address;
+        this.pricePerDay = pricePerDay;
+        this.photoUrl = photoUrl;
+      }
+
+      public static RoomInfo of(Room room) {
+        String photoUrl = room.getRoomPhotos().stream().findFirst().map(RoomPhoto::getFileName)
+            .orElseThrow(() -> new NotFoundException(RoomPhoto.class));
+
+        return RoomInfo.builder()
+            .id(room.getId())
+            .address(Address.toString(room.getAddress()))
+            .pricePerDay(room.getPricePerDay())
+            .photoUrl(photoUrl)
+            .build();
+
       }
     }
   }
