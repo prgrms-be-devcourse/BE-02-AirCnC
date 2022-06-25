@@ -1,13 +1,13 @@
 package com.gurudev.aircnc.controller;
 
-import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
-import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
+import static com.gurudev.aircnc.controller.dto.MemberControllerDto.MemberRegisterRequest;
+import static com.gurudev.aircnc.controller.dto.MemberControllerDto.MemberResponse;
 
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
-import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
-import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
-import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
+import com.gurudev.aircnc.controller.dto.MemberControllerDto.LoginRequest;
+import com.gurudev.aircnc.controller.dto.MemberControllerDto.LoginRequest.Request;
+import com.gurudev.aircnc.controller.dto.MemberControllerDto.LoginResponse;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class MemberController {
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
-    Member registeredMember = memberService.register(memberDto.toEntity());
+    Member registeredMember = memberService.register(memberDto.toDto());
 
     return new ResponseEntity<>(MemberResponse.of(registeredMember), HttpStatus.CREATED);
   }

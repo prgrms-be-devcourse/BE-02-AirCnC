@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import com.gurudev.aircnc.domain.member.dto.MemberDto;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
@@ -28,7 +29,9 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   @Transactional
-  public Member register(Member member) {
+  public Member register(MemberDto memberDto) {
+    Member member = memberDto.toEntity();
+
     return memberRepository.save(member.encodePassword(passwordEncoder));
   }
 

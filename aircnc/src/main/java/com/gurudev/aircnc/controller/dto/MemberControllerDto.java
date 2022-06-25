@@ -3,9 +3,9 @@ package com.gurudev.aircnc.controller.dto;
 import static lombok.AccessLevel.PRIVATE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gurudev.aircnc.domain.member.dto.MemberDto;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
-import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class MemberDto {
+public class MemberControllerDto {
 
   @Getter
   public static class MemberRegisterRequest {
@@ -23,8 +23,8 @@ public class MemberDto {
     @JsonProperty("member")
     private Request request;
 
-    public Member toEntity() {
-      return request.toEntity();
+    public MemberDto toDto() {
+      return request.toDto();
     }
 
     @Getter
@@ -37,11 +37,15 @@ public class MemberDto {
       private String phoneNumber;
       private String role;
 
-      public Member toEntity() {
-        return new Member(new Email(email),
-            new Password(password),
-            name, birthDate, new PhoneNumber(phoneNumber),
-            Role.valueOf(role));
+      public MemberDto toDto() {
+        return MemberDto.builder()
+            .email(email)
+            .password(password)
+            .name(name)
+            .birthDate(birthDate)
+            .phoneNumber(phoneNumber)
+            .role(role)
+            .build();
       }
     }
   }
