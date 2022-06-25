@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import com.gurudev.aircnc.configuration.PasswordEncryptor;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
@@ -8,7 +9,6 @@ import com.gurudev.aircnc.exception.AircncRuntimeException;
 import com.gurudev.aircnc.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,7 @@ public class MemberServiceImpl implements MemberService {
 
   private final MemberRepository memberRepository;
 
-  private final PasswordEncoder passwordEncoder;
+  private final PasswordEncryptor passwordEncryptor;
 
   @Override
   public Member getById(Long id) {
@@ -30,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public Member register(Member member) {
-    member.getPassword().encode(passwordEncoder);
+    member.getPassword().encode(passwordEncryptor);
     return memberRepository.save(member);
   }
 
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
 
     Password encodedPassword = member.getPassword();
 
-    if(!encodedPassword.matches(passwordEncoder, password)){
+    if (!encodedPassword.matches(passwordEncryptor, password)) {
       throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
     }
 

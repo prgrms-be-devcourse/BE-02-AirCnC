@@ -3,11 +3,13 @@ package com.gurudev.aircnc.domain.member.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import com.gurudev.aircnc.configuration.PasswordEncryptor;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 class PasswordTest {
+
+  private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
 
   @ParameterizedTest
   @CsvSource(value = {"12345678", "123456789012345"})
@@ -29,7 +31,7 @@ class PasswordTest {
   void 비밀번호_암호화_테스트(String rawPassword) {
     Password password = new Password(rawPassword);
 
-    password.encode(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+    password.encode(passwordEncryptor);
 
     assertThat(password.isEncoded()).isTrue();
   }

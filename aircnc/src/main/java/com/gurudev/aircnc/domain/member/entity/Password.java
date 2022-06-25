@@ -4,6 +4,7 @@ import static com.gurudev.aircnc.constant.Regex.PASSWORD_ENCODING_PREFIX;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
+import com.gurudev.aircnc.configuration.PasswordEncryptor;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -11,7 +12,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * 비밀번호
@@ -39,11 +39,11 @@ public class Password {
     return password.getPassword();
   }
 
-  public void encode(PasswordEncoder encoder) {
+  public void encode(PasswordEncryptor encoder) {
     this.password = encoder.encode(this.password);
   }
 
-  public boolean matches(PasswordEncoder encoder, Password rawPassword) {
+  public boolean matches(PasswordEncryptor encoder, Password rawPassword) {
     if (!isEncoded()) {
       throw new IllegalStateException("비밀번호가 암호화되지 않았습니다");
     }
