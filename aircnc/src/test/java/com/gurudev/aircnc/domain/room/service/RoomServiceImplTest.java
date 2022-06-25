@@ -9,6 +9,7 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.util.Dto;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,20 +44,19 @@ class RoomServiceImplTest {
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    roomService.register(room1, roomPhotos, host.getId());
-    roomService.register(room2, Collections.emptyList(), host.getId());
+    room1 = roomService.register(Dto.of(room1), Dto.listOf(roomPhotos), host.getId());
+    room2 = roomService.register(Dto.of(room2), Collections.emptyList(), host.getId());
   }
 
   @Test
   void 숙소_등록_성공() {
     Room room = createRoom();
 
-    Room registeredRoom = roomService.register(room, roomPhotos, host.getId());
+    Room registeredRoom = roomService.register(Dto.of(room), Dto.listOf(roomPhotos), host.getId());
 
     assertThat(registeredRoom.getId()).isNotNull();
-    assertThat(registeredRoom.getHost()).isEqualTo(room1.getHost());
-    assertThat(registeredRoom.getRoomPhotos())
-        .containsExactly(createRoomPhoto(), createRoomPhoto());
+    assertThat(registeredRoom.getHost()).isEqualTo(host);
+    assertThat(registeredRoom.getRoomPhotos()).containsExactlyElementsOf(roomPhotos);
   }
 
   @Test

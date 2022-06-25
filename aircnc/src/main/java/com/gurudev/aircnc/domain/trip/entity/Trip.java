@@ -11,7 +11,6 @@ import static lombok.AccessLevel.PROTECTED;
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
-import com.gurudev.aircnc.exception.NotFoundException;
 import com.gurudev.aircnc.exception.TripCancelException;
 import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;

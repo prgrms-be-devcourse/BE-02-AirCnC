@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
+import com.gurudev.aircnc.domain.room.dto.RoomPhotoDto;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
@@ -44,7 +45,11 @@ public class RoomController {
         .map(roomPhotoService::upload)
         .collect(toList());
 
-    Room room = roomService.register(roomDto.toEntity(), roomPhotos, authentication.id);
+    List<RoomPhotoDto> roomPhotoDtos = roomPhotos.stream()
+        .map(RoomPhotoDto::of)
+        .collect(toList());
+
+    Room room = roomService.register(roomDto.toDto(), roomPhotoDtos, authentication.id);
 
     return new ResponseEntity<>(of(room, roomPhotos), CREATED);
   }

@@ -6,15 +6,11 @@ import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import java.time.LocalDate;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
