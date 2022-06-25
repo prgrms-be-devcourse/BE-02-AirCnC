@@ -1,15 +1,15 @@
-package com.gurudev.aircnc.domain.room.dto;
+package com.gurudev.aircnc.domain.room.service.cmd;
 
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RoomPhotoDto {
+public class RoomPhotoCommand {
 
   private final String fileName;
 
-  public static RoomPhotoDto of(RoomPhoto roomPhoto) {
-    return new RoomPhotoDto(roomPhoto.getFileName());
+  public static RoomPhotoCommand of(RoomPhoto roomPhoto) {
+    return new RoomPhotoCommand(roomPhoto.getFileName());
   }
 
   public RoomPhoto toEntity() {

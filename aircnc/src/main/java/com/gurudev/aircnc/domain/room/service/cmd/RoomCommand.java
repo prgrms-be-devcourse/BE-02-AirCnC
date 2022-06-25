@@ -1,11 +1,11 @@
-package com.gurudev.aircnc.domain.room.dto;
+package com.gurudev.aircnc.domain.room.service.cmd;
 
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RoomDto {
+public class RoomCommand {
 
   private final String name;
   private final String lotAddress;

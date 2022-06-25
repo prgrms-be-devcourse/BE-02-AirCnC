@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -34,8 +35,8 @@ public class RoomDto {
     private int pricePerDay;
     private int capacity;
 
-    public com.gurudev.aircnc.domain.room.dto.RoomDto toDto() {
-      return new com.gurudev.aircnc.domain.room.dto.RoomDto(
+    public RoomCommand toDto() {
+      return new RoomCommand(
           name, lotAddress, roadAddress, detailedAddress, postCode,
           description, pricePerDay, capacity);
     }
