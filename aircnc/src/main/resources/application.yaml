@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
+    url: ${db.url:jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8}
     username: ${db.username:root}
     password: ${db.password:1234}
 
@@ -21,3 +21,5 @@ jwt:
 
 room-photos:
   path: src/main/resources/room-photos/
+
+
