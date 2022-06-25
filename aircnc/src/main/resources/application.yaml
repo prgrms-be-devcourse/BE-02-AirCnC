@@ -2,21 +2,21 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
-    username: gurudev
-    password: pass123
+    username: ${db.username:gurudev}
+    password: ${db.password:pass123}
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 jwt:
-  issuer: "gurudev"
-  client-secret: "EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ"
+  issuer: ${jwt.issuer:issuer}
+  client-secret: ${jwt.client.secret:secret}
   expiry-seconds: 1800
 
 room-photos:
