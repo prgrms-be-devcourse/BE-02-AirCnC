@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- *  비밀번호
- *  <li> 8자 ~ 15자의 길이를 가져야 한다. </li>
+ * 비밀번호
+ * <li> 8자 ~ 15자의 길이를 가져야 한다. </li>
  */
 @Getter
 @Embeddable

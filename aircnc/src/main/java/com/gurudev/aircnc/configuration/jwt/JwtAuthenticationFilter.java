@@ -6,8 +6,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+                                  FilterChain filterChain) throws ServletException, IOException {
 
     if (SecurityContextHolder.getContext().getAuthentication() == null) {
       String token = getToken(request);
@@ -71,11 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     if (hasText(token)) {
       log.debug("Jwt authorization api detected: {}", token);
 
-      try {
-        return URLDecoder.decode(token, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        log.error(e.getMessage(), e);
-      }
+      return URLDecoder.decode(token, StandardCharsets.UTF_8);
     }
     return null;
   }

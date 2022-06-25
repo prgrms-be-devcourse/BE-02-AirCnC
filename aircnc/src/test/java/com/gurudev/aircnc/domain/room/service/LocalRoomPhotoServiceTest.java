@@ -30,7 +30,7 @@ class LocalRoomPhotoServiceTest {
 
   @BeforeEach
   void setUp() throws IOException {
-    InputStream requestInputStream =  new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
+    InputStream requestInputStream = new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
 
     requestImage = new MockMultipartFile("photo1", "photo1.jpeg", IMAGE_JPEG_VALUE, requestInputStream);
   }

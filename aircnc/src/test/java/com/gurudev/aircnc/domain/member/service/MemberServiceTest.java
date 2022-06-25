@@ -39,8 +39,8 @@ class MemberServiceTest {
         Member::getRole
     ).isEqualTo(
         List.of(member.getEmail(), member.getPassword(),
-            member.getName(), member.getBirthDate(),
-            member.getPhoneNumber(), member.getRole()));
+                member.getName(), member.getBirthDate(),
+                member.getPhoneNumber(), member.getRole()));
   }
 
   @Test

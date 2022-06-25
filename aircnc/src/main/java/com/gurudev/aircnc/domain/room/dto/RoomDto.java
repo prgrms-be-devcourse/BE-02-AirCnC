@@ -18,7 +18,7 @@ public class RoomDto {
 
   public Room toEntity() {
     return new Room(name,
-        new Address(lotAddress, roadAddress, detailedAddress, postCode),
-        description, pricePerDay, capacity);
+                    new Address(lotAddress, roadAddress, detailedAddress, postCode),
+                    description, pricePerDay, capacity);
   }
 }

@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getById(Long id) {
     return memberRepository.findById(id)
-        .orElseThrow(() -> new AircncRuntimeException("멤버 없음"));
+                           .orElseThrow(() -> new AircncRuntimeException("멤버 없음"));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getByEmail(Email email) {
     return memberRepository.findByEmail(email)
-        .orElseThrow(() -> new NotFoundException(Member.class));
+                           .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
   @Override

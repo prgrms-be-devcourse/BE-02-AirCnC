@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.member.entity;
 
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -9,9 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 class MemberTest {
 
@@ -26,8 +22,8 @@ class MemberTest {
     Member member = new Member(email, password, name, birthDate, phoneNumber, Role.GUEST);
 
     assertThat(member).extracting(Member::getEmail, Member::getPassword, Member::getName,
-            Member::getBirthDate, Member::getPhoneNumber)
-        .isEqualTo(List.of(email, password, name, birthDate, phoneNumber));
+                                  Member::getBirthDate, Member::getPhoneNumber)
+                      .isEqualTo(List.of(email, password, name, birthDate, phoneNumber));
   }
 
   @ParameterizedTest

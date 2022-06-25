@@ -9,7 +9,6 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
     roomPhotos.forEach(room::addRoomPhoto);
 
     Member host = memberRepository.findById(hostId)
-        .orElseThrow(() -> new NotFoundException(Member.class));
+                                  .orElseThrow(() -> new NotFoundException(Member.class));
 
     room.assignHost(host);
 

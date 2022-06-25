@@ -8,7 +8,6 @@ import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -65,8 +64,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
   private String getToken(final Long id, final List<GrantedAuthority> authorities) {
     String[] roles = authorities.stream()
-        .map(GrantedAuthority::getAuthority)
-        .toArray(String[]::new);
+                                .map(GrantedAuthority::getAuthority)
+                                .toArray(String[]::new);
 
     return jwt.sign(Jwt.Claims.from(id, roles));
   }

@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.room.entity;
 
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 

@@ -52,7 +52,7 @@ public class Room extends BaseIdEntity {
 
   @OneToMany(cascade = ALL)
   @JoinColumn(name = "room_id")
-  private List<RoomPhoto> roomPhotos = new ArrayList<>();
+  private final List<RoomPhoto> roomPhotos = new ArrayList<>();
 
   public Room(String name, Address address, String description, int pricePerDay, int capacity) {
     setName(name);
@@ -64,7 +64,7 @@ public class Room extends BaseIdEntity {
     this.reviewCount = 0;
   }
 
-  public void assignHost(Member host){
+  public void assignHost(Member host) {
     setHost(host);
   }
 
@@ -89,14 +89,14 @@ public class Room extends BaseIdEntity {
   private void setDescription(String description) {
     checkArgument(hasText(description), "설명은 공백이 될 수 없습니다");
     checkArgument(description.length() >= ROOM_DESCRIPTION_MIN_LENGTH,
-        "설명은 %d 자 이상이어야 합니다".formatted(ROOM_DESCRIPTION_MIN_LENGTH));
+                  "설명은 %d 자 이상이어야 합니다".formatted(ROOM_DESCRIPTION_MIN_LENGTH));
 
     this.description = description;
   }
 
   private void setPricePerDay(int pricePerDay) {
     checkArgument(pricePerDay >= ROOM_PRICE_PER_DAY_MIN_VALUE,
-        "가격은 %d원 이상이어야 합니다".formatted(ROOM_PRICE_PER_DAY_MIN_VALUE));
+                  "가격은 %d원 이상이어야 합니다".formatted(ROOM_PRICE_PER_DAY_MIN_VALUE));
 
     this.pricePerDay = pricePerDay;
   }
@@ -106,8 +106,7 @@ public class Room extends BaseIdEntity {
   }
 
   /**
-   * 숙소의 이름, 1박 당 가격, 설명을 변경한다 <br>
-   * null 이라면 변경하지 않음
+   * 숙소의 이름, 1박 당 가격, 설명을 변경한다 <br> null 이라면 변경하지 않음
    */
   public Room update(String name, String description, Integer pricePerDay) {
     Optional.ofNullable(name).ifPresent(this::setName);

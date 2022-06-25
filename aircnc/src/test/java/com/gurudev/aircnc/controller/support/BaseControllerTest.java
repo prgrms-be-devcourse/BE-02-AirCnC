@@ -8,11 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.gurudev.aircnc.exception.AircncRuntimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -46,32 +44,32 @@ public class BaseControllerTest {
     ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
     ObjectNode member = memberRegisterRequest.putObject("member");
     member.put("email", email)
-        .put("password", password)
-        .put("name", name)
-        .put("birthDate", "1998-04-21") // random date
-        .put("phoneNumber", "010-1234-5678") // random number
-        .put("role", role);
+          .put("password", password)
+          .put("name", name)
+          .put("birthDate", "1998-04-21") // random date
+          .put("phoneNumber", "010-1234-5678") // random number
+          .put("role", role);
 
     mockMvc.perform(post("/api/v1/members")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(memberRegisterRequest.toString()))
-        .andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(memberRegisterRequest.toString()))
+           .andExpect(status().isCreated());
   }
 
   protected void 로그인(String email, String password) throws Exception {
     ObjectNode loginRequest = objectMapper.createObjectNode();
     ObjectNode member = loginRequest.putObject("member");
     member.put("email", email)
-        .put("password", password);
+          .put("password", password);
 
     MockHttpServletResponse response = mockMvc.perform(post("/api/v1/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(loginRequest.toString()))
-        .andExpect(status().isOk())
-        .andReturn().getResponse();
+                                                           .contentType(MediaType.APPLICATION_JSON)
+                                                           .content(loginRequest.toString()))
+                                              .andExpect(status().isOk())
+                                              .andReturn().getResponse();
 
     token = objectMapper.readValue(response.getContentAsString(),
-        JsonNode.class).get("member").get("token").asText();
+                                   JsonNode.class).get("member").get("token").asText();
 
     assertThat(token).isNotNull();
 

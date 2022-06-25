@@ -77,12 +77,12 @@ class TripServiceImplTest {
   @Test
   void 여행_생성_성공() {
     Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount,
-        totalPrice);
+                                    totalPrice);
 
     assertThat(trip.getId()).isNotNull();
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
-            Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
-        .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
+                                Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
+                    .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
   @Test

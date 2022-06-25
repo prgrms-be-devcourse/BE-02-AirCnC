@@ -8,12 +8,12 @@ drop table if exists member;
 create table member
 (
     id           bigint       not null auto_increment,
-    email        varchar(50)  not null unique,          -- 'RFC 5322'
-    password     varchar(255) not null,                 -- '{Bcrypt} 암호'
+    email        varchar(50)  not null unique, -- 'RFC 5322'
+    password     varchar(255) not null,        -- '{Bcrypt} 암호'
     name         varchar(20)  not null,
     birth_date   date         not null,
-    phone_number varchar(13)  not null,                 -- '01x-xxxx-xxxx 형식'
-    role         varchar(10)  not null,                 -- 'GUEST/HOST'
+    phone_number varchar(13)  not null,        -- '01x-xxxx-xxxx 형식'
+    role         varchar(10)  not null,        -- 'GUEST/HOST'
     primary key (id)
 );
 

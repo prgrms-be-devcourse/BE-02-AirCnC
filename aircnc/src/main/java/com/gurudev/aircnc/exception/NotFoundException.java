@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.exception;
 
-public class NotFoundException extends AircncRuntimeException{
+public class NotFoundException extends AircncRuntimeException {
 
   public NotFoundException(Class<?> clazz) {
     super(clazz.getSimpleName() + "(이)가 존재하지 않습니다");
