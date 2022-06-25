@@ -2,20 +2,20 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
-    username: ${db.username:gurudev}
-    password: ${db.password:pass123}
+    username: ${db.username:root}
+    password: ${db.password:1234}
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: false
+        format_sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 jwt:
-  issuer: ${jwt.issuer:issuer}
+  issuer: "gurudev"
   client-secret: ${jwt.client.secret:secret}
   expiry-seconds: 1800
 

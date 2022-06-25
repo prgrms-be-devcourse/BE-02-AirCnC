@@ -29,10 +29,11 @@ public class SecurityConfig {
         .logout().disable()
         .requestCache().disable()
 
-        .authorizeRequests(authz -> {
-                             authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
-                             authz.anyRequest().permitAll();
-                           }
+        .authorizeRequests(
+            auth -> {
+              auth.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
+              auth.anyRequest().permitAll();
+            }
         )
 
         .sessionManagement().sessionCreationPolicy(STATELESS)
