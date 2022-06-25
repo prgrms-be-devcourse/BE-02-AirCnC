@@ -14,17 +14,30 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
+import com.gurudev.aircnc.domain.room.entity.Address;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
 class RoomControllerTest extends RestDocsTestSupport {
+
+  String name = "나의 숙소";
+  String lotAddress = "달나라 1번지";
+  String roadAddress = "달나라 1길";
+  String detailedAddress = "100호";
+  String postCode = "1234";
+  String description = "달 토끼가 사는 나의 숙소";
+  String pricePerDay = "100000";
+  String capacity = "2";
+
+  String address = String.join("", roadAddress, " ", detailedAddress);
 
   @Test
   void 숙소_등록() throws Exception {
@@ -35,23 +48,23 @@ class RoomControllerTest extends RestDocsTestSupport {
 
     mockMvc.perform(multipart("/api/v1/rooms")
             .file(requestImage)
-            .param("name","나의 숙소")
-            .param("lotAddress","달나라 1번지")
-            .param("roadAddress","달나라 1길")
-            .param("detailedAddress","100호")
-            .param("postCode","1234")
-            .param("description","달토끼가 사는 나의 숙소")
-            .param("pricePerDay","100000")
-            .param("capacity","2")
+            .param("name",name)
+            .param("lotAddress",lotAddress)
+            .param("roadAddress",roadAddress)
+            .param("detailedAddress",detailedAddress)
+            .param("postCode",postCode)
+            .param("description",description)
+            .param("pricePerDay",pricePerDay)
+            .param("capacity",capacity)
         .header(AUTHORIZATION, token))
         .andExpect(status().isCreated())
         .andExpectAll(
             jsonPath("$.room.id").exists(),
-            jsonPath("$.room.name").value("나의 숙소"),
-            jsonPath("$.room.address").value("달나라 1길 100호"),
-            jsonPath("$.room.description").value("달토끼가 사는 나의 숙소"),
-            jsonPath("$.room.pricePerDay").value("100000"),
-            jsonPath("$.room.capacity").value("2"),
+            jsonPath("$.room.name").value(name),
+            jsonPath("$.room.address").value(address),
+            jsonPath("$.room.description").value(description),
+            jsonPath("$.room.pricePerDay").value(pricePerDay),
+            jsonPath("$.room.capacity").value(capacity),
             jsonPath("$.room.fileNames", hasSize(1))
         )
         .andDo(
@@ -84,4 +97,45 @@ class RoomControllerTest extends RestDocsTestSupport {
             )
         );
   }
+
+  @Test
+  void 속소_리스트_조회_API() throws Exception {
+    숙소_등록(name + 1);
+    숙소_등록(name + 2);
+    숙소_등록(name + 3);
+
+    mockMvc.perform(get("/api/v1/rooms"))
+        .andExpect(status().isOk())
+        .andExpectAll(
+            jsonPath("$.rooms[*].id").exists(),
+            jsonPath("$.rooms[*].address").exists(),
+            jsonPath("$.rooms[*].pricePerDay").exists(),
+            jsonPath("$.rooms[*].photoUrl").exists()
+        );
+
+  }
+
+  private void 숙소_등록(String name) throws Exception {
+    InputStream requestInputStream = new FileInputStream(
+        "src/test/resources/room-photos-src/photo1.jpeg");
+    MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg",
+        IMAGE_JPEG_VALUE, requestInputStream);
+
+    로그인("host@naver.com", "host1234!");
+
+    mockMvc.perform(multipart("/api/v1/rooms")
+            .file(requestImage)
+            .param("name", name)
+            .param("lotAddress", lotAddress)
+            .param("roadAddress", roadAddress)
+            .param("detailedAddress", detailedAddress)
+            .param("postCode", postCode)
+            .param("description", description)
+            .param("pricePerDay", pricePerDay)
+            .param("capacity", capacity)
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isCreated());
+
+  }
+
 }
