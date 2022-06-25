@@ -28,22 +28,24 @@ class RoomControllerTest extends RestDocsTestSupport {
 
   @Test
   void 숙소_등록() throws Exception {
-    InputStream requestInputStream =  new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
-    MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg", IMAGE_JPEG_VALUE, requestInputStream);
+    InputStream requestInputStream = new FileInputStream(
+        "src/test/resources/room-photos-src/photo1.jpeg");
+    MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg",
+        IMAGE_JPEG_VALUE, requestInputStream);
 
     로그인("host@naver.com", "host1234!");
 
     mockMvc.perform(multipart("/api/v1/rooms")
             .file(requestImage)
-            .param("name","나의 숙소")
-            .param("lotAddress","달나라 1번지")
-            .param("roadAddress","달나라 1길")
-            .param("detailedAddress","100호")
-            .param("postCode","1234")
-            .param("description","달토끼가 사는 나의 숙소")
-            .param("pricePerDay","100000")
-            .param("capacity","2")
-        .header(AUTHORIZATION, token))
+            .param("name", "나의 숙소")
+            .param("lotAddress", "달나라 1번지")
+            .param("roadAddress", "달나라 1길")
+            .param("detailedAddress", "100호")
+            .param("postCode", "1234")
+            .param("description", "달토끼가 사는 나의 숙소")
+            .param("pricePerDay", "100000")
+            .param("capacity", "2")
+            .header(AUTHORIZATION, token))
         .andExpect(status().isCreated())
         .andExpectAll(
             jsonPath("$.room.id").exists(),
@@ -61,13 +63,13 @@ class RoomControllerTest extends RestDocsTestSupport {
                 ),
                 requestParameters(
                     parameterWithName("name").description("이름")
-                    ,parameterWithName("lotAddress").description("지번 주소")
-                    ,parameterWithName("roadAddress").description("도로명 주소")
-                    ,parameterWithName("detailedAddress").description("상세 주소")
-                    ,parameterWithName("postCode").description("우편 번호")
-                    ,parameterWithName("description").description("설명")
-                    ,parameterWithName("pricePerDay").description("1박당 가격")
-                    ,parameterWithName("capacity").description("인원 수")
+                    , parameterWithName("lotAddress").description("지번 주소")
+                    , parameterWithName("roadAddress").description("도로명 주소")
+                    , parameterWithName("detailedAddress").description("상세 주소")
+                    , parameterWithName("postCode").description("우편 번호")
+                    , parameterWithName("description").description("설명")
+                    , parameterWithName("pricePerDay").description("1박당 가격")
+                    , parameterWithName("capacity").description("인원 수")
                 ),
                 requestParts(
                     partWithName("roomPhotosFile").description("숙소 사진")

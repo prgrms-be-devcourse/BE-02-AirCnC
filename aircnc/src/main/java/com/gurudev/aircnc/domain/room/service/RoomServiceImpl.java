@@ -26,7 +26,8 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public Room register(RoomDto roomDto, List<RoomPhotoDto> roomPhotoDtos, Long hostId) {
     Room room = roomDto.toEntity();
-    List<RoomPhoto> roomPhotos = roomPhotoDtos.stream().map(RoomPhotoDto::toEntity).toList();
+    List<RoomPhoto> roomPhotos = roomPhotoDtos.stream().map(RoomPhotoDto::toEntity).collect(
+        Collectors.toUnmodifiableList());
 
     roomPhotos.forEach(room::addRoomPhoto);
 

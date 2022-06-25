@@ -9,7 +9,7 @@ public interface MemberService {
   Member getById(Long id);
 
   Member register(Member member);
-  
+
   Member getByEmail(Email email);
 
   Member login(Email email, Password password);

@@ -1,14 +1,14 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
-    username: gurudev
-    password: pass123
+    url: ${db.url:jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8}
+    username: ${db.username:root}
+    password: ${db.password:1234}
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -16,8 +16,10 @@ spring:
 
 jwt:
   issuer: "gurudev"
-  client-secret: "EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ"
+  client-secret: ${jwt.client.secret:secret}
   expiry-seconds: 1800
 
 room-photos:
   path: src/main/resources/room-photos/
+
+

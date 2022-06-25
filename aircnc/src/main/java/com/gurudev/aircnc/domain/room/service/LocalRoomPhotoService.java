@@ -25,7 +25,8 @@ public class LocalRoomPhotoService implements RoomPhotoService {
     try {
       multipartFile.transferTo(Path.of(roomPhotosPath, fileName));
     } catch (IOException e) {
-      throw new RoomRegisterException("숙소 사진 저장 중 예외 발생 : " + multipartFile.getOriginalFilename(), e);
+      throw new RoomRegisterException("숙소 사진 저장 중 예외 발생 : " + multipartFile.getOriginalFilename(),
+          e);
     }
 
     return new RoomPhoto(fileName);

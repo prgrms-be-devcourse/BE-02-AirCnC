@@ -1,19 +1,14 @@
 package com.gurudev.aircnc.configuration;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.*;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import com.gurudev.aircnc.configuration.jwt.Jwt;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationFilter;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -34,9 +29,10 @@ public class SecurityConfig {
         .logout().disable()
         .requestCache().disable()
 
-        .authorizeRequests(authz -> {
-            authz.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
-            authz.anyRequest().permitAll();
+        .authorizeRequests(
+            auth -> {
+              auth.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
+              auth.anyRequest().permitAll();
             }
         )
 

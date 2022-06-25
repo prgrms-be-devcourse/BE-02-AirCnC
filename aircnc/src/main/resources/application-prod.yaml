@@ -6,13 +6,18 @@ spring:
     password: ${db.password:1234}
 
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
+jwt:
+  issuer: "gurudev"
+  client-secret: ${jwt.client.secret:secret}
+  expiry-seconds: 1800
+
 room-photos:
-  path: src/test/resources/room-photos-dest/
+  path: src/main/resources/room-photos/

@@ -13,10 +13,10 @@ import org.springframework.http.MediaType;
 
 class MemberControllerTest extends RestDocsTestSupport {
 
-  private String email = "seunghan@gamil.com";
-  private String password = "pass12343";
-  private String name = "seunghan";
-  private String role = "GUEST";
+  private final String email = "seunghan@gamil.com";
+  private final String password = "pass12343";
+  private final String name = "seunghan";
+  private final String role = "GUEST";
 
   @Test
   void 회원가입_API() throws Exception {

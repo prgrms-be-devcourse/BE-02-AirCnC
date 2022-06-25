@@ -1,5 +1,3 @@
-
-
 package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse.of;

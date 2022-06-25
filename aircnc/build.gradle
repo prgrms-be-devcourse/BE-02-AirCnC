@@ -7,7 +7,7 @@ plugins {
 
 group = 'com.gurudev'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '16'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -30,6 +30,8 @@ dependencies {
 
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.auth0:java-jwt:3.19.2'
+
+    implementation 'org.flywaydb:flyway-mysql:8.5.12'
 
     compileOnly 'org.projectlombok:lombok'
 
