@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.util;
 
+import com.gurudev.aircnc.domain.member.dto.MemberDto;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
@@ -12,6 +13,28 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
 
 public class Fixture {
+
+  public static MemberDto createGuestDto(){
+    return MemberDto.builder()
+        .email("guest@naver.com")
+        .name("ndy")
+        .password("paSSword!")
+        .phoneNumber("010-1234-5678")
+        .birthDate(LocalDate.of(1997,8,21))
+        .role("GUEST")
+        .build();
+  }
+
+  public static MemberDto createHostDto(){
+    return MemberDto.builder()
+        .email("host@naver.com")
+        .name("ndy")
+        .password("paSSword!")
+        .phoneNumber("010-1234-5678")
+        .birthDate(LocalDate.of(1997,8,21))
+        .role("HOST")
+        .build();
+  }
 
   public static Member createHost() {
     return new Member(new Email("host@haha.com"),

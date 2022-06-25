@@ -1,10 +1,11 @@
 package com.gurudev.aircnc.domain.member.service;
 
-import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
+import static com.gurudev.aircnc.domain.util.Fixture.createGuestDto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.gurudev.aircnc.domain.member.dto.MemberDto;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
@@ -22,13 +23,13 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  private final Member member = createGuest();
+  private final MemberDto memberDto = createGuestDto();
 
   @Test
   void 회원_생성_조회_성공_테스트() {
-    memberService.register(member);
+    Member registeredMember = memberService.register(memberDto);
 
-    Member foundMember = memberService.getByEmail(member.getEmail());
+    Member foundMember = memberService.getById(registeredMember.getId());
 
     assertThat(foundMember).extracting(
         Member::getEmail,
@@ -38,14 +39,14 @@ class MemberServiceTest {
         Member::getPhoneNumber,
         Member::getRole
     ).isEqualTo(
-        List.of(member.getEmail(), member.getPassword(),
-            member.getName(), member.getBirthDate(),
-            member.getPhoneNumber(), member.getRole()));
+        List.of(registeredMember.getEmail(), registeredMember.getPassword(),
+            registeredMember.getName(), registeredMember.getBirthDate(),
+            registeredMember.getPhoneNumber(), registeredMember.getRole()));
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
-    Email email = member.getEmail();
+    Email email = new Email(memberDto.getEmail());
 
     assertThatNotFoundException()
         .isThrownBy(() -> memberService.getByEmail(email));
@@ -53,19 +54,19 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
-    String rawPassword = Password.toString(member.getPassword());
-    memberService.register(member);
+    String rawPassword = memberDto.getPassword();
+    memberService.register(memberDto);
 
-    Member loginMember = memberService.login(member.getEmail(), new Password(rawPassword));
+    Member loginMember = memberService.login(new Email(memberDto.getEmail()), new Password(rawPassword));
 
-    assertThat(loginMember.getEmail()).isEqualTo(member.getEmail());
+    assertThat(Email.toString(loginMember.getEmail())).isEqualTo(memberDto.getEmail());
   }
 
   @Test
   void 로그인_실패_테스트() {
-    memberService.register(member);
+    memberService.register(memberDto);
 
-    Email email = member.getEmail();
+    Email email = new Email(memberDto.getEmail());
     Password illegalPassword = new Password("wrongpassword");
     assertThatThrownBy(() -> memberService.login(email, illegalPassword)).isInstanceOf(
         BadCredentialsException.class);

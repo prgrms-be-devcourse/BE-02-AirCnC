@@ -3,7 +3,9 @@ package com.gurudev.aircnc.domain.trip.service;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
+import static com.gurudev.aircnc.domain.util.Fixture.createGuestDto;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
+import static com.gurudev.aircnc.domain.util.Fixture.createHostDto;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
@@ -55,15 +57,13 @@ class TripServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    Member host = createHost();
-    memberService.register(host);
+    Member host = memberService.register(createHostDto());
 
     room = createRoom();
     roomPhoto = createRoomPhoto();
     room = roomService.register(Dto.of(room), Dto.listOf(List.of(this.roomPhoto)), host.getId());
 
-    guest = createGuest();
-    guest = memberService.register(guest);
+    guest = memberService.register(createGuestDto());
 
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
