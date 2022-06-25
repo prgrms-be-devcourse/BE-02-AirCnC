@@ -65,15 +65,4 @@ public class Member extends BaseIdEntity {
   public boolean isHost() {
     return role == Role.HOST;
   }
-
-  public void verifyPassword(PasswordEncoder passwordEncoder, Password rawPassword) {
-    if (!this.password.matches(passwordEncoder, rawPassword)) {
-      throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
-    }
-  }
-
-  public Member encodePassword(PasswordEncoder passwordEncoder) {
-    this.password.encode(passwordEncoder);
-    return this;
-  }
 }
