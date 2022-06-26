@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.configuration.jwt;
+package com.gurudev.aircnc.infrastructure.security.jwt;
 
 import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

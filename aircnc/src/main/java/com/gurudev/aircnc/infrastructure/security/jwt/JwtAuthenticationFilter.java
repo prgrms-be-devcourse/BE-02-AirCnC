@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.configuration.jwt;
+package com.gurudev.aircnc.infrastructure.security.jwt;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;

@@ -3,13 +3,13 @@ package com.gurudev.aircnc.controller;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
 
-import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
