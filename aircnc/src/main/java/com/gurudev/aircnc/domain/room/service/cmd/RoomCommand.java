@@ -1,16 +1,20 @@
 package com.gurudev.aircnc.domain.room.service.cmd;
 
+import static java.util.stream.Collectors.toList;
+
+import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
+import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RoomCommand {
 
-  @RequiredArgsConstructor
-  public static class RoomCreateCommand {
+  public static class RoomRegisterCommand {
 
     private final String name;
 
@@ -28,10 +32,56 @@ public final class RoomCommand {
 
     private final int capacity;
 
+    private final List<String> photoFileNames = new ArrayList<>();
+
+    private final Long hostId;
+
     public Room toEntity() {
-      return new Room(name,
+      Room room = new Room(name,
           new Address(lotAddress, roadAddress, detailedAddress, postCode),
           description, pricePerDay, capacity);
+      photoFileNames.forEach(filename -> room.addRoomPhoto(new RoomPhoto(filename)));
+      return room;
+    }
+
+    public Long getHostId() {
+      return hostId;
+    }
+
+    private RoomRegisterCommand(String name, String lotAddress, String roadAddress,
+        String detailedAddress,
+        String postCode, String description, int pricePerDay, int capacity,
+        List<String> photofileNames,
+        Long memberId) {
+      this.name = name;
+      this.lotAddress = lotAddress;
+      this.roadAddress = roadAddress;
+      this.detailedAddress = detailedAddress;
+      this.postCode = postCode;
+      this.description = description;
+      this.pricePerDay = pricePerDay;
+      this.capacity = capacity;
+      this.photoFileNames.addAll(photofileNames);
+      this.hostId = memberId;
+    }
+
+    public static RoomRegisterCommand of(RoomRegisterRequest registerRequest,
+        List<RoomPhoto> photos,
+        Long hostId) {
+      List<String> roomPhotoFiles = photos.stream()
+          .map(RoomPhoto::getFileName)
+          .collect(toList());
+
+      return new RoomRegisterCommand(
+          registerRequest.getName(),
+          registerRequest.getLotAddress(),
+          registerRequest.getRoadAddress(),
+          registerRequest.getDetailedAddress(),
+          registerRequest.getPostCode(),
+          registerRequest.getDescription(),
+          registerRequest.getPricePerDay(),
+          registerRequest.getCapacity(),
+          roomPhotoFiles, hostId);
     }
   }
 }

@@ -1,9 +1,12 @@
 package com.gurudev.aircnc.domain.room.service;
 
+import static java.util.stream.Collectors.toList;
+
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.exception.RoomRegisterException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,13 @@ public class LocalRoomPhotoService implements RoomPhotoService {
 
   @Transactional
   @Override
-  public RoomPhoto upload(MultipartFile multipartFile) {
+  public List<RoomPhoto> upload(List<MultipartFile> multipartFile) {
+    return multipartFile.stream()
+        .map(this::uploadOneFile)
+        .collect(toList());
+  }
+
+  private RoomPhoto uploadOneFile(MultipartFile multipartFile) {
     String fileName = getFileName(multipartFile);
 
     try {

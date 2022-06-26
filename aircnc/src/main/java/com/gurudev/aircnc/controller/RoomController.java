@@ -1,7 +1,5 @@
 package com.gurudev.aircnc.controller;
 
-import static com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse.of;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
@@ -11,7 +9,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
 import com.gurudev.aircnc.domain.room.service.RoomService;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomPhotoCommand.RoomPhotoCreateCommand;
+import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand.RoomRegisterCommand;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,20 +34,15 @@ public class RoomController {
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
-      @ModelAttribute RoomRegisterRequest roomDto,
+      @ModelAttribute RoomRegisterRequest registerRequest,
       @RequestPart List<MultipartFile> roomPhotosFile) {
 
-    List<RoomPhoto> roomPhotos = roomPhotosFile.stream()
-        .map(roomPhotoService::upload)
-        .collect(toList());
+    List<RoomPhoto> roomPhotos = roomPhotoService.upload(roomPhotosFile);
 
-    List<RoomPhotoCreateCommand> roomPhotoCmds = roomPhotos.stream()
-        .map(RoomPhotoCreateCommand::of)
-        .collect(toList());
+    Room room = roomService.register(
+        RoomRegisterCommand.of(registerRequest, roomPhotos, authentication.id));
 
-    Room room = roomService.register(roomDto.toDto(), roomPhotoCmds, authentication.id);
-
-    return new ResponseEntity<>(of(room, roomPhotos), CREATED);
+    return new ResponseEntity<>(RoomRegisterResponse.of(room, roomPhotos), CREATED);
   }
 
 }

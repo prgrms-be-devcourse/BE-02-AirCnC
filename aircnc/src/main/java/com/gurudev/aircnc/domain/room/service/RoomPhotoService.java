@@ -1,10 +1,11 @@
 package com.gurudev.aircnc.domain.room.service;
 
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface RoomPhotoService {
 
-  RoomPhoto upload(MultipartFile multipartFile);
+  List<RoomPhoto> upload(List<MultipartFile> multipartFiles);
 
 }
