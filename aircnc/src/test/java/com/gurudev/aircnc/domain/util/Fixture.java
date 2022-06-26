@@ -5,6 +5,7 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
+import com.gurudev.aircnc.domain.member.service.cmd.MemberCommand.MemberRegisterCommand;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
@@ -22,6 +23,15 @@ public class Fixture {
         Role.HOST);
   }
 
+  public static MemberRegisterCommand createHostRegisterCmd() {
+    return new MemberRegisterCommand("host@haha.com",
+        "paSSword!",
+        "ndy",
+        LocalDate.of(1997, 8, 21),
+        "010-1234-5678",
+        Role.HOST.name());
+  }
+
   public static Member createGuest() {
     return new Member(new Email("guest@haha.com"),
         new Password("paSSword!"),
@@ -30,6 +40,16 @@ public class Fixture {
         new PhoneNumber("010-1234-5678"),
         Role.GUEST);
   }
+
+  public static MemberRegisterCommand createGuestRegisterCmd() {
+    return new MemberRegisterCommand("guest@haha.com",
+        "paSSword!",
+        "ndy",
+        LocalDate.of(1997, 8, 21),
+        "010-1234-5678",
+        Role.GUEST.name());
+  }
+
 
   public static Address createAddress() {
     return new Address("전라북도 전주시 완산구 풍산동 123-1",

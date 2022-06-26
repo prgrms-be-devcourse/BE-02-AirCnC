@@ -34,7 +34,7 @@ public class MemberController {
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
-    Member registeredMember = memberService.register(memberDto.toEntity());
+    Member registeredMember = memberService.register(memberDto.toCommand());
 
     return new ResponseEntity<>(MemberResponse.of(registeredMember), CREATED);
   }
