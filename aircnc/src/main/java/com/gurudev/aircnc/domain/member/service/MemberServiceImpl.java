@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.member.service;
 
-import com.gurudev.aircnc.configuration.PasswordEncryptor;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
@@ -8,6 +7,7 @@ import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.member.service.cmd.MemberCommand.MemberRegisterCommand;
 import com.gurudev.aircnc.exception.AircncRuntimeException;
 import com.gurudev.aircnc.exception.NotFoundException;
+import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;

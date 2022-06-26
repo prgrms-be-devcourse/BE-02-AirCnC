@@ -2,9 +2,10 @@ package com.gurudev.aircnc.domain.member.entity;
 
 import static com.gurudev.aircnc.constant.Regex.PASSWORD_ENCODING_PREFIX;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkStateException;
 import static org.springframework.util.StringUtils.hasText;
 
-import com.gurudev.aircnc.configuration.PasswordEncryptor;
+import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -43,15 +44,10 @@ public class Password {
     this.password = encoder.encode(this.password);
   }
 
-  public boolean matches(PasswordEncryptor encoder, Password rawPassword) {
-    if (!isEncoded()) {
-      throw new IllegalStateException("비밀번호가 암호화되지 않았습니다");
-    }
-    return encoder.matches(rawPassword.getPassword(), this.password);
-  }
+  public boolean matches(PasswordEncryptor encryptor, Password rawPassword) {
+    checkStateException(ENCODED_PATTERN.matcher(this.password).find(), "비밀번호가 암호화되지 않았습니다");
 
-  public boolean isEncoded() {
-    return ENCODED_PATTERN.matcher(this.password).find();
+    return encryptor.matches(rawPassword.getPassword(), this.password);
   }
 
 }
