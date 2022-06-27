@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.infrastructure.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -32,7 +31,7 @@ public class S3Client {
     return executePut(request);
   }
 
-  public String upload(byte[] bytes, String basePath, Map<String, String> metadata) {
+  public String upload(byte[] bytes, Map<String, String> metadata, String basePath) {
     String name = basePath + "/" + UUID.randomUUID();
     return upload(new ByteArrayInputStream(bytes), bytes.length, name + ".jpeg", "image/jpeg",
         metadata);
@@ -58,7 +57,7 @@ public class S3Client {
   }
 
   private String executePut(PutObjectRequest request) {
-    amazonS3.putObject(request.withCannedAcl(CannedAccessControlList.PublicRead));
+    amazonS3.putObject(request);
     StringBuilder sb = new StringBuilder(url);
     if (!url.endsWith("/")) {
       sb.append("/");
