@@ -13,11 +13,6 @@ import org.springframework.http.MediaType;
 
 class MemberControllerTest extends RestDocsTestSupport {
 
-  private final String email = "seunghan@gamil.com";
-  private final String password = "pass12343";
-  private final String name = "seunghan";
-  private final String role = "GUEST";
-
   @Test
   void 회원가입_API() throws Exception {
     ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
@@ -44,21 +39,20 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 로그인_API() throws Exception {
-
-    멤버_등록(email, password, name, role);
+    멤버_등록("seunghan@gamil.com", "pass12343", "seunghan", "GUEST");
 
     ObjectNode loginRequest = objectMapper.createObjectNode();
     ObjectNode loginMember = loginRequest.putObject("member");
-    loginMember.put("email", email)
-        .put("password", password);
+    loginMember.put("email", "seunghan@gamil.com")
+        .put("password", "pass12343");
 
     mockMvc.perform(post("/api/v1/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(loginRequest.toString()))
         .andExpect(status().isOk())
         .andExpectAll(
-            jsonPath("$.member.email").value(email),
-            jsonPath("$.member.name").value(name),
+            jsonPath("$.member.email").value("seunghan@gamil.com"),
+            jsonPath("$.member.name").value("seunghan"),
             jsonPath("$.member.role").value("GUEST"),
             jsonPath("$.member.token").exists()
         );
@@ -66,19 +60,18 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 정보조회_API() throws Exception {
-
-    멤버_등록(email, password, name, role);
-    로그인(email, password);
+    멤버_등록("seunghan@gamil.com", "pass12343", "seunghan", "GUEST");
+    로그인("seunghan@gamil.com", "pass12343");
 
     mockMvc.perform(get("/api/v1/me")
             .header(AUTHORIZATION, token))
         .andExpect(status().isOk())
         .andExpectAll(
-            jsonPath("$.member.email").value(email),
-            jsonPath("$.member.name").value(name),
+            jsonPath("$.member.email").value("seunghan@gamil.com"),
+            jsonPath("$.member.name").value("seunghan"),
             jsonPath("$.member.birthDate").value("1998-04-21"),
             jsonPath("$.member.phoneNumber").value("010-1234-5678"),
-            jsonPath("$.member.role").value(role)
+            jsonPath("$.member.role").value("GUEST")
         );
   }
 
