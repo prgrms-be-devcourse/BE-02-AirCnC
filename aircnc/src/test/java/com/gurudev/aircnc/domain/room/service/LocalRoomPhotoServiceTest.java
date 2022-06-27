@@ -26,15 +26,13 @@ class LocalRoomPhotoServiceTest {
   @Value("${room-photos.path}")
   private String roomPhotosPath;
 
-  MockMultipartFile requestImage;
-
   @Test
   void 로컬_숙소_사진_등록_성공() throws IOException {
     //given
     InputStream requestInputStream =
         new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
 
-    requestImage =
+    MockMultipartFile requestImage =
         new MockMultipartFile("photo1", "photo1.jpeg", IMAGE_JPEG_VALUE, requestInputStream);
 
     //when
