@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.member.service;
 
-import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,6 +7,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
+import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
+import com.gurudev.aircnc.domain.member.entity.Role;
+import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
+import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +26,34 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  private final Member member = createGuest();
+  private final MemberRegisterCommand memberRegisterCmd = Command.ofHost();
+
+  private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
 
   @Test
-  void 회원_생성_조회_성공_테스트() {
-    memberService.register(member);
+  void 회원_생성_성공_테스트() {
+    Member member = memberService.register(memberRegisterCmd);
+
+    assertThat(member).extracting(
+        Member::getEmail,
+        Member::getName,
+        Member::getBirthDate,
+        Member::getPhoneNumber,
+        Member::getRole
+    ).isEqualTo(
+        List.of(new Email(memberRegisterCmd.getEmail()),
+            memberRegisterCmd.getName(),
+            memberRegisterCmd.getBirthDate(),
+            new PhoneNumber(memberRegisterCmd.getPhoneNumber()),
+            Role.valueOf(memberRegisterCmd.getRole())));
+    assertThat(member.getPassword().matches(
+        passwordEncryptor,
+        new Password(memberRegisterCmd.getPassword()))).isTrue();
+  }
+
+  @Test
+  void 회원_조회_성공_테스트() {
+    Member member = memberService.register(memberRegisterCmd);
 
     Member foundMember = memberService.getByEmail(member.getEmail());
 
@@ -40,12 +67,13 @@ class MemberServiceTest {
     ).isEqualTo(
         List.of(member.getEmail(), member.getPassword(),
             member.getName(), member.getBirthDate(),
-            member.getPhoneNumber(), member.getRole()));
+            member.getPhoneNumber(),
+            member.getRole()));
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
-    Email email = member.getEmail();
+    Email email = new Email(memberRegisterCmd.getEmail());
 
     assertThatNotFoundException()
         .isThrownBy(() -> memberService.getByEmail(email));
@@ -53,20 +81,21 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
-    String rawPassword = Password.toString(member.getPassword());
-    memberService.register(member);
+    String rawPassword = memberRegisterCmd.getPassword();
+    Email email = new Email(memberRegisterCmd.getEmail());
+    memberService.register(memberRegisterCmd);
 
-    Member loginMember = memberService.login(member.getEmail(), new Password(rawPassword));
+    Member loginMember = memberService.login(email, new Password(rawPassword));
 
-    assertThat(loginMember.getEmail()).isEqualTo(member.getEmail());
+    assertThat(loginMember.getEmail()).isEqualTo(email);
   }
 
   @Test
   void 로그인_실패_테스트() {
-    memberService.register(member);
-
-    Email email = member.getEmail();
+    memberService.register(memberRegisterCmd);
+    Email email = new Email(memberRegisterCmd.getEmail());
     Password illegalPassword = new Password("wrongpassword");
+
     assertThatThrownBy(() -> memberService.login(email, illegalPassword)).isInstanceOf(
         BadCredentialsException.class);
   }
