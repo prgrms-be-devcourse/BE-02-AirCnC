@@ -33,6 +33,10 @@ spring:
             enabled: true
             required: true
 
+  thymeleaf:
+    prefix: classpath:/mail-templates/
+    cache: false
+
 jwt:
   issuer: "gurudev"
   client-secret: ${jwt.client.secret:secret}
