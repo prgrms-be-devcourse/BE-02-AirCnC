@@ -33,11 +33,13 @@ class MemberControllerTest extends RestDocsTestSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .content(memberRegisterRequest.toString()))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.member.email").value("seunghan@gamil.com"))
-        .andExpect(jsonPath("$.member.name").value("seunghan"))
-        .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
-        .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
-        .andExpect(jsonPath("$.member.role").value("GUEST"));
+        .andExpectAll(
+            jsonPath("$.member.email").value("seunghan@gamil.com"),
+            jsonPath("$.member.name").value("seunghan"),
+            jsonPath("$.member.birthDate").value("1998-04-21"),
+            jsonPath("$.member.phoneNumber").value("010-1234-5678"),
+            jsonPath("$.member.role").value("GUEST")
+        );
   }
 
   @Test
@@ -54,10 +56,12 @@ class MemberControllerTest extends RestDocsTestSupport {
             .contentType(MediaType.APPLICATION_JSON)
             .content(loginRequest.toString()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.member.email").value(email))
-        .andExpect(jsonPath("$.member.name").value(name))
-        .andExpect(jsonPath("$.member.role").value("GUEST"))
-        .andExpect(jsonPath("$.member.token").exists());
+        .andExpectAll(
+            jsonPath("$.member.email").value(email),
+            jsonPath("$.member.name").value(name),
+            jsonPath("$.member.role").value("GUEST"),
+            jsonPath("$.member.token").exists()
+        );
   }
 
   @Test
@@ -69,11 +73,13 @@ class MemberControllerTest extends RestDocsTestSupport {
     mockMvc.perform(get("/api/v1/me")
             .header(AUTHORIZATION, token))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.member.email").value(email))
-        .andExpect(jsonPath("$.member.name").value(name))
-        .andExpect(jsonPath("$.member.birthDate").value("1998-04-21"))
-        .andExpect(jsonPath("$.member.phoneNumber").value("010-1234-5678"))
-        .andExpect(jsonPath("$.member.role").value(role));
+        .andExpectAll(
+            jsonPath("$.member.email").value(email),
+            jsonPath("$.member.name").value(name),
+            jsonPath("$.member.birthDate").value("1998-04-21"),
+            jsonPath("$.member.phoneNumber").value("010-1234-5678"),
+            jsonPath("$.member.role").value(role)
+        );
   }
 
 }
