@@ -13,6 +13,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.util.Command;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,18 +35,25 @@ class RoomServiceImplTest {
 
   private Member host;
 
+  private Room room1;
+  private Room room2;
+
+  private List<RoomPhoto> roomPhotos;
+
   @BeforeEach
   void setUp() {
 
-    host = memberService.register(Command.ofHost());
+    host = memberService.register(Command.ofRegisterMember(createHost()));
 
     room1 = createRoom();
     room2 = createRoom();
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(ofRoom(room1, roomPhotos, host.getId()));
-    room2 = roomService.register(ofRoom(room2, Collections.emptyList(), host.getId()));
+    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
+    room2 = roomService.register(
+        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
+
   }
 
   @Test
@@ -67,20 +75,20 @@ class RoomServiceImplTest {
   @Test
   void 숙소_리스트_조회_성공() {
     //given
-    Room room1 = createRoom();
-    Room room2 = createRoom();
+    Room roomA = createRoom();
+    Room roomB = createRoom();
 
     List<RoomPhoto> roomPhotos1 = List.of(createRoomPhoto(), createRoomPhoto());
     List<RoomPhoto> roomPhotos2 = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos1, host.getId()));
-    room2 = roomService.register(Command.ofRegisterRoom(room2, roomPhotos2, host.getId()));
+    roomA = roomService.register(Command.ofRegisterRoom(roomA, roomPhotos1, host.getId()));
+    roomB = roomService.register(Command.ofRegisterRoom(roomB, roomPhotos2, host.getId()));
 
     //when
     List<Room> rooms = roomService.getAll();
 
     //then
-    assertThat(rooms).hasSize(2).containsExactly(room1, room2);
+    assertThat(rooms).hasSize(4).containsExactly(room1, room2, roomA, roomB);
   }
 
   @ParameterizedTest

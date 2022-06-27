@@ -2,7 +2,7 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
@@ -66,7 +66,7 @@ class TripServiceImplTest {
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
-    
+
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
   }
 
