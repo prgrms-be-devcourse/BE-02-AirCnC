@@ -1,8 +1,11 @@
 package com.gurudev.aircnc.domain.room.service;
 
+import static com.gurudev.aircnc.domain.util.Command.ofGuest;
+import static com.gurudev.aircnc.domain.util.Command.ofHost;
 import static com.gurudev.aircnc.domain.util.Command.ofRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,8 +13,11 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.room.repository.RoomRepository;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
-import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.domain.trip.service.TripService;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,10 +33,16 @@ import org.springframework.transaction.annotation.Transactional;
 class RoomServiceImplTest {
 
   @Autowired
+  RoomRepository roomRepository;
+
+  @Autowired
   private MemberService memberService;
 
   @Autowired
   private RoomService roomService;
+
+  @Autowired
+  private TripService tripService;
 
   private Member host;
   private Room room1;
@@ -40,7 +52,7 @@ class RoomServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    host = memberService.register(Command.ofHost());
+    host = memberService.register(ofHost());
 
     room1 = createRoom();
     room2 = createRoom();
@@ -49,6 +61,10 @@ class RoomServiceImplTest {
 
     room1 = roomService.register(ofRoom(room1, roomPhotos, host.getId()));
     room2 = roomService.register(ofRoom(room2, Collections.emptyList(), host.getId()));
+
+    Member guest = memberService.register(ofGuest());
+    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
+        room2.getPricePerDay());
   }
 
   @Test
@@ -111,5 +127,38 @@ class RoomServiceImplTest {
     //then
     assertThatNotFoundException()
         .isThrownBy(() -> roomService.update(roomUpdateCommand));
+  }
+
+  @Test
+  void 숙소_삭제_성공() {
+    //given
+    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId(), room1.getId());
+
+    //when
+    roomService.delete(roomDeleteCommand);
+
+    //then
+    assertThatNotFoundException()
+        .isThrownBy(() -> roomService.getById(room1.getId()));
+  }
+
+  @Test
+  void 여행_중_혹은_예약이_존재하는_숙소_삭제_실패() {
+    //given
+    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId(), room2.getId());
+
+    //then
+    assertThatAircncRuntimeException()
+        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
+  }
+
+  @Test
+  void 호스트가_아닌_경우_숙소_삭제_실패() {
+    //given
+    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId() + 1, room2.getId());
+
+    //then
+    assertThatAircncRuntimeException()
+        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 }
