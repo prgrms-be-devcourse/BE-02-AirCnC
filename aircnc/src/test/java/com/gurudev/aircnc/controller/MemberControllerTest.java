@@ -74,5 +74,4 @@ class MemberControllerTest extends RestDocsTestSupport {
             jsonPath("$.member.role").value("GUEST")
         );
   }
-
 }

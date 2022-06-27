@@ -10,7 +10,6 @@ import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.util.Command;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,10 +28,12 @@ class RoomServiceImplTest {
   private RoomService roomService;
 
   private Member host;
+
   private Room room1;
   private Room room2;
 
-  private List<RoomPhoto> roomPhotos;
+  private List<RoomPhoto> roomPhotos1;
+  private List<RoomPhoto> roomPhotos2;
 
   @BeforeEach
   void setUp() {
@@ -42,11 +43,8 @@ class RoomServiceImplTest {
     room1 = createRoom();
     room2 = createRoom();
 
-    roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
-
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
-    room2 = roomService.register(
-        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
+    roomPhotos1 = List.of(createRoomPhoto(), createRoomPhoto());
+    roomPhotos2 = List.of(createRoomPhoto());
   }
 
   @Test
@@ -54,15 +52,18 @@ class RoomServiceImplTest {
     Room room = createRoom();
 
     Room registeredRoom = roomService.register(
-        Command.ofRegisterRoom(room, roomPhotos, host.getId()));
+        Command.ofRegisterRoom(room, roomPhotos1, host.getId()));
 
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(host);
-    assertThat(registeredRoom.getRoomPhotos()).containsExactlyElementsOf(roomPhotos);
+    assertThat(registeredRoom.getRoomPhotos()).containsExactlyElementsOf(roomPhotos1);
   }
 
   @Test
   void 숙소_리스트_조회_성공() {
+    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos1, host.getId()));
+    room2 = roomService.register(Command.ofRegisterRoom(room2, roomPhotos2, host.getId()));
+
     List<Room> rooms = roomService.getAll();
 
     assertThat(rooms).hasSize(2)

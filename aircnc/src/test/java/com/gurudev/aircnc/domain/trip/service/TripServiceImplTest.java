@@ -68,9 +68,6 @@ class TripServiceImplTest {
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
-
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
-    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
   }
 
   @Test
@@ -86,6 +83,9 @@ class TripServiceImplTest {
 
   @Test
   void 게스트의_여행_목록_조회() {
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
     List<Trip> findTrips = tripService.getByGuest(guest);
 
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
@@ -93,6 +93,8 @@ class TripServiceImplTest {
 
   @Test
   void 여행_상세_조회() {
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
     Trip trip = tripService.getById(trip1.getId());
 
     assertThat(trip).isEqualTo(trip1);
@@ -111,7 +113,10 @@ class TripServiceImplTest {
 
   @Test
   void 예약_상태의_여행_취소_성공() {
-    Trip cancelledTrip = tripService.cancel(trip1.getId());
+    Trip reservedTrip =
+        tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
+    Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
 
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
