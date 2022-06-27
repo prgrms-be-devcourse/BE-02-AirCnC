@@ -1,8 +1,9 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -26,54 +27,40 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  private final MemberRegisterCommand memberRegisterCmd = Command.ofHost();
+  private Member member = createGuest();
 
   private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
 
   @Test
-  void 회원_생성_성공_테스트() {
-    Member member = memberService.register(memberRegisterCmd);
+  void 회원_가입_성공_테스트() {
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    member = memberService.register(command);
 
-    assertThat(member).extracting(
-        Member::getEmail,
-        Member::getName,
-        Member::getBirthDate,
-        Member::getPhoneNumber,
-        Member::getRole
-    ).isEqualTo(
-        List.of(new Email(memberRegisterCmd.getEmail()),
-            memberRegisterCmd.getName(),
-            memberRegisterCmd.getBirthDate(),
-            new PhoneNumber(memberRegisterCmd.getPhoneNumber()),
-            Role.valueOf(memberRegisterCmd.getRole())));
-    assertThat(member.getPassword().matches(
-        passwordEncryptor,
-        new Password(memberRegisterCmd.getPassword()))).isTrue();
+    //생성된 회원의 필드가 회원 가입 명령의 필드와 일치하는지 검증
+    assertThat(member).extracting(Member::getEmail, Member::getName, Member::getBirthDate,
+            Member::getPhoneNumber, Member::getRole)
+        .isEqualTo(List.of(new Email(command.getEmail()), command.getName(), command.getBirthDate(),
+            new PhoneNumber(command.getPhoneNumber()), Role.valueOf(command.getRole())));
+
+    //생성된 회원의 비밀번호 암호와 여부 검증
+    assertThat(member.getPassword().matches(passwordEncryptor, new Password(command.getPassword())))
+        .isTrue();
   }
 
   @Test
   void 회원_조회_성공_테스트() {
-    Member member = memberService.register(memberRegisterCmd);
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    Member member = memberService.register(command);
 
     Member foundMember = memberService.getByEmail(member.getEmail());
 
-    assertThat(foundMember).extracting(
-        Member::getEmail,
-        Member::getPassword,
-        Member::getName,
-        Member::getBirthDate,
-        Member::getPhoneNumber,
-        Member::getRole
-    ).isEqualTo(
-        List.of(member.getEmail(), member.getPassword(),
-            member.getName(), member.getBirthDate(),
-            member.getPhoneNumber(),
-            member.getRole()));
+    assertThat(foundMember).isEqualTo(foundMember);
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
-    Email email = new Email(memberRegisterCmd.getEmail());
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    Email email = new Email(command.getEmail());
 
     assertThatNotFoundException()
         .isThrownBy(() -> memberService.getByEmail(email));
@@ -81,10 +68,11 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
-    String rawPassword = memberRegisterCmd.getPassword();
-    Email email = new Email(memberRegisterCmd.getEmail());
-    memberService.register(memberRegisterCmd);
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    memberService.register(command);
 
+    String rawPassword = command.getPassword();
+    Email email = new Email(command.getEmail());
     Member loginMember = memberService.login(email, new Password(rawPassword));
 
     assertThat(loginMember.getEmail()).isEqualTo(email);
@@ -92,11 +80,12 @@ class MemberServiceTest {
 
   @Test
   void 로그인_실패_테스트() {
-    memberService.register(memberRegisterCmd);
-    Email email = new Email(memberRegisterCmd.getEmail());
-    Password illegalPassword = new Password("wrongpassword");
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    memberService.register(command);
 
-    assertThatThrownBy(() -> memberService.login(email, illegalPassword)).isInstanceOf(
-        BadCredentialsException.class);
+    Email email = new Email(command.getEmail());
+    Password invalidPassword = new Password("invalidPassword");
+    assertThatExceptionOfType(BadCredentialsException.class)
+        .isThrownBy(() -> memberService.login(email, invalidPassword));
   }
 }

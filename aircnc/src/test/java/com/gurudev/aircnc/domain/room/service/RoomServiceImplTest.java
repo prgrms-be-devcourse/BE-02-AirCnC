@@ -36,7 +36,7 @@ class RoomServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    host = memberService.register(Command.ofHost());
+    host = memberService.register(Command.ofRegisterMember(host));
 
     room1 = createRoom();
     room2 = createRoom();
