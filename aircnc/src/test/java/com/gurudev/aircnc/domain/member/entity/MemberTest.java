@@ -34,7 +34,7 @@ class MemberTest {
   }
 
   @Test
-  void 생일_공백_불가() {
+  void 생일_null_불가() {
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Member(email, password, name, null, phoneNumber, Role.GUEST));
   }

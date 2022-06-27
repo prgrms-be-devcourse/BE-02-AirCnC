@@ -28,14 +28,13 @@ class PasswordTest {
         .isThrownBy(() -> new Password(invalidPassword));
   }
 
-  @ParameterizedTest
-  @CsvSource(value = {"12345678", "123456789012345"})
-  void 비밀번호_암호화_성공_테스트(String rawPassword) {
-    Password password = new Password(rawPassword);
+  @Test
+  void 비밀번호_암호화_성공_테스트() {
+    Password password = new Password("password");
 
     password.encode(passwordEncryptor);
 
-    assertThat(password.matches(passwordEncryptor, new Password(rawPassword))).isTrue();
+    assertThat(password.matches(passwordEncryptor, new Password("password"))).isTrue();
   }
 
   @ParameterizedTest
@@ -52,8 +51,7 @@ class PasswordTest {
   void 암호화_되지_않은_비밀번호는_일치여부_확인불가() {
     Password password = new Password("abcdefggg");
 
-    assertThatIllegalStateException().isThrownBy(
-        () -> password.matches(passwordEncryptor, new Password("abcdefggg"))
-    );
+    assertThatIllegalStateException()
+        .isThrownBy(() -> password.matches(passwordEncryptor, new Password("abcdefggg")));
   }
 }
