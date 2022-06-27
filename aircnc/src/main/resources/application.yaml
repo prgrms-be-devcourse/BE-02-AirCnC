@@ -19,7 +19,3 @@ jwt:
   client-secret: ${jwt.client.secret:secret}
   expiry-seconds: 1800
 
-room-photos:
-  path: src/main/resources/room-photos/
-
-
