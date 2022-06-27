@@ -1,5 +1,8 @@
 package com.gurudev.aircnc.domain.trip.service;
 
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
@@ -49,6 +52,12 @@ public class TripServiceImpl implements TripService {
 
     return trip;
   }
+
+  @Override
+  public void checkInTrips() {
+    tripRepository.bulkCheckIn(LocalDate.now(), RESERVED, TRAVELLING);
+  }
+
 
   private Trip findById(Long id) {
     return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));

@@ -2,6 +2,7 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Command.ofGuest;
 import static com.gurudev.aircnc.domain.util.Command.ofRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
@@ -66,17 +67,18 @@ class TripServiceImplTest {
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
-    totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
+    totalPrice = between(checkIn, checkOut).getDays()
+        * room.getPricePerDay(); // 이걸 밖에서 계산해야 하는지 잘 모르겠어요! 내부에 생성할 때 해도 될 거 같은데
 
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
-    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
   }
 
   @Test
   void 여행_생성_성공() {
+    // given, when
     Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount,
         totalPrice);
 
+    // then
     assertThat(trip.getId()).isNotNull();
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
             Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
@@ -85,15 +87,26 @@ class TripServiceImplTest {
 
   @Test
   void 게스트의_여행_목록_조회() {
+    // given
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
+    // when
     List<Trip> findTrips = tripService.getByGuest(guest);
 
+    // then
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
   }
 
   @Test
   void 여행_상세_조회() {
+    // given
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
+    // when
     Trip trip = tripService.getById(trip1.getId());
 
+    // then
     assertThat(trip).isEqualTo(trip1);
     assertThat(trip.getGuest()).isEqualTo(guest);
     assertThat(trip.getRoom()).isEqualTo(room);
@@ -102,16 +115,42 @@ class TripServiceImplTest {
 
   @Test
   void 없는_아이디로_여행_상세_조회_실패() {
+    // given
     Long invalidTripId = -1L;
 
+    // when, then
     assertThatNotFoundException()
         .isThrownBy(() -> tripService.getById(invalidTripId));
   }
 
   @Test
   void 예약_상태의_여행_취소_성공() {
+    // given
+    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
+    // when
     Trip cancelledTrip = tripService.cancel(trip1.getId());
 
+    // then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
+  }
+
+  @Test
+  void trip_status_변경_테스트() {
+    // given
+    for (int i = 0; i < 5; ++i) {
+      totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
+      tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
+    }
+
+    // when
+    tripService.checkInTrips();
+
+    // then
+    List<Trip> trips = tripService.getByGuest(guest);
+
+    assertThat(trips).extracting(Trip::getStatus).allMatch(status -> status == TRAVELLING);
+
+
   }
 }
