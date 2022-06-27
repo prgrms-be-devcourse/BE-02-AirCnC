@@ -8,4 +8,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
   Optional<Room> findByIdAndHostId(Long id, Long hostId);
 
+  void deleteByIdAndHostId(Long id, Long hostId);
 }
