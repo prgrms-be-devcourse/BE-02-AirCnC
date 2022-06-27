@@ -11,14 +11,20 @@ class RoomPhotoTest {
 
   @Test
   void 숙소_사진_생성() {
-    RoomPhoto roomPhoto = new RoomPhoto("photo.jpg");
+    //given
+    String fileName = "photo.jpg";
 
-    assertThat(roomPhoto.getFileName()).isEqualTo("photo.jpg");
+    //when
+    RoomPhoto roomPhoto = new RoomPhoto(fileName);
+
+    //then
+    assertThat(roomPhoto.getFileName()).isEqualTo(fileName);
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   void 파일_이름이_공백인_숙소_사진_생성_실패(String invalidFileName) {
+    //then
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new RoomPhoto(invalidFileName));
   }

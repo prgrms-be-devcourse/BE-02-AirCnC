@@ -2,15 +2,16 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
-import static com.gurudev.aircnc.domain.util.Command.ofGuest;
-import static com.gurudev.aircnc.domain.util.Command.ofRoom;
+
+import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
+import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
@@ -28,7 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 class TripServiceImplTest {
 
   @Autowired
@@ -51,34 +52,30 @@ class TripServiceImplTest {
   private int headCount;
   private int totalPrice;
 
-  private Trip trip1;
-  private Trip trip2;
-
   @BeforeEach
   void setUp() {
-    Member host = memberService.register(Command.ofHost());
+    Member host = memberService.register(Command.ofRegisterMember(createHost()));
 
+    guest = createGuest();
     room = createRoom();
     roomPhoto = createRoomPhoto();
-    room = roomService.register(ofRoom(room, List.of(roomPhoto), host.getId()));
+    room = roomService.register(Command.ofRegisterRoom(room, List.of(roomPhoto), host.getId()));
 
-    guest = memberService.register(ofGuest());
+    guest = memberService.register(Command.ofRegisterMember(guest));
 
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
-    totalPrice = between(checkIn, checkOut).getDays()
-        * room.getPricePerDay(); // 이걸 밖에서 계산해야 하는지 잘 모르겠어요! 내부에 생성할 때 해도 될 거 같은데
-
+    
+    totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
   }
 
   @Test
   void 여행_생성_성공() {
-    // given, when
-    Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount,
-        totalPrice);
+    //when
+    Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
-    // then
+    //then
     assertThat(trip.getId()).isNotNull();
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
             Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
@@ -87,26 +84,27 @@ class TripServiceImplTest {
 
   @Test
   void 게스트의_여행_목록_조회() {
-    // given
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
-    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    //given
+    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    Trip trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
-    // when
+    //when
     List<Trip> findTrips = tripService.getByGuest(guest);
 
-    // then
+    //then
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
   }
 
   @Test
   void 여행_상세_조회() {
-    // given
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
-    // when
+    //given
+    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+
+    //when
     Trip trip = tripService.getById(trip1.getId());
 
-    // then
+    //then
     assertThat(trip).isEqualTo(trip1);
     assertThat(trip.getGuest()).isEqualTo(guest);
     assertThat(trip.getRoom()).isEqualTo(room);
@@ -115,23 +113,24 @@ class TripServiceImplTest {
 
   @Test
   void 없는_아이디로_여행_상세_조회_실패() {
-    // given
+    //given
     Long invalidTripId = -1L;
 
-    // when, then
+    //then
     assertThatNotFoundException()
         .isThrownBy(() -> tripService.getById(invalidTripId));
   }
 
   @Test
   void 예약_상태의_여행_취소_성공() {
-    // given
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    //given
+    Trip reservedTrip =
+        tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
-    // when
-    Trip cancelledTrip = tripService.cancel(trip1.getId());
+    //when
+    Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
 
-    // then
+    //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
 
