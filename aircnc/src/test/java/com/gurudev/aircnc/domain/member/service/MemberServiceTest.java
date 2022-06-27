@@ -33,10 +33,14 @@ class MemberServiceTest {
 
   @Test
   void 회원_가입_성공_테스트() {
+    //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
+
+    //when
     member = memberService.register(command);
 
+    //then
     //생성된 회원의 필드가 회원 가입 명령의 필드와 일치하는지 검증
     assertThat(member).extracting(Member::getEmail, Member::getName, Member::getBirthDate,
             Member::getPhoneNumber, Member::getRole)
@@ -50,44 +54,54 @@ class MemberServiceTest {
 
   @Test
   void 회원_조회_성공_테스트() {
+    //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     member = memberService.register(command);
 
+    //when
     Member foundMember = memberService.getByEmail(member.getEmail());
 
+    //then
     assertThat(foundMember).isEqualTo(member);
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
+    //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     Email email = new Email(command.getEmail());
 
+    //then
     assertThatNotFoundException()
         .isThrownBy(() -> memberService.getByEmail(email));
   }
 
   @Test
   void 로그인_성공_테스트() {
+    //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     memberService.register(command);
 
+    //when
     String rawPassword = command.getPassword();
     Email email = new Email(command.getEmail());
     Member loginMember = memberService.login(email, new Password(rawPassword));
 
+    //then
     assertThat(loginMember.getEmail()).isEqualTo(email);
   }
 
   @Test
   void 로그인_실패_테스트() {
+    //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     memberService.register(command);
 
+    //then
     Email email = new Email(command.getEmail());
     Password invalidPassword = new Password("invalidPassword");
     assertThatExceptionOfType(BadCredentialsException.class)

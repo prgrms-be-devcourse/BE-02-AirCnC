@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,23 +28,23 @@ class LocalRoomPhotoServiceTest {
 
   MockMultipartFile requestImage;
 
-  @BeforeEach
-  void setUp() throws IOException {
-    InputStream requestInputStream = new FileInputStream(
-        "src/test/resources/room-photos-src/photo1.jpeg");
-
-    requestImage = new MockMultipartFile("photo1", "photo1.jpeg", IMAGE_JPEG_VALUE,
-        requestInputStream);
-  }
-
   @Test
   void 로컬_숙소_사진_등록_성공() throws IOException {
+    //given
+    InputStream requestInputStream =
+        new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
+
+    requestImage =
+        new MockMultipartFile("photo1", "photo1.jpeg", IMAGE_JPEG_VALUE, requestInputStream);
+
+    //when
     List<RoomPhoto> uploadedRoomPhoto = roomPhotoService.upload(List.of(requestImage));
+
+    //then
     String fileName = uploadedRoomPhoto.get(0).getFileName();
-
     InputStream uploadedInputStream = new FileInputStream(roomPhotosPath + fileName);
-    InputStream requestInputStream = requestImage.getInputStream();
 
+    requestInputStream = requestImage.getInputStream();
     assertThat(contentEquals(uploadedInputStream, requestInputStream)).isTrue();
   }
 

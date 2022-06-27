@@ -12,14 +12,20 @@ class EmailTest {
 
   @Test
   void 이메일_생성_성공() {
-    Email email = new Email("test@email.com");
+    //given
+    String emailString = "test@email.com";
 
-    assertThat(email).isEqualTo(new Email("test@email.com"));
+    //when
+    Email email = new Email(emailString);
+
+    //then
+    assertThat(email).isEqualTo(new Email(emailString));
   }
 
   @ParameterizedTest
   @CsvSource(value = {"test.email.com", "@email.com"})
   void 이메일_생성_실패(String invalidEmail) {
+    //then
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Email(invalidEmail));
   }

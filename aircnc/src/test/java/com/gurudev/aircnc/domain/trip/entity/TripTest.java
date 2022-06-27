@@ -47,8 +47,10 @@ class TripTest {
 
   @Test
   void Trip_생성_성공() {
+    //when
     Trip trip = new Trip(guest, room, checkIn, checkOut, totalPrice, headCount);
 
+    //then
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
             Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
         .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
@@ -56,58 +58,73 @@ class TripTest {
 
   @Test
   void CheckIn이_CheckOut_이전_이여야_한다() {
+    //given
     LocalDate invalidCheckOut = checkIn.minusDays(1);
 
+    //then
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Trip(guest, room, checkIn, invalidCheckOut, totalPrice, headCount));
   }
 
   @Test
   void 인원이_제한_인원_이하_일_수_없다() {
+    //given
+    int invalidHeadCount = TRIP_HEADCOUNT_MIN_VALUE - 1;
+
+    //then
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-            TRIP_HEADCOUNT_MIN_VALUE - 1));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidHeadCount));
   }
 
   @Test
   void 총_가격은_제한가격_미만일_수_없다() {
+    //given
     int invalidTotalPrice = TRIP_TOTAL_PRICE_MIN_VALUE - 1;
 
+    //then
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice,
-            headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
+    //given
     int invalidTotalPrice = this.totalPrice + 1;
 
+    //then
     assertThatExceptionOfType(TripReservationException.class)
         .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
   @Test
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
+    //given
     int invalidCapacity = room.getCapacity() + 1;
 
+    //then
     assertThatExceptionOfType(TripReservationException.class)
         .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidCapacity));
   }
 
   @Test
   void 예약_상태의_여행_취소_성공() {
+    //given
     Trip trip = createTrip();
 
+    //when
     trip.cancel();
 
+    //then
     assertThat(trip.getStatus()).isEqualTo(CANCELLED);
   }
 
   @Test
   void 취소_상태의_여행_취소_실패() {
+    //given
     Trip trip = createTrip();
     trip.cancel(); // -> trip.status = CANCELLED
 
+    //then
     assertThatExceptionOfType(TripCancelException.class)
         .isThrownBy(trip::cancel);
   }

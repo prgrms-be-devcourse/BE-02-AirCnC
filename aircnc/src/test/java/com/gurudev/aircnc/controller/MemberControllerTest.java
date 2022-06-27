@@ -15,6 +15,7 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 회원가입_API() throws Exception {
+    //given
     ObjectNode memberRegisterRequest = objectMapper.createObjectNode();
     ObjectNode member = memberRegisterRequest.putObject("member");
     member.put("email", "seunghan@gamil.com")
@@ -24,9 +25,12 @@ class MemberControllerTest extends RestDocsTestSupport {
         .put("phoneNumber", "010-1234-5678")
         .put("role", "GUEST");
 
+    //when
     mockMvc.perform(post("/api/v1/members")
             .contentType(MediaType.APPLICATION_JSON)
             .content(memberRegisterRequest.toString()))
+
+        //then
         .andExpect(status().isCreated())
         .andExpectAll(
             jsonPath("$.member.email").value("seunghan@gamil.com"),
@@ -39,6 +43,7 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 로그인_API() throws Exception {
+    //given
     멤버_등록("seunghan@gamil.com", "pass12343", "seunghan", "GUEST");
 
     ObjectNode loginRequest = objectMapper.createObjectNode();
@@ -46,9 +51,12 @@ class MemberControllerTest extends RestDocsTestSupport {
     loginMember.put("email", "seunghan@gamil.com")
         .put("password", "pass12343");
 
+    //when
     mockMvc.perform(post("/api/v1/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(loginRequest.toString()))
+
+        //then
         .andExpect(status().isOk())
         .andExpectAll(
             jsonPath("$.member.email").value("seunghan@gamil.com"),
@@ -60,11 +68,15 @@ class MemberControllerTest extends RestDocsTestSupport {
 
   @Test
   void 정보조회_API() throws Exception {
+    //given
     멤버_등록("seunghan@gamil.com", "pass12343", "seunghan", "GUEST");
     로그인("seunghan@gamil.com", "pass12343");
 
+    //when
     mockMvc.perform(get("/api/v1/me")
             .header(AUTHORIZATION, token))
+
+        //then
         .andExpect(status().isOk())
         .andExpectAll(
             jsonPath("$.member.email").value("seunghan@gamil.com"),

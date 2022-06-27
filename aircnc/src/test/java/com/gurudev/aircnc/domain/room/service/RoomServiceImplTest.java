@@ -29,44 +29,44 @@ class RoomServiceImplTest {
 
   private Member host;
 
-  private Room room1;
-  private Room room2;
-
-  private List<RoomPhoto> roomPhotos1;
-  private List<RoomPhoto> roomPhotos2;
-
   @BeforeEach
   void setUp() {
     host = createHost();
     host = memberService.register(Command.ofRegisterMember(host));
-
-    room1 = createRoom();
-    room2 = createRoom();
-
-    roomPhotos1 = List.of(createRoomPhoto(), createRoomPhoto());
-    roomPhotos2 = List.of(createRoomPhoto());
   }
 
   @Test
   void 숙소_등록_성공() {
+    //given
     Room room = createRoom();
+    List<RoomPhoto> roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    Room registeredRoom = roomService.register(
-        Command.ofRegisterRoom(room, roomPhotos1, host.getId()));
+    //then
+    Room registeredRoom =
+        roomService.register(Command.ofRegisterRoom(room, roomPhotos, host.getId()));
 
+    //then
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(host);
-    assertThat(registeredRoom.getRoomPhotos()).containsExactlyElementsOf(roomPhotos1);
+    assertThat(registeredRoom.getRoomPhotos()).containsExactlyElementsOf(roomPhotos);
   }
 
   @Test
   void 숙소_리스트_조회_성공() {
+    //given
+    Room room1 = createRoom();
+    Room room2 = createRoom();
+
+    List<RoomPhoto> roomPhotos1 = List.of(createRoomPhoto(), createRoomPhoto());
+    List<RoomPhoto> roomPhotos2 = List.of(createRoomPhoto(), createRoomPhoto());
+
     room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos1, host.getId()));
     room2 = roomService.register(Command.ofRegisterRoom(room2, roomPhotos2, host.getId()));
 
+    //when
     List<Room> rooms = roomService.getAll();
 
-    assertThat(rooms).hasSize(2)
-        .containsExactly(room1, room2);
+    //then
+    assertThat(rooms).hasSize(2).containsExactly(room1, room2);
   }
 }

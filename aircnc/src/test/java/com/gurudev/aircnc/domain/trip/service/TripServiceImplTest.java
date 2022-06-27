@@ -50,9 +50,6 @@ class TripServiceImplTest {
   private int headCount;
   private int totalPrice;
 
-  private Trip trip1;
-  private Trip trip2;
-
   @BeforeEach
   void setUp() {
     Member host = memberService.register(Command.ofRegisterMember(createHost()));
@@ -72,9 +69,10 @@ class TripServiceImplTest {
 
   @Test
   void 여행_생성_성공() {
-    Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount,
-        totalPrice);
+    //when
+    Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
+    //then
     assertThat(trip.getId()).isNotNull();
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
             Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
@@ -83,20 +81,26 @@ class TripServiceImplTest {
 
   @Test
   void 게스트의_여행_목록_조회() {
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
-    trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    //given
+    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    Trip trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
+    //when
     List<Trip> findTrips = tripService.getByGuest(guest);
 
+    //then
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
   }
 
   @Test
   void 여행_상세_조회() {
-    trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    //given
+    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
+    //when
     Trip trip = tripService.getById(trip1.getId());
 
+    //then
     assertThat(trip).isEqualTo(trip1);
     assertThat(trip.getGuest()).isEqualTo(guest);
     assertThat(trip.getRoom()).isEqualTo(room);
@@ -105,19 +109,24 @@ class TripServiceImplTest {
 
   @Test
   void 없는_아이디로_여행_상세_조회_실패() {
+    //given
     Long invalidTripId = -1L;
 
+    //then
     assertThatNotFoundException()
         .isThrownBy(() -> tripService.getById(invalidTripId));
   }
 
   @Test
   void 예약_상태의_여행_취소_성공() {
+    //given
     Trip reservedTrip =
         tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
+    //when
     Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
 
+    //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
 }
