@@ -23,7 +23,7 @@ public class Command {
         member.getRole().name());
   }
 
-  public static RoomRegisterCommand ofRoom(Room room, List<RoomPhoto> roomPhotos,
+  public static RoomRegisterCommand ofRegisterRoom(Room room, List<RoomPhoto> roomPhotos,
       Long hostId) {
     Address address = room.getAddress();
     RoomRegisterRequest request = new RoomRegisterRequest(

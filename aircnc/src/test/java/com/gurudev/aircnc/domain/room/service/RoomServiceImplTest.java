@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.util.Command.ofRoom;
+import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +36,7 @@ class RoomServiceImplTest {
 
   @BeforeEach
   void setUp() {
+    host = createHost();
     host = memberService.register(Command.ofRegisterMember(host));
 
     room1 = createRoom();
@@ -43,9 +44,9 @@ class RoomServiceImplTest {
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(ofRoom(room1, roomPhotos, host.getId()));
+    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
     room2 = roomService.register(
-        ofRoom(room2, Collections.emptyList(), host.getId()));
+        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
   }
 
   @Test
@@ -53,7 +54,7 @@ class RoomServiceImplTest {
     Room room = createRoom();
 
     Room registeredRoom = roomService.register(
-        ofRoom(room, roomPhotos, host.getId()));
+        Command.ofRegisterRoom(room, roomPhotos, host.getId()));
 
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(host);

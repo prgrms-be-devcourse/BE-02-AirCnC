@@ -2,7 +2,7 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.util.Command.ofRoom;
+import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
@@ -57,9 +57,10 @@ class TripServiceImplTest {
   void setUp() {
     Member host = memberService.register(Command.ofRegisterMember(createHost()));
 
+    guest = createGuest();
     room = createRoom();
     roomPhoto = createRoomPhoto();
-    room = roomService.register(ofRoom(room, List.of(roomPhoto), host.getId()));
+    room = roomService.register(Command.ofRegisterRoom(room, List.of(roomPhoto), host.getId()));
 
     guest = memberService.register(Command.ofRegisterMember(guest));
 
