@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-
-public class RoomDto {
+@NoArgsConstructor(access = PRIVATE)
+public final class RoomDto {
 
   /**
    * form-data 바인딩을 위해 게터, 세터, 기본생성자 추가
@@ -34,11 +34,20 @@ public class RoomDto {
     private int pricePerDay;
     private int capacity;
 
-    public com.gurudev.aircnc.domain.room.dto.RoomDto toDto() {
-      return new com.gurudev.aircnc.domain.room.dto.RoomDto(
-          name, lotAddress, roadAddress, detailedAddress, postCode,
-          description, pricePerDay, capacity);
+    public RoomRegisterRequest(String name, String lotAddress,
+        String roadAddress, String detailedAddress, String postCode,
+        String description, int pricePerDay, int capacity) {
+
+      this.name = name;
+      this.lotAddress = lotAddress;
+      this.roadAddress = roadAddress;
+      this.detailedAddress = detailedAddress;
+      this.postCode = postCode;
+      this.description = description;
+      this.pricePerDay = pricePerDay;
+      this.capacity = capacity;
     }
+
   }
 
   @Getter

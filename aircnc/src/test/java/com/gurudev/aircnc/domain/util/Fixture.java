@@ -31,6 +31,7 @@ public class Fixture {
         Role.GUEST);
   }
 
+
   public static Address createAddress() {
     return new Address("전라북도 전주시 완산구 풍산동 123-1",
         "전라북도 전주시 완산구 풍산1로 1길",

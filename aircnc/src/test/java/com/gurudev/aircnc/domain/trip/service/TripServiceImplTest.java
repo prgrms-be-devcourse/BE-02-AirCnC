@@ -2,8 +2,8 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
-import static com.gurudev.aircnc.domain.util.Fixture.createHost;
+import static com.gurudev.aircnc.domain.util.Command.ofGuest;
+import static com.gurudev.aircnc.domain.util.Command.ofRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
@@ -17,7 +17,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.util.Dto;
+import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,15 +55,13 @@ class TripServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    Member host = createHost();
-    memberService.register(host);
+    Member host = memberService.register(Command.ofHost());
 
     room = createRoom();
     roomPhoto = createRoomPhoto();
-    room = roomService.register(Dto.of(room), Dto.listOf(List.of(this.roomPhoto)), host.getId());
+    room = roomService.register(ofRoom(room, List.of(roomPhoto), host.getId()));
 
-    guest = createGuest();
-    guest = memberService.register(guest);
+    guest = memberService.register(ofGuest());
 
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);

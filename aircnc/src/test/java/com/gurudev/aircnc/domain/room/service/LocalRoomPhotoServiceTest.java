@@ -8,6 +8,7 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ class LocalRoomPhotoServiceTest {
 
   @Test
   void 로컬_숙소_사진_등록_성공() throws IOException {
-    RoomPhoto uploadedRoomPhoto = roomPhotoService.upload(requestImage);
-    String fileName = uploadedRoomPhoto.getFileName();
+    List<RoomPhoto> uploadedRoomPhoto = roomPhotoService.upload(List.of(requestImage));
+    String fileName = uploadedRoomPhoto.get(0).getFileName();
 
     InputStream uploadedInputStream = new FileInputStream(roomPhotosPath + fileName);
     InputStream requestInputStream = requestImage.getInputStream();

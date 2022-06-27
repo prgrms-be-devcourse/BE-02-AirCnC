@@ -1,8 +1,8 @@
 package com.gurudev.aircnc.configuration;
 
-import com.gurudev.aircnc.configuration.jwt.Jwt;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationFilter;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationProvider;
+import com.gurudev.aircnc.infrastructure.security.jwt.Jwt;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthenticationFilter;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

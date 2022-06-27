@@ -2,16 +2,17 @@ package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
-import com.gurudev.aircnc.configuration.jwt.JwtAuthentication;
-import com.gurudev.aircnc.configuration.jwt.JwtAuthenticationToken;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginResponse;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
+import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthenticationToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -33,9 +34,9 @@ public class MemberController {
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
-    Member registeredMember = memberService.register(memberDto.toEntity());
+    Member registeredMember = memberService.register(memberDto.toCommand());
 
-    return new ResponseEntity<>(MemberResponse.of(registeredMember), HttpStatus.CREATED);
+    return new ResponseEntity<>(MemberResponse.of(registeredMember), CREATED);
   }
 
   @PostMapping("/login")
@@ -49,7 +50,7 @@ public class MemberController {
     JwtAuthentication principal = (JwtAuthentication) authenticated.getPrincipal();
     Member member = (Member) authenticated.getDetails();
 
-    return ResponseEntity.ok(LoginResponse.of(member, principal.token));
+    return new ResponseEntity<>(LoginResponse.of(member, principal.token), OK);
   }
 
   @GetMapping("/me")
@@ -57,6 +58,6 @@ public class MemberController {
       @AuthenticationPrincipal JwtAuthentication authentication) {
     Member getMember = memberService.getById(authentication.id);
 
-    return ResponseEntity.ok(MemberResponse.of(getMember));
+    return new ResponseEntity<>(MemberResponse.of(getMember), OK);
   }
 }

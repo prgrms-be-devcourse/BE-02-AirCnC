@@ -5,9 +5,9 @@ import static lombok.AccessLevel.PRIVATE;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
-import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
+import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class MemberDto {
+public final class MemberDto {
 
   @Getter
   public static class MemberRegisterRequest {
@@ -23,8 +23,8 @@ public class MemberDto {
     @JsonProperty("member")
     private Request request;
 
-    public Member toEntity() {
-      return request.toEntity();
+    public MemberRegisterCommand toCommand() {
+      return request.toCommand();
     }
 
     @Getter
@@ -37,11 +37,9 @@ public class MemberDto {
       private String phoneNumber;
       private String role;
 
-      public Member toEntity() {
-        return new Member(new Email(email),
-                new Password(password),
-                name, birthDate, new PhoneNumber(phoneNumber),
-                Role.valueOf(role));
+      public MemberRegisterCommand toCommand() {
+        return new MemberRegisterCommand(
+            email, password, name, birthDate, phoneNumber, role);
       }
     }
   }
@@ -83,7 +81,7 @@ public class MemberDto {
 
       @Builder(access = PRIVATE)
       private Response(String email, String name, LocalDate birthDate, String phoneNumber,
-              Role role) {
+          Role role) {
         this.email = email;
         this.name = name;
         this.birthDate = birthDate;
@@ -93,12 +91,12 @@ public class MemberDto {
 
       public static Response of(Member member) {
         return Response.builder()
-                .name(member.getName())
-                .birthDate(member.getBirthDate())
-                .email(Email.toString(member.getEmail()))
-                .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
-                .role(member.getRole())
-                .build();
+            .name(member.getName())
+            .birthDate(member.getBirthDate())
+            .email(Email.toString(member.getEmail()))
+            .phoneNumber(PhoneNumber.toString(member.getPhoneNumber()))
+            .role(member.getRole())
+            .build();
       }
     }
   }
@@ -132,11 +130,11 @@ public class MemberDto {
 
       public static Response of(Member member, String token) {
         return Response.builder()
-                .email(Email.toString(member.getEmail()))
-                .name(member.getName())
-                .role(member.getRole())
-                .token(token)
-                .build();
+            .email(Email.toString(member.getEmail()))
+            .name(member.getName())
+            .role(member.getRole())
+            .token(token)
+            .build();
       }
     }
   }
