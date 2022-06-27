@@ -27,9 +27,10 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  private Member member = createGuest();
+  @Autowired
+  private PasswordEncryptor passwordEncryptor;
 
-  private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
+  private Member member = createGuest();
 
   @Test
   void 회원_가입_성공_테스트() {
