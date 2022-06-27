@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.room.service.cmd;
+package com.gurudev.aircnc.domain.room.service.command;
 
 import static java.util.stream.Collectors.toList;
 

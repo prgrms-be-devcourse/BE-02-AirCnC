@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.member.service.cmd;
+package com.gurudev.aircnc.domain.member.service.command;
 
 import static lombok.AccessLevel.PRIVATE;
 

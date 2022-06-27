@@ -5,13 +5,13 @@ import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.gurudev.aircnc.configuration.PasswordEncryptor;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
-import com.gurudev.aircnc.domain.member.service.cmd.MemberCommand.MemberRegisterCommand;
+import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
+import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

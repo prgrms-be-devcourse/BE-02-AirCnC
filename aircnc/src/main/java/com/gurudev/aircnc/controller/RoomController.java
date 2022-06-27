@@ -8,7 +8,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
 import com.gurudev.aircnc.domain.room.service.RoomService;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand.RoomRegisterCommand;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

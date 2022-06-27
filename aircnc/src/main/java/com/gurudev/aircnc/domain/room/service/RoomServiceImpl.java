@@ -4,7 +4,7 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
-import com.gurudev.aircnc.domain.room.service.cmd.RoomCommand.RoomRegisterCommand;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -7,7 +7,7 @@ import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
-import com.gurudev.aircnc.domain.member.service.cmd.MemberCommand.MemberRegisterCommand;
+import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,10 +38,8 @@ public final class MemberDto {
       private String role;
 
       public MemberRegisterCommand toCommand() {
-        return new MemberRegisterCommand(email,
-            password,
-            name, birthDate, phoneNumber,
-            role);
+        return new MemberRegisterCommand(
+            email, password, name, birthDate, phoneNumber, role);
       }
     }
   }

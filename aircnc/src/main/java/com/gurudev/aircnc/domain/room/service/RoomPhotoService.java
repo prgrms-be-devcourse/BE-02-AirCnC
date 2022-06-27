@@ -8,4 +8,6 @@ public interface RoomPhotoService {
 
   List<RoomPhoto> upload(List<MultipartFile> multipartFiles);
 
+  RoomPhoto upload(MultipartFile multipartFile);
+
 }

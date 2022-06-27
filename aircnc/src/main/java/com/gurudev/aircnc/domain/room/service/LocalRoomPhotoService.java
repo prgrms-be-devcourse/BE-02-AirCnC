@@ -20,15 +20,17 @@ public class LocalRoomPhotoService implements RoomPhotoService {
   @Value("${room-photos.path}")
   private String roomPhotosPath;
 
-  @Transactional
   @Override
+  @Transactional
   public List<RoomPhoto> upload(List<MultipartFile> multipartFile) {
     return multipartFile.stream()
-        .map(this::uploadOneFile)
+        .map(this::upload)
         .collect(toList());
   }
 
-  private RoomPhoto uploadOneFile(MultipartFile multipartFile) {
+  @Override
+  @Transactional
+  public RoomPhoto upload(MultipartFile multipartFile) {
     String fileName = getFileName(multipartFile);
 
     try {
