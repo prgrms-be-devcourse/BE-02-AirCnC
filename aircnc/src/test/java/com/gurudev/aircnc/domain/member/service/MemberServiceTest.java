@@ -30,10 +30,10 @@ class MemberServiceTest {
   @Autowired
   private PasswordEncryptor passwordEncryptor;
 
-  private Member member = createGuest();
 
   @Test
   void 회원_가입_성공_테스트() {
+    Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     member = memberService.register(command);
 
@@ -50,16 +50,18 @@ class MemberServiceTest {
 
   @Test
   void 회원_조회_성공_테스트() {
+    Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
-    Member member = memberService.register(command);
+    member = memberService.register(command);
 
     Member foundMember = memberService.getByEmail(member.getEmail());
 
-    assertThat(foundMember).isEqualTo(foundMember);
+    assertThat(foundMember).isEqualTo(member);
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
+    Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     Email email = new Email(command.getEmail());
 
@@ -69,6 +71,7 @@ class MemberServiceTest {
 
   @Test
   void 로그인_성공_테스트() {
+    Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     memberService.register(command);
 
@@ -81,6 +84,7 @@ class MemberServiceTest {
 
   @Test
   void 로그인_실패_테스트() {
+    Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
     memberService.register(command);
 
