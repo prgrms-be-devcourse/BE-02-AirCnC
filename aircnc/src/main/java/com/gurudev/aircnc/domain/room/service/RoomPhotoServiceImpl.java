@@ -1,29 +1,30 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static java.util.stream.Collectors.toList;
-
+import com.gurudev.aircnc.domain.base.AttachedFile;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
-import java.util.List;
+import com.gurudev.aircnc.infrastructure.s3.S3Client;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class RoomPhotoServiceImpl implements RoomPhotoService {
 
-  @Transactional
-  @Override
-  public List<RoomPhoto> upload(List<MultipartFile> multipartFile) {
-    return multipartFile.stream()
-        .map(this::upload)
-        .collect(toList());
-  }
+  public static final String BASE_PATH = "room-photos";
+
+  private final S3Client s3Client;
 
   @Transactional
   @Override
-  public RoomPhoto upload(MultipartFile multipartFile) {
-    //TODO
-    return new RoomPhoto("TODO");
+  public RoomPhoto upload(AttachedFile attachedFiles) {
+    String path = s3Client.upload(
+        attachedFiles.getBytes(),
+        attachedFiles.getMetadata(),
+        BASE_PATH
+    );
+
+    return new RoomPhoto(path);
   }
 }
