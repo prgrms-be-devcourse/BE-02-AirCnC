@@ -9,6 +9,7 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -82,6 +83,29 @@ public final class RoomCommand {
           registerRequest.getPricePerDay(),
           registerRequest.getCapacity(),
           roomPhotoFiles, hostId);
+    }
+  }
+
+  @Getter
+  public static class RoomUpdateCommand {
+
+    private final Long hostId;
+
+    private final Long roomId;
+
+    private final String name;
+
+    private final String description;
+
+    private final Integer pricePerDay;
+
+    public RoomUpdateCommand(Long hostId, Long roomId, String name, String description,
+        Integer pricePerDay) {
+      this.hostId = hostId;
+      this.roomId = roomId;
+      this.name = name;
+      this.description = description;
+      this.pricePerDay = pricePerDay;
     }
   }
 }

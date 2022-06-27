@@ -5,6 +5,7 @@ import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,16 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public List<Room> getAll() {
     return roomRepository.findAll();
+  }
+
+  @Transactional
+  @Override
+  public Room update(RoomUpdateCommand roomUpdateCommand) {
+    Room room = roomRepository
+        .findByIdAndHostId(roomUpdateCommand.getRoomId(), roomUpdateCommand.getHostId())
+        .orElseThrow(() -> new NotFoundException(Room.class));
+
+    return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
+        roomUpdateCommand.getPricePerDay());
   }
 }
