@@ -64,7 +64,7 @@ class RoomTest {
   }
 
   @Test
-  void 인원수가_0이하인_작은_숙소_생성_실패() {
+  void 인원수가_0이하인_숙소_생성_실패() {
     int invalidCapacity = 0;
 
     assertThatIllegalArgumentException()

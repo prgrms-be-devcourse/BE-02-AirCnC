@@ -37,7 +37,7 @@ class AddressTest {
 
   @ParameterizedTest
   @NullAndEmptySource
-  void 상세_주소가_공백인_주소_생성_실패(String roadAddress) {
+  void 상세_주소가_공백인_주소_생성_실패(String detailedAddress) {
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Address(lotAddress, roadAddress, detailedAddress, postCode));
   }
