@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/rooms")
+@RequestMapping("/api/v1/hosts/rooms")
 @RequiredArgsConstructor
 public class RoomController {
 
@@ -39,11 +39,13 @@ public class RoomController {
       @ModelAttribute RoomRegisterRequest request,
       @RequestPart List<MultipartFile> roomPhotosFile) {
 
+    //숙소의 사진 S3에 저장
     List<RoomPhoto> roomPhotos = roomPhotosFile.stream()
         .map(AttachedFile::new)
         .map(roomPhotoService::upload)
         .collect(Collectors.toList());
 
+    //숙소, S3에 저장된 숙소 사진의 파일 이름을 DB에 저장
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
