@@ -50,45 +50,48 @@ class TripTest {
     Trip trip = new Trip(guest, room, checkIn, checkOut, totalPrice, headCount);
 
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
-                    Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
-            .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
+            Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
+        .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
   @Test
   void CheckIn이_CheckOut_이전_이여야_한다() {
+    LocalDate invalidCheckOut = checkIn.minusDays(1);
+
     assertThatIllegalArgumentException()
-        .isThrownBy(
-            () -> new Trip(guest, room, checkIn, checkIn.minusDays(1), totalPrice, headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, invalidCheckOut, totalPrice, headCount));
   }
 
   @Test
   void 인원이_제한_인원_이하_일_수_없다() {
     assertThatIllegalArgumentException()
-            .isThrownBy(
-                    () -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                            TRIP_HEADCOUNT_MIN_VALUE - 1));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice,
+            TRIP_HEADCOUNT_MIN_VALUE - 1));
   }
 
   @Test
   void 총_가격은_제한가격_미만일_수_없다() {
+    int invalidTotalPrice = TRIP_TOTAL_PRICE_MIN_VALUE - 1;
+
     assertThatIllegalArgumentException()
-            .isThrownBy(
-                    () -> new Trip(guest, room, checkIn, checkOut, TRIP_TOTAL_PRICE_MIN_VALUE - 1,
-                            headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice,
+            headCount));
   }
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
+    int invalidTotalPrice = this.totalPrice + 1;
+
     assertThatExceptionOfType(TripReservationException.class)
-        .isThrownBy(
-            () -> new Trip(guest, room, checkIn, checkOut, totalPrice + 1, headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
   @Test
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
+    int invalidCapacity = room.getCapacity() + 1;
+
     assertThatExceptionOfType(TripReservationException.class)
-            .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                    room.getCapacity() + 1));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidCapacity));
   }
 
   @Test
