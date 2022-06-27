@@ -17,10 +17,13 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
 import com.gurudev.aircnc.exception.TripReservationException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class TripTest {
 
@@ -100,12 +103,26 @@ class TripTest {
     assertThat(trip.getStatus()).isEqualTo(CANCELLED);
   }
 
-  @Test
-  void 취소_상태의_여행_취소_실패() {
+  @ParameterizedTest
+  @CsvSource({
+      "TRAVELLING",
+      "DONE",
+      "CANCELLED"
+  })
+  void 취소_상태의_여행_취소_실패(String status) throws Exception {
     Trip trip = createTrip();
-    trip.cancel(); // -> trip.status = CANCELLED
+    changeTripStatus(trip, TripStatus.valueOf(status));
 
     assertThatExceptionOfType(TripCancelException.class)
         .isThrownBy(trip::cancel);
+  }
+
+  private Trip changeTripStatus(Trip trip, TripStatus status)
+      throws Exception {
+    final Field statusField = trip.getClass().getDeclaredField("status");
+    statusField.setAccessible(true);
+    statusField.set(trip, status);
+
+    return trip;
   }
 }
