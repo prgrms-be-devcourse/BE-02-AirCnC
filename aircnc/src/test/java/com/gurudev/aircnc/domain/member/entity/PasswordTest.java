@@ -16,44 +16,55 @@ class PasswordTest {
   @ParameterizedTest
   @CsvSource(value = {"12345678", "123456789012345"})
   void 비밀번호_생성_성공(String rawPassword) {
+    //when
     Password password = new Password(rawPassword);
 
+    //then
     assertThat(password).isEqualTo(new Password(rawPassword));
   }
 
   @ParameterizedTest
   @CsvSource(value = {"1234567", "1234567890123456"})
   void 비밀번호는_8자이상_15자이하(String invalidPassword) {
+    //then
     assertThatIllegalArgumentException()
         .isThrownBy(() -> new Password(invalidPassword));
   }
 
-  @ParameterizedTest
-  @CsvSource(value = {"12345678", "123456789012345"})
-  void 비밀번호_암호화_성공_테스트(String rawPassword) {
-    Password password = new Password(rawPassword);
-
+  @Test
+  void 비밀번호_암호화_성공_테스트() {
+    //given
+    Password password = new Password("password");
     password.encode(passwordEncryptor);
 
-    assertThat(password.matches(passwordEncryptor, new Password(rawPassword))).isTrue();
+    //when
+    boolean matchResult = password.matches(passwordEncryptor, new Password("password"));
+
+    //then
+    assertThat(matchResult).isTrue();
   }
 
   @ParameterizedTest
   @CsvSource(value = {"12345678", "123456789012345"})
   void 암호화된_비밀번호_불일치_테스트(String rawPassword) {
+    //given
     Password password = new Password(rawPassword);
-
     password.encode(passwordEncryptor);
 
-    assertThat(password.matches(passwordEncryptor, new Password("invalidPassword"))).isFalse();
+    //when
+    boolean matchResult = password.matches(passwordEncryptor, new Password("invalidPassword"));
+
+    //then
+    assertThat(matchResult).isFalse();
   }
 
   @Test
   void 암호화_되지_않은_비밀번호는_일치여부_확인불가() {
-    Password password = new Password("abcdefggg");
+    //given
+    Password password = new Password("nonEncrypted");
 
-    assertThatIllegalStateException().isThrownBy(
-        () -> password.matches(passwordEncryptor, new Password("abcdefggg"))
-    );
+    //then
+    assertThatIllegalStateException()
+        .isThrownBy(() -> password.matches(passwordEncryptor, new Password("nonEncrypted")));
   }
 }

@@ -28,6 +28,7 @@ class RoomControllerTest extends RestDocsTestSupport {
 
   @Test
   void 숙소_등록() throws Exception {
+    //given
     InputStream requestInputStream = new FileInputStream(
         "src/test/resources/room-photos-src/photo1.jpeg");
     MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg",
@@ -35,6 +36,7 @@ class RoomControllerTest extends RestDocsTestSupport {
 
     로그인("host@naver.com", "host1234!");
 
+    //when
     mockMvc.perform(multipart("/api/v1/rooms")
             .file(requestImage)
             .param("name", "나의 숙소")
@@ -46,6 +48,8 @@ class RoomControllerTest extends RestDocsTestSupport {
             .param("pricePerDay", "100000")
             .param("capacity", "2")
             .header(AUTHORIZATION, token))
+
+        //then
         .andExpect(status().isCreated())
         .andExpectAll(
             jsonPath("$.room.id").exists(),
@@ -56,6 +60,8 @@ class RoomControllerTest extends RestDocsTestSupport {
             jsonPath("$.room.capacity").value("2"),
             jsonPath("$.room.fileNames", hasSize(1))
         )
+
+        //docs
         .andDo(
             restDocs.document(
                 requestHeaders(
