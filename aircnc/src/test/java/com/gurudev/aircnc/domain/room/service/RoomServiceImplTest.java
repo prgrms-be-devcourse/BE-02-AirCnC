@@ -1,8 +1,5 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.util.Command.ofGuest;
-import static com.gurudev.aircnc.domain.util.Command.ofHost;
-import static com.gurudev.aircnc.domain.util.Command.ofRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
@@ -17,6 +14,7 @@ import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -52,17 +50,17 @@ class RoomServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    host = memberService.register(ofHost());
+    host = memberService.register(Command.ofHost());
 
     room1 = createRoom();
     room2 = createRoom();
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(ofRoom(room1, roomPhotos, host.getId()));
-    room2 = roomService.register(ofRoom(room2, Collections.emptyList(), host.getId()));
+    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
+    room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
 
-    Member guest = memberService.register(ofGuest());
+    Member guest = memberService.register(Command.ofGuest());
     tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
         room2.getPricePerDay());
   }
@@ -71,8 +69,7 @@ class RoomServiceImplTest {
   void 숙소_등록_성공() {
     Room room = createRoom();
 
-    Room registeredRoom = roomService.register(
-        ofRoom(room, roomPhotos, host.getId()));
+    Room registeredRoom = roomService.register(Command.ofRoom(room, roomPhotos, host.getId()));
 
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(host);
