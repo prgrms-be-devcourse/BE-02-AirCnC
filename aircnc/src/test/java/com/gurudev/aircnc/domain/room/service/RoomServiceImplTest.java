@@ -1,15 +1,15 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.util.Fixture.createHostRegisterCmd;
+import static com.gurudev.aircnc.domain.util.Command.ofRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
-import static com.gurudev.aircnc.domain.util.Fixture.createRoomRegisterCmd;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.util.Command;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,16 +36,16 @@ class RoomServiceImplTest {
 
   @BeforeEach
   void setUp() {
-    host = memberService.register(createHostRegisterCmd());
+    host = memberService.register(Command.ofHost());
 
     room1 = createRoom();
     room2 = createRoom();
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(createRoomRegisterCmd(room1, roomPhotos, host.getId()));
+    room1 = roomService.register(ofRoom(room1, roomPhotos, host.getId()));
     room2 = roomService.register(
-        createRoomRegisterCmd(room2, Collections.emptyList(), host.getId()));
+        ofRoom(room2, Collections.emptyList(), host.getId()));
   }
 
   @Test
@@ -53,7 +53,7 @@ class RoomServiceImplTest {
     Room room = createRoom();
 
     Room registeredRoom = roomService.register(
-        createRoomRegisterCmd(room, roomPhotos, host.getId()));
+        ofRoom(room, roomPhotos, host.getId()));
 
     assertThat(registeredRoom.getId()).isNotNull();
     assertThat(registeredRoom.getHost()).isEqualTo(host);

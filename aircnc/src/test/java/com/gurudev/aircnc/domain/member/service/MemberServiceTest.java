@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.member.service;
 
-import static com.gurudev.aircnc.domain.util.Fixture.createHostRegisterCmd;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,6 +10,7 @@ import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
+import com.gurudev.aircnc.domain.util.Command;
 import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class MemberServiceTest {
   @Autowired
   private MemberService memberService;
 
-  private final MemberRegisterCommand memberRegisterCmd = createHostRegisterCmd();
+  private final MemberRegisterCommand memberRegisterCmd = Command.ofHost();
 
   private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
 

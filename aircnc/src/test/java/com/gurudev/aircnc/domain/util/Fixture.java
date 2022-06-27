@@ -1,19 +1,15 @@
 package com.gurudev.aircnc.domain.util;
 
-import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
 import com.gurudev.aircnc.domain.member.entity.Role;
-import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
-import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
-import java.util.List;
 
 public class Fixture {
 
@@ -26,26 +22,6 @@ public class Fixture {
         Role.HOST);
   }
 
-  public static MemberRegisterCommand createHostRegisterCmd() {
-    return new MemberRegisterCommand("host@haha.com",
-        "paSSword!",
-        "ndy",
-        LocalDate.of(1997, 8, 21),
-        "010-1234-5678",
-        Role.HOST.name());
-  }
-
-  public static RoomRegisterCommand createRoomRegisterCmd(Room room, List<RoomPhoto> roomPhotos,
-      Long hostId) {
-    Address address = room.getAddress();
-    RoomRegisterRequest request = new RoomRegisterRequest(
-        room.getName(), address.getLotAddress(),
-        address.getRoadAddress(), address.getDetailedAddress(), address.getPostCode(),
-        room.getDescription(), room.getPricePerDay(), room.getCapacity());
-
-    return RoomRegisterCommand.of(request, roomPhotos, hostId);
-  }
-
   public static Member createGuest() {
     return new Member(new Email("guest@haha.com"),
         new Password("paSSword!"),
@@ -53,15 +29,6 @@ public class Fixture {
         LocalDate.of(1997, 8, 21),
         new PhoneNumber("010-1234-5678"),
         Role.GUEST);
-  }
-
-  public static MemberRegisterCommand createGuestRegisterCmd() {
-    return new MemberRegisterCommand("guest@haha.com",
-        "paSSword!",
-        "ndy",
-        LocalDate.of(1997, 8, 21),
-        "010-1234-5678",
-        Role.GUEST.name());
   }
 
 
