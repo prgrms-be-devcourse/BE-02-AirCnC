@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.infrastructure.s3;
+package com.gurudev.aircnc.infrastructure.aws.s3;
 
 import lombok.Getter;
 import lombok.Setter;

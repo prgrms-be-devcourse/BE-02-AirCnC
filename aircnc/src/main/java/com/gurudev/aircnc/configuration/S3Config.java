@@ -5,8 +5,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.gurudev.aircnc.infrastructure.s3.S3Client;
-import com.gurudev.aircnc.infrastructure.s3.S3Properties;
+import com.gurudev.aircnc.infrastructure.aws.s3.S3Client;
+import com.gurudev.aircnc.infrastructure.aws.s3.S3Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
