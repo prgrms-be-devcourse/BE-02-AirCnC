@@ -17,10 +17,13 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
 import com.gurudev.aircnc.exception.TripReservationException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class TripTest {
 
@@ -47,65 +50,99 @@ class TripTest {
 
   @Test
   void Trip_생성_성공() {
+    //when
     Trip trip = new Trip(guest, room, checkIn, checkOut, totalPrice, headCount);
 
+    //then
     assertThat(trip).extracting(Trip::getGuest, Trip::getRoom, Trip::getCheckIn, Trip::getCheckOut,
-                    Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
-            .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
+            Trip::getTotalPrice, Trip::getHeadCount, Trip::getStatus)
+        .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
   @Test
   void CheckIn이_CheckOut_이전_이여야_한다() {
+    //given
+    LocalDate invalidCheckOut = checkIn.minusDays(1);
+
+    //then
     assertThatIllegalArgumentException()
-        .isThrownBy(
-            () -> new Trip(guest, room, checkIn, checkIn.minusDays(1), totalPrice, headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, invalidCheckOut, totalPrice, headCount));
   }
 
   @Test
   void 인원이_제한_인원_이하_일_수_없다() {
+    //given
+    int invalidHeadCount = TRIP_HEADCOUNT_MIN_VALUE - 1;
+
+    //then
     assertThatIllegalArgumentException()
-            .isThrownBy(
-                    () -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                            TRIP_HEADCOUNT_MIN_VALUE - 1));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidHeadCount));
   }
 
   @Test
   void 총_가격은_제한가격_미만일_수_없다() {
+    //given
+    int invalidTotalPrice = TRIP_TOTAL_PRICE_MIN_VALUE - 1;
+
+    //then
     assertThatIllegalArgumentException()
-            .isThrownBy(
-                    () -> new Trip(guest, room, checkIn, checkOut, TRIP_TOTAL_PRICE_MIN_VALUE - 1,
-                            headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
+    //given
+    int invalidTotalPrice = this.totalPrice + 1;
+
+    //then
     assertThatExceptionOfType(TripReservationException.class)
-        .isThrownBy(
-            () -> new Trip(guest, room, checkIn, checkOut, totalPrice + 1, headCount));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
   @Test
   void 여행_인원_수는_숙소의_최대_인원을_초과_할_수_없다() {
+    //given
+    int invalidCapacity = room.getCapacity() + 1;
+
+    //then
     assertThatExceptionOfType(TripReservationException.class)
-            .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice,
-                    room.getCapacity() + 1));
+        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidCapacity));
   }
 
   @Test
   void 예약_상태의_여행_취소_성공() {
+    //given
     Trip trip = createTrip();
 
+    //when
     trip.cancel();
 
+    //then
     assertThat(trip.getStatus()).isEqualTo(CANCELLED);
   }
 
-  @Test
-  void 취소_상태의_여행_취소_실패() {
-    Trip trip = createTrip();
-    trip.cancel(); // -> trip.status = CANCELLED
+  @ParameterizedTest
+  @CsvSource({
+      "TRAVELLING",
+      "DONE",
+      "CANCELLED"
+  })
+  void 취소_상태의_여행_취소_실패(String status) throws Exception {
 
+    Trip trip = createTrip();
+    changeTripStatus(trip, TripStatus.valueOf(status));
+
+    //then
     assertThatExceptionOfType(TripCancelException.class)
         .isThrownBy(trip::cancel);
+  }
+
+  private Trip changeTripStatus(Trip trip, TripStatus status)
+      throws Exception {
+    final Field statusField = trip.getClass().getDeclaredField("status");
+    statusField.setAccessible(true);
+    statusField.set(trip, status);
+
+    return trip;
   }
 }

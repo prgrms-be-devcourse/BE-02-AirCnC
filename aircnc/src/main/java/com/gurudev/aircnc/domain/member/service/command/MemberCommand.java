@@ -38,7 +38,6 @@ public final class MemberCommand {
           new PhoneNumber(this.phoneNumber),
           Role.valueOf(this.role));
     }
-
   }
 
 }
