@@ -45,19 +45,20 @@ class RoomServiceImplTest {
   private Member guest;
   private Room room1;
   private Room room2;
+  private Member fakeHost;
 
   private List<RoomPhoto> roomPhotos;
 
   @BeforeEach
   void setUp() {
     host = memberService.register(Command.ofHost());
+    guest = memberService.register(Command.ofGuest());
+    fakeHost = memberService.register(Command.ofHost("fakeHost@email.com"));
 
     room1 = createRoom();
     room2 = createRoom();
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
-
-    guest = memberService.register(Command.ofGuest());
   }
 
   @Test
@@ -118,7 +119,7 @@ class RoomServiceImplTest {
   void 해당_숙소의_호스트가_아닌_경우_변경_실패() {
     //given
     room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
-    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(host.getId() + 1,
+    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(fakeHost.getId(),
         room1.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
 
     //then
@@ -152,7 +153,6 @@ class RoomServiceImplTest {
   @Test
   void 호스트가_아닌_경우_숙소_삭제_실패() {
     //given
-    Member fakeHost = memberService.register(Command.ofHost("fakeHost@email.com"));
     room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
     tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
         room2.getPricePerDay());
