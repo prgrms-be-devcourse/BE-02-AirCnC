@@ -45,8 +45,8 @@ public class BaseControllerTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    멤버_등록("guest@naver.com", "guest1234!", "guest", "GUEST");
-    멤버_등록("host@naver.com", "host1234!", "host", "HOST");
+    멤버_등록("guest@naver.com", "guest1234!", "게스트", "GUEST");
+    멤버_등록("host@naver.com", "host1234!", "호스트", "HOST");
   }
 
   protected void 멤버_등록(String email, String password, String name, String role) throws Exception {

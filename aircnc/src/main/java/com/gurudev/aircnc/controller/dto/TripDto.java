@@ -118,6 +118,7 @@ public final class TripDto {
     private final int totalPrice;
     private final int headCount;
     private final String status;
+    @JsonProperty("room")
     private final RoomResponse roomResponse;
 
     @Builder(access = PRIVATE)
@@ -145,45 +146,32 @@ public final class TripDto {
     }
 
     @Getter
-    @RequiredArgsConstructor(access = PRIVATE)
     public static class RoomResponse {
 
-      @JsonProperty("room")
-      private final Response response;
+      private final long id;
+      private final String name;
+      private final String address;
+      private final String hostName;
+      private final List<String> fileNames;
 
-      public static RoomResponse of(Room room) {
-        return new RoomResponse(Response.of(room));
+      @Builder
+      private RoomResponse(long id, String name, String address, String hostName,
+          List<String> fileNames) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.hostName = hostName;
+        this.fileNames = fileNames;
       }
 
-      @Getter
-      public static class Response {
-
-        private final long id;
-        private final String name;
-        private final String address;
-        private final String hostName;
-        private final List<String> fileNames;
-
-        @Builder
-        private Response(long id, String name, String address, String hostName,
-            List<String> fileNames) {
-          this.id = id;
-          this.name = name;
-          this.address = address;
-          this.hostName = hostName;
-          this.fileNames = fileNames;
-        }
-
-        public static Response of(Room room) {
-          return Response.builder()
-              .id(room.getId())
-              .name(room.getName())
-              .address(Address.toString(room.getAddress()))
-              .hostName(room.getHost().getName())
-              .fileNames(
-                  room.getRoomPhotos().stream().map(RoomPhoto::getFileName).collect(toList()))
-              .build();
-        }
+      public static RoomResponse of(Room room) {
+        return RoomResponse.builder()
+            .id(room.getId())
+            .name(room.getName())
+            .address(Address.toString(room.getAddress()))
+            .hostName(room.getHost().getName())
+            .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName).collect(toList()))
+            .build();
       }
     }
   }
