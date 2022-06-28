@@ -34,10 +34,30 @@ class TripStatusSchedulerTest {
 
         // 우리가 설정한 cron과 메서드명으로 필터링
         .filter(cronTask -> cronTask(cronTask,
-            "0 0 12 * * *",
-            "com.gurudev.aircnc.infrastructure.scheduler.TripStatusScheduler.startCheckIn"))
+            "0 0 0 * * *",
+            "com.gurudev.aircnc.infrastructure.scheduler.TripStatusScheduler.bulkStatusUpdateToTravelling"))
 
         // 스케쥴이 잘 등록되었다면 count는 1이 될 것이다.
+        .count();
+
+    // then
+    assertThat(count).isEqualTo(1L);
+  }
+
+  @Test
+  public void 체크아웃_스케쥴_테스트() {
+    // given
+    Set<ScheduledTask> scheduledTasks = scheduledTaskHolder.getScheduledTasks();
+    scheduledTasks.forEach(
+        scheduledTask -> scheduledTask.getTask().getRunnable().getClass().getDeclaredMethods());
+
+    // when
+    long count = scheduledTasks.stream()
+        .filter(scheduledTask -> scheduledTask.getTask() instanceof CronTask)
+        .map(scheduledTask -> (CronTask) scheduledTask.getTask())
+        .filter(cronTask -> cronTask(cronTask,
+            "0 0 0 * * *",
+            "com.gurudev.aircnc.infrastructure.scheduler.TripStatusScheduler.bulkStatusUpdateToDone"))
         .count();
 
     // then
