@@ -19,7 +19,11 @@ jwt:
   client-secret: ${jwt.client.secret:secret}
   expiry-seconds: 1800
 
-room-photos:
-  path: src/main/resources/room-photos/
-
-
+cloud:
+  aws:
+    s3:
+      region: ap-northeast-2
+      accessKey: ${aws.accessKey}
+      secretKey: ${aws.secretKey}
+      url: https://s3.ap-northeast-2.amazonaws.com
+      bucketName: dev-aircnc

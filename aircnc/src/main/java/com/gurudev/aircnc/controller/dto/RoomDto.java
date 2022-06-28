@@ -73,8 +73,7 @@ public final class RoomDto {
       private final List<String> fileNames;
 
       @Builder
-      public Response(long id, String name, String address, String roadAddress,
-          String detailedAddress, String postCode, String description, int pricePerDay,
+      public Response(long id, String name, String address, String description, int pricePerDay,
           int capacity,
           List<String> fileNames) {
         this.id = id;
