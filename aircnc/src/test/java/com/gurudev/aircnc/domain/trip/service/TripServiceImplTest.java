@@ -109,7 +109,7 @@ class TripServiceImplTest {
     Trip trip1 = tripService.reserve(command);
 
     //when
-    Trip trip = tripService.getById(trip1.getId());
+    Trip trip = tripService.getByIdAndGuestId(trip1.getId(), guest.getId());
 
     //then
     assertThat(trip).isEqualTo(trip1);
@@ -125,7 +125,7 @@ class TripServiceImplTest {
 
     //then
     assertThatNotFoundException()
-        .isThrownBy(() -> tripService.getById(invalidTripId));
+        .isThrownBy(() -> tripService.getByIdAndGuestId(invalidTripId, guest.getId()));
   }
 
   @Test

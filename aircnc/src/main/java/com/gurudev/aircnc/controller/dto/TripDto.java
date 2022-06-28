@@ -4,6 +4,9 @@ import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.domain.room.entity.Room;
+import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
 import java.util.List;
@@ -56,7 +59,6 @@ public final class TripDto {
     }
   }
 
-
   @Getter
   public static class Response {
 
@@ -91,6 +93,98 @@ public final class TripDto {
           .roomId(trip.getRoom().getId())
           .status(trip.getStatus().name())
           .build();
+    }
+  }
+
+
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class TripDetailedResponse {
+
+    @JsonProperty("trip")
+    private final DetailedResponse response;
+
+    public static TripDetailedResponse of(Trip trip) {
+      return new TripDetailedResponse(DetailedResponse.of(trip));
+    }
+  }
+
+  @Getter
+  public static class DetailedResponse {
+
+    private final long id;
+    private final LocalDate checkIn;
+    private final LocalDate checkOut;
+    private final int totalPrice;
+    private final int headCount;
+    private final String status;
+    private final RoomResponse roomResponse;
+
+    @Builder(access = PRIVATE)
+    private DetailedResponse(long id, LocalDate checkIn, LocalDate checkOut, int totalPrice,
+        int headCount, String status, Room room) {
+      this.id = id;
+      this.checkIn = checkIn;
+      this.checkOut = checkOut;
+      this.totalPrice = totalPrice;
+      this.headCount = headCount;
+      this.status = status;
+      this.roomResponse = RoomResponse.of(room);
+    }
+
+    public static DetailedResponse of(Trip trip) {
+      return DetailedResponse.builder()
+          .id(trip.getId())
+          .checkIn(trip.getCheckIn())
+          .checkOut(trip.getCheckOut())
+          .totalPrice(trip.getTotalPrice())
+          .headCount(trip.getHeadCount())
+          .status(trip.getStatus().name())
+          .room(trip.getRoom())
+          .build();
+    }
+
+    @Getter
+    @RequiredArgsConstructor(access = PRIVATE)
+    public static class RoomResponse {
+
+      @JsonProperty("room")
+      private final Response response;
+
+      public static RoomResponse of(Room room) {
+        return new RoomResponse(Response.of(room));
+      }
+
+      @Getter
+      public static class Response {
+
+        private final long id;
+        private final String name;
+        private final String address;
+        private final String hostName;
+        private final List<String> fileNames;
+
+        @Builder
+        private Response(long id, String name, String address, String hostName,
+            List<String> fileNames) {
+          this.id = id;
+          this.name = name;
+          this.address = address;
+          this.hostName = hostName;
+          this.fileNames = fileNames;
+        }
+
+        public static Response of(Room room) {
+          return Response.builder()
+              .id(room.getId())
+              .name(room.getName())
+              .address(Address.toString(room.getAddress()))
+              .hostName(room.getHost().getName())
+              .fileNames(
+                  room.getRoomPhotos().stream().map(RoomPhoto::getFileName).collect(toList()))
+              .build();
+        }
+      }
     }
   }
 
