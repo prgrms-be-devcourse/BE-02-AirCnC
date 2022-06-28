@@ -6,6 +6,7 @@ import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegi
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +15,15 @@ public class Command {
 
   public static MemberRegisterCommand ofHost() {
     return new MemberRegisterCommand("host@haha.com",
+        "paSSword!",
+        "ndy",
+        LocalDate.of(1997, 8, 21),
+        "010-1234-5678",
+        Role.HOST.name());
+  }
+
+  public static MemberRegisterCommand ofHost(String email) {
+    return new MemberRegisterCommand(email,
         "paSSword!",
         "ndy",
         LocalDate.of(1997, 8, 21),
@@ -39,5 +49,9 @@ public class Command {
         room.getDescription(), room.getPricePerDay(), room.getCapacity());
 
     return RoomRegisterCommand.of(request, roomPhotos, hostId);
+  }
+
+  public static RoomDeleteCommand ofHost(Long hostId, Long roomId) {
+    return new RoomDeleteCommand(hostId, roomId);
   }
 }

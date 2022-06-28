@@ -11,7 +11,6 @@ import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
-import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.service.TripService;
 import com.gurudev.aircnc.domain.util.Command;
@@ -43,6 +42,7 @@ class RoomServiceImplTest {
   private TripService tripService;
 
   private Member host;
+  private Member guest;
   private Room room1;
   private Room room2;
 
@@ -57,12 +57,7 @@ class RoomServiceImplTest {
 
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
-    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
-    room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
-
-    Member guest = memberService.register(Command.ofGuest());
-    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
-        room2.getPricePerDay());
+    guest = memberService.register(Command.ofGuest());
   }
 
   @Test
@@ -78,6 +73,9 @@ class RoomServiceImplTest {
 
   @Test
   void 숙소_리스트_조회_성공() {
+    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
+    room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
+
     List<Room> rooms = roomService.getAll();
 
     assertThat(rooms).hasSize(2)
@@ -94,6 +92,7 @@ class RoomServiceImplTest {
   void 숙소_이름_설명_가격_변경_성공(String updatedName, String updatedDescription,
       Integer updatedPricePerDay) {
     //given
+    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
     String originalName = room1.getName();
     String originalDescription = room1.getDescription();
     Integer originalPricePerDay = room1.getPricePerDay();
@@ -118,6 +117,7 @@ class RoomServiceImplTest {
   @Test
   void 해당_숙소의_호스트가_아닌_경우_변경_실패() {
     //given
+    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
     RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(host.getId() + 1,
         room1.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
 
@@ -128,11 +128,9 @@ class RoomServiceImplTest {
 
   @Test
   void 숙소_삭제_성공() {
-    //given
-    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId(), room1.getId());
-
     //when
-    roomService.delete(roomDeleteCommand);
+    room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
+    roomService.delete(Command.ofHost(host.getId(), room1.getId()));
 
     //then
     assertThatNotFoundException()
@@ -142,20 +140,25 @@ class RoomServiceImplTest {
   @Test
   void 여행_중_혹은_예약이_존재하는_숙소_삭제_실패() {
     //given
-    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId(), room2.getId());
+    room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
+    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
+        room2.getPricePerDay());
 
     //then
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
+        .isThrownBy(() -> roomService.delete(Command.ofHost(host.getId(), room2.getId())));
   }
 
   @Test
   void 호스트가_아닌_경우_숙소_삭제_실패() {
     //given
-    RoomDeleteCommand roomDeleteCommand = new RoomDeleteCommand(host.getId() + 1, room2.getId());
+    Member fakeHost = memberService.register(Command.ofHost("fakeHost@email.com"));
+    room2 = roomService.register(Command.ofRoom(room2, Collections.emptyList(), host.getId()));
+    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
+        room2.getPricePerDay());
 
     //then
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
+        .isThrownBy(() -> roomService.delete(Command.ofHost(fakeHost.getId(), room2.getId())));
   }
 }
