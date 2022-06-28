@@ -16,7 +16,7 @@ public class TripCommand {
     private int headCount;
     private int totalPrice;
 
-    private TripReserveCommand(Long guestId, Long roomId, LocalDate checkIn,
+    public TripReserveCommand(Long guestId, Long roomId, LocalDate checkIn,
         LocalDate checkOut, int headCount, int totalPrice) {
       this.guestId = guestId;
       this.roomId = roomId;
