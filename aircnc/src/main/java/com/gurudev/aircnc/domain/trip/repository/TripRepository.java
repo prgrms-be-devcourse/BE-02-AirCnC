@@ -2,8 +2,8 @@ package com.gurudev.aircnc.domain.trip.repository;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import java.time.LocalDate;
 import com.gurudev.aircnc.domain.trip.entity.TripStatus;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -43,5 +43,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "and t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED")
   int bulkStatusToTravelling(@Param("date") LocalDate date);
 
-
+  @Modifying(clearAutomatically = true)
+  @Query("update Trip t "
+      + "set t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.DONE "
+      + "where t.checkOut = :date "
+      + "and t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING")
+  int bulkStatusToDone(@Param("date") LocalDate date);
 }

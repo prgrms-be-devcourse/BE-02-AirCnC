@@ -1,11 +1,15 @@
 package com.gurudev.aircnc.infrastructure.mail;
 
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
+
 import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@Disabled
+@SpringBootTest(webEnvironment = NONE)
 class EmailSendTest { // 사용방법을 위한 Temporary 테스트
 
   @Autowired
@@ -13,7 +17,7 @@ class EmailSendTest { // 사용방법을 위한 Temporary 테스트
 
   @Test
   void test() throws Exception {
-    MimeMessage mimeMessage = service.createSignUpMsg("emrdbs12@gmail.com");
+    MimeMessage mimeMessage = service.createSignUpMsg("yourEmail@gmail.com");
     service.sendMessage(mimeMessage);
   }
 }

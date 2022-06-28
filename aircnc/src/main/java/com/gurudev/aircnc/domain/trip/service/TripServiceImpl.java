@@ -65,6 +65,10 @@ public class TripServiceImpl implements TripService {
     tripRepository.bulkStatusToTravelling(LocalDate.now());
   }
 
+  @Override
+  public void bulkStatusToDone() {
+    tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
+  }
 
   private Trip findById(Long id) {
     return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));

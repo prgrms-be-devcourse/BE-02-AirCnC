@@ -108,5 +108,4 @@ public class BaseControllerTest {
 
     return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
   }
-
 }
