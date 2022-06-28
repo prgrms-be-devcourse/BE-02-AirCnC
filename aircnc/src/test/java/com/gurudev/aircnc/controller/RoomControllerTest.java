@@ -111,7 +111,7 @@ class RoomControllerTest extends RestDocsTestSupport {
     roomUpdateRequest
         .put("name", "제주도 방")
         .put("description", "이 숙소는 아주 좋은 숙소입니다")
-        .put("pricePerDay", "20000");
+        .put("pricePerDay", 20000);
 
     //when
     mockMvc.perform(patch("/api/v1/hosts/rooms/{roomId}", roomId)
@@ -138,9 +138,9 @@ class RoomControllerTest extends RestDocsTestSupport {
                     headerWithName(AUTHORIZATION).description("인증 토큰")
                 ),
                 requestFields(
-                    fieldWithPath("name").description("이름"),
-                    fieldWithPath("description").description("설명"),
-                    fieldWithPath("pricePerDay").description("1박당 가격")
+                    fieldWithPath("name").type(STRING).description("이름"),
+                    fieldWithPath("description").type(STRING).description("설명"),
+                    fieldWithPath("pricePerDay").type(NUMBER).description("1박당 가격")
                 ),
                 responseFields(
                     fieldWithPath("room.id").type(NUMBER).description("숙소 아이디"),
