@@ -37,7 +37,7 @@ class RoomControllerTest extends RestDocsTestSupport {
     로그인("host@naver.com", "host1234!");
 
     //when
-    mockMvc.perform(multipart("/api/host/v1/rooms")
+    mockMvc.perform(multipart("/api/v1/hosts/rooms")
             .file(requestImage)
             .param("name", "나의 숙소")
             .param("lotAddress", "달나라 1번지")
