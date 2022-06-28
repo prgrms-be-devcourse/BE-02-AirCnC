@@ -28,8 +28,8 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
   @Query("select t "
       + "from Trip t "
       + "join fetch t.guest "
-      + "where t.id = :id")
-  Optional<Trip> findByIdFetchGuest(Long id);
+      + "where t.id = :id and t.guest.id = :guestId")
+  Optional<Trip> findTripByIdAndGuestId(Long id, Long guestId);
 
   @Query("select t "
       + "from Trip t "

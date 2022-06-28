@@ -58,7 +58,7 @@ public class TripController {
 
   /* 여행 목록 조회 */
   @GetMapping
-  public ResponseEntity<TripResponseList> getAll(
+  public ResponseEntity<TripResponseList> getAllTrip(
       @AuthenticationPrincipal JwtAuthentication authentication) {
 
     List<Trip> trips = tripService.getByGuestId(authentication.id);
@@ -75,5 +75,16 @@ public class TripController {
     Trip trip = tripService.getDetailedById(tripId, authentication.id);
 
     return new ResponseEntity<>(TripDetailedResponse.of(trip), OK);
+  }
+
+  /* 여행 취소 */
+  @PostMapping("/{tripId}/cancel")
+  public ResponseEntity<TripResponse> cancelTrip(
+      @AuthenticationPrincipal JwtAuthentication authentication,
+      @PathVariable Long tripId) {
+
+    Trip trip = tripService.cancel(tripId, authentication.id);
+
+    return new ResponseEntity<>(TripResponse.of(trip), OK);
   }
 }

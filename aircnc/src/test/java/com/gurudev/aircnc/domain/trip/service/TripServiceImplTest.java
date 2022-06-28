@@ -137,7 +137,7 @@ class TripServiceImplTest {
     Trip reservedTrip = tripService.reserve(command);
 
     //when
-    Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
+    Trip cancelledTrip = tripService.cancel(reservedTrip.getId(), guest.getId());
 
     //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);

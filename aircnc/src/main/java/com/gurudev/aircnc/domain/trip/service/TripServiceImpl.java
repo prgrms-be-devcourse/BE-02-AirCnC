@@ -54,8 +54,9 @@ public class TripServiceImpl implements TripService {
   }
 
   @Override
-  public Trip cancel(Long tripId) {
-    Trip trip = findTripByIdFetchGuest(tripId);
+  public Trip cancel(Long tripId, Long guestId) {
+
+    Trip trip = findTripByIdAndGuestId(tripId, guestId);
 
     trip.cancel();
 
@@ -81,8 +82,8 @@ public class TripServiceImpl implements TripService {
         .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
-  private Trip findTripByIdFetchGuest(Long id) {
-    return tripRepository.findByIdFetchGuest(id)
+  private Trip findTripByIdAndGuestId(Long id, Long guestId) {
+    return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 }

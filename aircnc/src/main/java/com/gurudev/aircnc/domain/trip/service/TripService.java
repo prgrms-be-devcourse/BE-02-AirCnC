@@ -12,7 +12,7 @@ public interface TripService {
 
   List<Trip> getByGuestId(Long guestId);
 
-  Trip cancel(Long tripId);
+  Trip cancel(Long tripId, Long guestId);
 
   void bulkStatusToTravelling();
 
