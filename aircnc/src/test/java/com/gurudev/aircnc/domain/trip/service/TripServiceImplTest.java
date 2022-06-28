@@ -137,18 +137,18 @@ class TripServiceImplTest {
   @Test
   void trip_status_변경_테스트() {
     // given
-    for (int i = 0; i < 5; ++i) {
-      totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
-      tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
-    }
+    totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
+    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
+    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
 
     // when
-    tripService.checkInTrips();
+    tripService.bulkStatusToTravelling();
 
     // then
     List<Trip> trips = tripService.getByGuest(guest);
 
-    assertThat(trips).extracting(Trip::getStatus).allMatch(status -> status == TRAVELLING);
+    assertThat(trips).extracting(Trip::getStatus)
+        .hasSize(2).allMatch(status -> status == TRAVELLING);
 
 
   }

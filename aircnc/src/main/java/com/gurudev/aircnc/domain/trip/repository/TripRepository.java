@@ -2,7 +2,6 @@ package com.gurudev.aircnc.domain.trip.repository;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,11 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
   Optional<Trip> findByIdFetchGuest(Long id);
 
   @Modifying(clearAutomatically = true)
-  @Query("update Trip t set t.status = :after where t.checkIn = :date and t.status = :before")
-  int bulkCheckIn(@Param("date") LocalDate date, @Param("before") TripStatus before,
-      @Param("after") TripStatus after);
+  @Query("update Trip t "
+      + "set t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING "
+      + "where t.checkIn = :date "
+      + "and t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED")
+  int bulkStatusToTravelling(@Param("date") LocalDate date);
+
+
 }

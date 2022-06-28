@@ -16,6 +16,6 @@ public interface TripService {
 
   Trip cancel(Long tripId);
 
-  void checkInTrips();
+  void bulkStatusToTravelling();
 
 }

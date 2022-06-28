@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * checkIn, checkOut 스케쥴러
+ * 여행 상태 스케쥴러
  */
 @Component
 @RequiredArgsConstructor
@@ -15,11 +15,11 @@ public class TripStatusScheduler {
   private final TripService tripService;
 
   /**
-   * checkIn 스케줄러 오전 12시가 되면 해당 날짜에 해당하는 RESERVED -> Traverling
+   * checkIn 스케쥴 오전 12시가 되면 해당 날짜에 해당하는 RESERVED -> TRAVELLING
    **/
   @Scheduled(cron = "0 0 12 * * *")
   public void startCheckIn() {
-    tripService.checkInTrips();
+    tripService.bulkStatusToTravelling();
   }
 
 }
