@@ -57,7 +57,7 @@ public class TripServiceImpl implements TripService {
 
   @Override
   public void bulkStatusToDone() {
-    tripRepository.bulkStatusToDone(LocalDate.now());
+    tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
   }
 
   private Trip findById(Long id) {
