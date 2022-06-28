@@ -18,4 +18,6 @@ public interface TripService {
 
   void bulkStatusToTravelling();
 
+  void bulkStatusToDone();
+
 }

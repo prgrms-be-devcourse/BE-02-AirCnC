@@ -17,9 +17,17 @@ public class TripStatusScheduler {
   /**
    * checkIn 스케쥴 오전 12시가 되면 해당 날짜에 해당하는 RESERVED -> TRAVELLING
    **/
-  @Scheduled(cron = "0 0 12 * * *")
-  public void startCheckIn() {
+  @Scheduled(cron = "0 0 0 * * *")
+  public void bulkStatusUpdateToTravelling() {
     tripService.bulkStatusToTravelling();
+  }
+
+  /**
+   * checkOut 스케쥴 오전 12시가 되면 해당 날짜에 해당하는 RESERVED -> TRAVELLING
+   **/
+  @Scheduled(cron = "0 0 0 * * *")
+  public void bulkStatusUpdateToDone() {
+    tripService.bulkStatusToDone();
   }
 
 }
