@@ -9,6 +9,7 @@ import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegi
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import java.util.List;
 
@@ -32,5 +33,9 @@ public class Command {
         room.getDescription(), room.getPricePerDay(), room.getCapacity());
 
     return RoomRegisterCommand.of(request, roomPhotos, hostId);
+  }
+
+  public static RoomDeleteCommand ofDeleteRoom(Long hostId, Long roomId) {
+    return new RoomDeleteCommand(hostId, roomId);
   }
 }

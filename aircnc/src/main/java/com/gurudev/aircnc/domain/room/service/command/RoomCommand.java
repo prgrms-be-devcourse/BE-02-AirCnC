@@ -37,18 +37,6 @@ public final class RoomCommand {
 
     private final Long hostId;
 
-    public Room toEntity() {
-      Room room = new Room(name,
-          new Address(lotAddress, roadAddress, detailedAddress, postCode),
-          description, pricePerDay, capacity);
-      photoFileNames.forEach(filename -> room.addRoomPhoto(new RoomPhoto(filename)));
-      return room;
-    }
-
-    public Long getHostId() {
-      return hostId;
-    }
-
     private RoomRegisterCommand(String name, String lotAddress, String roadAddress,
         String detailedAddress,
         String postCode, String description, int pricePerDay, int capacity,
@@ -84,6 +72,18 @@ public final class RoomCommand {
           registerRequest.getCapacity(),
           roomPhotoFiles, hostId);
     }
+
+    public Room toEntity() {
+      Room room = new Room(name,
+          new Address(lotAddress, roadAddress, detailedAddress, postCode),
+          description, pricePerDay, capacity);
+      photoFileNames.forEach(filename -> room.addRoomPhoto(new RoomPhoto(filename)));
+      return room;
+    }
+
+    public Long getHostId() {
+      return hostId;
+    }
   }
 
   @Getter
@@ -106,6 +106,19 @@ public final class RoomCommand {
       this.name = name;
       this.description = description;
       this.pricePerDay = pricePerDay;
+    }
+  }
+
+  @Getter
+  public static class RoomDeleteCommand {
+
+    private final Long hostId;
+
+    private final Long roomId;
+
+    public RoomDeleteCommand(Long hostId, Long roomId) {
+      this.hostId = hostId;
+      this.roomId = roomId;
     }
   }
 }
