@@ -61,14 +61,18 @@ public class RoomServiceImpl implements RoomService {
   @Transactional
   @Override
   public void delete(RoomDeleteCommand roomDeleteCommand) {
+    Room findRoom = roomRepository.findById(roomDeleteCommand.getRoomId())
+        .orElseThrow(() -> new NotFoundException(Room.class));
+
+    PageRequest limitOne = PageRequest.of(0, 1);
     if (tripRepository.findByRoomIdAndStatusSet(
         roomDeleteCommand.getRoomId(),
-        Set.of(RESERVED, TRAVELLING), PageRequest.of(0, 1)).size() == 1) {
+        Set.of(RESERVED, TRAVELLING), limitOne).size() == 1
+        || !findRoom.getHost().getId().equals(roomDeleteCommand.getHostId())) {
       throw new RoomDeleteException("숙소를 삭제 할 수 없습니다");
     }
 
-    roomRepository.deleteByIdAndHostId(roomDeleteCommand.getRoomId(),
-        roomDeleteCommand.getHostId());
+    roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
 
   @Override
