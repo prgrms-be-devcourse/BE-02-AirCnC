@@ -9,9 +9,11 @@ import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -27,6 +29,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 class RoomControllerTest extends RestDocsTestSupport {
 
@@ -126,6 +129,52 @@ class RoomControllerTest extends RestDocsTestSupport {
             jsonPath("$.room.pricePerDay").value("20000"),
             jsonPath("$.room.capacity").value("2"),
             jsonPath("$.room.fileNames", hasSize(1))
+        )
+
+        //docs
+        .andDo(
+            restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("인증 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("name").description("이름"),
+                    fieldWithPath("description").description("설명"),
+                    fieldWithPath("pricePerDay").description("1박당 가격")
+                ),
+                responseFields(
+                    fieldWithPath("room.id").type(NUMBER).description("숙소 아이디"),
+                    fieldWithPath("room.name").type(STRING).description("이름"),
+                    fieldWithPath("room.address").type(STRING).description("주소"),
+                    fieldWithPath("room.description").type(STRING).description("설명"),
+                    fieldWithPath("room.pricePerDay").type(NUMBER).description("1박당 가격"),
+                    fieldWithPath("room.capacity").type(NUMBER).description("인원 수"),
+                    fieldWithPath("room.fileNames").type(ARRAY).description("등록한 파일의 이름")
+                )
+            )
         );
+  }
+
+  @Test
+  void 숙소_삭제() throws Exception {
+    //given
+    로그인("host@naver.com", "host1234!");
+    Long roomId = 숙소_등록("나의 숙소", new Address("달나라 1번지", "달나라 1길", "100호", "1234"), "달토끼가 사는 나의 숙소",
+        "100000", "2");
+
+    //when
+    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/hosts/rooms/{roomId}", roomId)
+            .header(AUTHORIZATION, token))
+        //then
+        .andExpect(status().isNoContent())
+
+        //docs
+        .andDo(restDocs.document(
+            requestHeaders(
+                headerWithName(AUTHORIZATION).description("인증 토큰")
+            ), pathParameters(
+                parameterWithName("roomId").description("숙소 아이디")
+            )
+        ));
   }
 }
