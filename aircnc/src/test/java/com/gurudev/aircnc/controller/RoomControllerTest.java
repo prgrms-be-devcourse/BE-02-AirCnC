@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
+import com.gurudev.aircnc.domain.room.entity.Address;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import org.springframework.mock.web.MockMultipartFile;
 class RoomControllerTest extends RestDocsTestSupport {
 
   @Test
-  void 숙소_등록() throws Exception {
+  void 숙소_등록_API() throws Exception {
     //given
     InputStream requestInputStream = new FileInputStream(
         "src/test/resources/room-photos-src/photo1.jpeg");
@@ -100,7 +101,8 @@ class RoomControllerTest extends RestDocsTestSupport {
   void 숙소_변경() throws Exception {
     //given
     로그인("host@naver.com", "host1234!");
-    Long registeredRoomId = 숙소등록();
+    Long roomId = 숙소_등록("나의 숙소", new Address("달나라 1번지", "달나라 1길", "100호", "1234"),
+        "달토끼가 사는 나의 숙소", "100000", "2");
 
     ObjectNode roomUpdateRequest = objectMapper.createObjectNode();
     roomUpdateRequest
@@ -109,7 +111,7 @@ class RoomControllerTest extends RestDocsTestSupport {
         .put("pricePerDay", "20000");
 
     //when
-    mockMvc.perform(patch("/api/v1/hosts/rooms/{roomId}", registeredRoomId)
+    mockMvc.perform(patch("/api/v1/hosts/rooms/{roomId}", roomId)
             .contentType(MediaType.APPLICATION_JSON)
             .content(roomUpdateRequest.toString())
             .header(AUTHORIZATION, token))
@@ -117,7 +119,7 @@ class RoomControllerTest extends RestDocsTestSupport {
         //then
         .andExpect(status().isOk())
         .andExpectAll(
-            jsonPath("$.room.id").value(registeredRoomId),
+            jsonPath("$.room.id").value(roomId),
             jsonPath("$.room.name").value("제주도 방"),
             jsonPath("$.room.address").value("달나라 1길 100호"),
             jsonPath("$.room.description").value("이 숙소는 아주 좋은 숙소입니다"),

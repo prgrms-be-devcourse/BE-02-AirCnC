@@ -11,6 +11,8 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import java.util.List;
 
 public class Command {
@@ -37,5 +39,16 @@ public class Command {
 
   public static RoomDeleteCommand ofDeleteRoom(Long hostId, Long roomId) {
     return new RoomDeleteCommand(hostId, roomId);
+  }
+
+  public static TripReserveCommand ofReserveTrip(Trip trip) {
+    return new TripReserveCommand(
+        trip.getGuest().getId(),
+        trip.getRoom().getId(),
+        trip.getCheckIn(),
+        trip.getCheckOut(),
+        trip.getHeadCount(),
+        trip.getTotalPrice()
+    );
   }
 }

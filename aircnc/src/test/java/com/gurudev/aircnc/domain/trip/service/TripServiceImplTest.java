@@ -2,7 +2,6 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
@@ -19,6 +18,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
@@ -54,26 +54,30 @@ class TripServiceImplTest {
 
   @BeforeEach
   void setUp() {
+    //회원 세팅
     Member host = memberService.register(Command.ofRegisterMember(createHost()));
-
     guest = createGuest();
+    guest = memberService.register(Command.ofRegisterMember(guest));
+
+    //숙소 세팅
     room = createRoom();
     roomPhoto = createRoomPhoto();
     room = roomService.register(Command.ofRegisterRoom(room, List.of(roomPhoto), host.getId()));
 
-    guest = memberService.register(Command.ofRegisterMember(guest));
-
+    //여행의 필드 세팅
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
-
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
   }
 
   @Test
-  void 여행_생성_성공() {
+  void 여행_예약_성공() {
+    //given
+    TripReserveCommand command = defaultTripReserveCommand();
+
     //when
-    Trip trip = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    Trip trip = tripService.reserve(command);
 
     //then
     assertThat(trip.getId()).isNotNull();
@@ -85,8 +89,11 @@ class TripServiceImplTest {
   @Test
   void 게스트의_여행_목록_조회() {
     //given
-    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
-    Trip trip2 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    TripReserveCommand command1 = defaultTripReserveCommand();
+    TripReserveCommand command2 = defaultTripReserveCommand();
+
+    Trip trip1 = tripService.reserve(command1);
+    Trip trip2 = tripService.reserve(command2);
 
     //when
     List<Trip> findTrips = tripService.getByGuest(guest);
@@ -97,9 +104,9 @@ class TripServiceImplTest {
 
   @Test
   void 여행_상세_조회() {
-
     //given
-    Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    TripReserveCommand command = defaultTripReserveCommand();
+    Trip trip1 = tripService.reserve(command);
 
     //when
     Trip trip = tripService.getById(trip1.getId());
@@ -124,8 +131,8 @@ class TripServiceImplTest {
   @Test
   void 예약_상태의_여행_취소_성공() {
     //given
-    Trip reservedTrip =
-        tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
+    TripReserveCommand command = defaultTripReserveCommand();
+    Trip reservedTrip = tripService.reserve(command);
 
     //when
     Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
@@ -137,9 +144,12 @@ class TripServiceImplTest {
   @Test
   void trip_status_변경_테스트() {
     // given
+    TripReserveCommand command1 = defaultTripReserveCommand();
+    TripReserveCommand command2 = defaultTripReserveCommand();
+
     totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
-    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
-    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
+    tripService.reserve(command1);
+    tripService.reserve(command2);
 
     // when
     tripService.bulkStatusToTravelling();
@@ -148,8 +158,13 @@ class TripServiceImplTest {
     List<Trip> trips = tripService.getByGuest(guest);
 
     assertThat(trips).extracting(Trip::getStatus)
-        .hasSize(2).allMatch(status -> status == TRAVELLING);
+        .hasSize(2)
+        .containsExactly(RESERVED, RESERVED);
 
 
+  }
+
+  private TripReserveCommand defaultTripReserveCommand() {
+    return Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
 }

@@ -16,7 +16,7 @@ public class CustomControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(AircncRuntimeException.class)
   public ErrorResponse handle(AircncRuntimeException ex) {
-    return ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    return ErrorResponse.of(HttpStatus.BAD_REQUEST, ex.getMessage());
   }
 
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -1,10 +1,12 @@
 package com.gurudev.aircnc.domain.trip.service;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
+import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,17 +20,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class TripServiceImpl implements TripService {
 
   private final TripRepository tripRepository;
+  private final MemberRepository memberRepository;
   private final RoomRepository roomRepository;
 
   @Transactional
   @Override
-  public Trip reserve(Member guest, Long roomId, LocalDate checkIn, LocalDate checkOut,
-      int headCount, int totalPrice) {
-    Room room = findRoomById(roomId);
+  public Trip reserve(TripReserveCommand command) {
+    Room room = findRoomById(command.getRoomId());
+    Member guest = findMemberById(command.getGuestId());
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
-    return tripRepository.save(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
+    return tripRepository.save(
+        new Trip(guest,
+            room,
+            command.getCheckIn(),
+            command.getCheckOut(),
+            command.getTotalPrice(),
+            command.getHeadCount())
+    );
   }
 
   @Override
@@ -66,6 +76,11 @@ public class TripServiceImpl implements TripService {
 
   private Room findRoomById(Long roomId) {
     return roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException(Room.class));
+  }
+
+  private Member findMemberById(Long memberId) {
+    return memberRepository.findById(memberId)
+        .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
   private Trip findTripByIdFetchGuest(Long id) {
