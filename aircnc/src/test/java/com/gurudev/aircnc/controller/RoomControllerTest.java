@@ -5,6 +5,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
@@ -29,7 +30,6 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 class RoomControllerTest extends RestDocsTestSupport {
 
@@ -163,7 +163,7 @@ class RoomControllerTest extends RestDocsTestSupport {
         "100000", "2");
 
     //when
-    mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/hosts/rooms/{roomId}", roomId)
+    mockMvc.perform(delete("/api/v1/hosts/rooms/{roomId}", roomId)
             .header(AUTHORIZATION, token))
         //then
         .andExpect(status().isNoContent())
