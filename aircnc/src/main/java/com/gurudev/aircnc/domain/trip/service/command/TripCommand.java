@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.domain.trip.service.command;
 
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
+import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
 import java.time.LocalDate;
 import lombok.Getter;
 
@@ -26,7 +27,9 @@ public class TripCommand {
       this.totalPrice = totalPrice;
     }
 
-    public static TripReserveCommand of(TripReserveRequest request, Long guestId) {
+    public static TripReserveCommand of(TripReserveRequest tripReserveRequest, Long guestId) {
+      Request request = tripReserveRequest.getRequest();
+
       return new TripReserveCommand(
           guestId,
           request.getRoomId(),

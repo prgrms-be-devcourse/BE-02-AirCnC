@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 public class Trip extends BaseIdEntity {
 
   public static final int TRIP_TOTAL_PRICE_MIN_VALUE = 10000;
-  public static final int TRIP_HEADCOUNT_MIN_VALUE = 1;
 
   @ManyToOne(fetch = LAZY)
   private Member guest;
@@ -59,8 +58,7 @@ public class Trip extends BaseIdEntity {
     checkTotalPrice(checkIn, checkOut, totalPrice, room);
     checkHeadCount(headCount, room);
 
-    checkArgument(headCount >= TRIP_HEADCOUNT_MIN_VALUE,
-        String.format("인원은 %d명 이상이여야 합니다", TRIP_HEADCOUNT_MIN_VALUE));
+    checkArgument(headCount >= 1, "인원은 1명 이상이여야 합니다");
 
     this.guest = guest;
     this.room = room;
