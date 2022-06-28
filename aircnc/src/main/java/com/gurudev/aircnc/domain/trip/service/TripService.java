@@ -15,4 +15,7 @@ public interface TripService {
   List<Trip> getByGuest(Member guest);
 
   Trip cancel(Long tripId);
+
+  void bulkStatusToTravelling();
+
 }

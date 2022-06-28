@@ -2,6 +2,7 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
@@ -65,6 +66,7 @@ class TripServiceImplTest {
     checkIn = now().plusDays(1);
     checkOut = now().plusDays(2);
     headCount = room.getCapacity();
+
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
   }
 
@@ -95,6 +97,7 @@ class TripServiceImplTest {
 
   @Test
   void 여행_상세_조회() {
+
     //given
     Trip trip1 = tripService.reserve(guest, room.getId(), checkIn, checkOut, headCount, totalPrice);
 
@@ -129,5 +132,24 @@ class TripServiceImplTest {
 
     //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
+  }
+
+  @Test
+  void trip_status_변경_테스트() {
+    // given
+    totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
+    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
+    tripService.reserve(guest, room.getId(), LocalDate.now(), checkOut, headCount, totalPrice);
+
+    // when
+    tripService.bulkStatusToTravelling();
+
+    // then
+    List<Trip> trips = tripService.getByGuest(guest);
+
+    assertThat(trips).extracting(Trip::getStatus)
+        .hasSize(2).allMatch(status -> status == TRAVELLING);
+
+
   }
 }

@@ -12,7 +12,7 @@ public class Preconditions {
     }
   }
 
-  public static void checkStateException(boolean expression, Object errorMessage) {
+  public static void checkState(boolean expression, Object errorMessage) {
     if (!expression) {
       throw new IllegalStateException(String.valueOf(errorMessage));
     }
