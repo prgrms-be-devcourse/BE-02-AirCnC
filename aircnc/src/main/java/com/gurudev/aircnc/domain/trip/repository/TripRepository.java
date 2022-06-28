@@ -20,9 +20,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "from Trip t "
       + "join fetch t.guest "
       + "join fetch t.room r "
+      + "join fetch r.host "
       + "join fetch r.roomPhotos "
-      + "where t.id = :id")
-  Optional<Trip> findById(Long id);
+      + "where t.id = :id and t.guest.id = :guestId")
+  Optional<Trip> findByIdAndGuestId(Long id, Long guestId);
 
   @Query("select t "
       + "from Trip t "
@@ -49,8 +50,4 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "and t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING")
   int bulkStatusToDone(@Param("date") LocalDate date);
 
-  @Query("select t "
-      + "from Trip t "
-      + "where t.id = :id and t.guest.id = :guestId")
-  Optional<Trip> findByIdAndGuestId(Long id, Long guestId);
 }

@@ -42,9 +42,10 @@ public class TripServiceImpl implements TripService {
   }
 
   @Override
-  public Trip getByIdAndGuestId(Long id, Long guestId) {
+  public Trip getDetailedById(Long id, Long guestId) {
 
-    return findByIdAndGuestId(id, guestId);
+    return tripRepository.findByIdAndGuestId(id, guestId)
+        .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
   @Override
@@ -69,11 +70,6 @@ public class TripServiceImpl implements TripService {
   @Override
   public void bulkStatusToDone() {
     tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
-  }
-
-  private Trip findByIdAndGuestId(Long id, Long guestId) {
-    return tripRepository.findByIdAndGuestId(id, guestId)
-        .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
   private Room findRoomById(Long roomId) {

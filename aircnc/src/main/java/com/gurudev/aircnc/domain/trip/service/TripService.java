@@ -8,7 +8,7 @@ public interface TripService {
 
   Trip reserve(TripReserveCommand command);
 
-  Trip getByIdAndGuestId(Long id, Long guestId);
+  Trip getDetailedById(Long id, Long guestId);
 
   List<Trip> getByGuestId(Long guestId);
 

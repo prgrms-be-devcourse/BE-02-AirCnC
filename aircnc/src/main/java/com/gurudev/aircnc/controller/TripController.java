@@ -72,7 +72,7 @@ public class TripController {
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable Long tripId) {
 
-    Trip trip = tripService.getByIdAndGuestId(tripId, authentication.id);
+    Trip trip = tripService.getDetailedById(tripId, authentication.id);
 
     return new ResponseEntity<>(TripDetailedResponse.of(trip), OK);
   }

@@ -44,6 +44,7 @@ class TripServiceImplTest {
   private Room room;
   private RoomPhoto roomPhoto;
 
+  private Member host;
   private Member guest;
 
   private LocalDate checkIn;
@@ -55,7 +56,7 @@ class TripServiceImplTest {
   @BeforeEach
   void setUp() {
     //회원 세팅
-    Member host = memberService.register(Command.ofRegisterMember(createHost()));
+    host = memberService.register(Command.ofRegisterMember(createHost()));
     guest = createGuest();
     guest = memberService.register(Command.ofRegisterMember(guest));
 
@@ -109,13 +110,14 @@ class TripServiceImplTest {
     Trip trip1 = tripService.reserve(command);
 
     //when
-    Trip trip = tripService.getByIdAndGuestId(trip1.getId(), guest.getId());
+    Trip trip = tripService.getDetailedById(trip1.getId(), guest.getId());
 
     //then
     assertThat(trip).isEqualTo(trip1);
     assertThat(trip.getGuest()).isEqualTo(guest);
     assertThat(trip.getRoom()).isEqualTo(room);
     assertThat(trip.getRoom().getRoomPhotos()).containsExactly(roomPhoto);
+    assertThat(trip.getRoom().getHost()).isEqualTo(host);
   }
 
   @Test
@@ -125,7 +127,7 @@ class TripServiceImplTest {
 
     //then
     assertThatNotFoundException()
-        .isThrownBy(() -> tripService.getByIdAndGuestId(invalidTripId, guest.getId()));
+        .isThrownBy(() -> tripService.getDetailedById(invalidTripId, guest.getId()));
   }
 
   @Test
