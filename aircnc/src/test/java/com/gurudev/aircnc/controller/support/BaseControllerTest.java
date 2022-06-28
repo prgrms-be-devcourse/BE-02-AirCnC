@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.domain.room.entity.Address;
-import com.jayway.jsonpath.JsonPath;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +82,7 @@ public class BaseControllerTest {
     assertThat(token).isNotNull();
   }
 
-  protected String 숙소_등록(String name, Address address, String description,
+  protected Long 숙소_등록(String name, Address address, String description,
       String pricePerDay, String capacity) throws Exception {
 
     InputStream requestInputStream = new FileInputStream(
@@ -105,7 +104,9 @@ public class BaseControllerTest {
         .andExpect(status().isCreated())
         .andReturn();
 
-    return JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.room.id").toString();
+    String content = mvcResult.getResponse().getContentAsString();
+
+    return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
   }
 
 }
