@@ -13,6 +13,8 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -179,6 +181,9 @@ class TripControllerTest extends RestDocsTestSupport {
                 requestHeaders(
                     headerWithName(AUTHORIZATION).description("인증 토큰")
                 ),
+                pathParameters(
+                    parameterWithName("tripId").description("여행 아이디")
+                ),
                 responseFields(
                     fieldWithPath("trip.id").type(NUMBER).description("여행 아이디"),
                     fieldWithPath("trip.checkIn").type(STRING).description("체크인 날짜"),
@@ -232,6 +237,9 @@ class TripControllerTest extends RestDocsTestSupport {
             restDocs.document(
                 requestHeaders(
                     headerWithName(AUTHORIZATION).description("인증 토큰")
+                ),
+                pathParameters(
+                    parameterWithName("tripId").description("여행 아이디")
                 ),
                 responseFields(
                     fieldWithPath("trip.id").type(NUMBER).description("여행 아이디"),
