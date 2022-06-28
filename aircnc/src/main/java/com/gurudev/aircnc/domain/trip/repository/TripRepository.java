@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.repository;
 
-import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-  List<Trip> findByGuest(Member guest);
+  List<Trip> findByGuestId(Long guestId);
 
   @Query("select t "
       + "from Trip t "

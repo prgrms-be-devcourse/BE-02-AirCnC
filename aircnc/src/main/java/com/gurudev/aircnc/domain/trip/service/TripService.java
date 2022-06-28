@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import java.util.List;
@@ -11,7 +10,7 @@ public interface TripService {
 
   Trip getById(Long id);
 
-  List<Trip> getByGuest(Member guest);
+  List<Trip> getByGuestId(Long guestId);
 
   Trip cancel(Long tripId);
 
