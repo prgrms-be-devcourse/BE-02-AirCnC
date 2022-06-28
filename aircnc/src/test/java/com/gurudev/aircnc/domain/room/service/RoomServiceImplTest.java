@@ -41,6 +41,7 @@ class RoomServiceImplTest {
   private Member guest;
   private Room room1;
   private Room room2;
+  private Member fakeHost;
 
   private List<RoomPhoto> roomPhotos;
 
@@ -48,6 +49,8 @@ class RoomServiceImplTest {
   void setUp() {
 
     host = memberService.register(Command.ofRegisterMember(createHost()));
+    guest = memberService.register(Command.ofRegisterMember(createGuest()));
+    fakeHost = memberService.register(Command.ofHost("fakeHost@email.com"));
 
     room1 = createRoom();
     room2 = createRoom();
@@ -131,7 +134,7 @@ class RoomServiceImplTest {
   void 해당_숙소의_호스트가_아닌_경우_변경_실패() {
     //given
     room1 = roomService.register(Command.ofRoom(room1, roomPhotos, host.getId()));
-    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(host.getId() + 1,
+    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(fakeHost.getId(),
         room1.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
 
     //then
