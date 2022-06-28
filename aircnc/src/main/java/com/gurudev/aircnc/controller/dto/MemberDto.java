@@ -38,8 +38,7 @@ public final class MemberDto {
       private String role;
 
       public MemberRegisterCommand toCommand() {
-        return new MemberRegisterCommand(
-            email, password, name, birthDate, phoneNumber, role);
+        return new MemberRegisterCommand(email, password, name, birthDate, phoneNumber, role);
       }
     }
   }

@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
+import com.gurudev.aircnc.domain.base.AttachedFile;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
@@ -11,6 +12,7 @@ import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/rooms")
+@RequestMapping("/api/v1/hosts/rooms")
 @RequiredArgsConstructor
 public class RoomController {
 
@@ -34,13 +36,18 @@ public class RoomController {
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
-      @ModelAttribute RoomRegisterRequest registerRequest,
+      @ModelAttribute RoomRegisterRequest request,
       @RequestPart List<MultipartFile> roomPhotosFile) {
 
-    List<RoomPhoto> roomPhotos = roomPhotoService.upload(roomPhotosFile);
+    //숙소의 사진 S3에 저장
+    List<RoomPhoto> roomPhotos = roomPhotosFile.stream()
+        .map(AttachedFile::new)
+        .map(roomPhotoService::upload)
+        .collect(Collectors.toList());
 
-    Room room = roomService.register(
-        RoomRegisterCommand.of(registerRequest, roomPhotos, authentication.id));
+    //숙소, S3에 저장된 숙소 사진의 파일 이름을 DB에 저장
+    Room room =
+        roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
     return new ResponseEntity<>(RoomRegisterResponse.of(room, roomPhotos), CREATED);
   }

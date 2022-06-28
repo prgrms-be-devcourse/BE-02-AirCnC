@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.19.2'
 
     implementation 'org.flywaydb:flyway-mysql:8.5.12'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.239'
 
     compileOnly 'org.projectlombok:lombok'
 

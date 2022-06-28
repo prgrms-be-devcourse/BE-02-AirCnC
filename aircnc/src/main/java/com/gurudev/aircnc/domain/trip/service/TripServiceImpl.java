@@ -50,6 +50,12 @@ public class TripServiceImpl implements TripService {
     return trip;
   }
 
+  @Override
+  public void bulkStatusToTravelling() {
+    tripRepository.bulkStatusToTravelling(LocalDate.now());
+  }
+
+
   private Trip findById(Long id) {
     return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));
   }

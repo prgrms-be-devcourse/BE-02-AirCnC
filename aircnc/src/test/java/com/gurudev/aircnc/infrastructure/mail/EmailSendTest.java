@@ -13,7 +13,8 @@ class EmailSendTest { // 사용방법을 위한 Temporary 테스트
 
   @Test
   void test() throws Exception {
-    MimeMessage mimeMessage = service.createSignUpMsg("rlfrmsdh1@gmail.com");
+    MimeMessage mimeMessage = service.createSignUpMsg("emrdbs12@gmail.com");
     service.sendMessage(mimeMessage);
   }
 }
+
