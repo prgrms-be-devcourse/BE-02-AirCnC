@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,5 +108,28 @@ public class BaseControllerTest {
     String content = mvcResult.getResponse().getContentAsString();
 
     return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
+  }
+
+  protected Long 여행_등록(String checkIn, String checkOut,
+      int totalPrice, int headCount, long roomId) throws Exception {
+
+    ObjectNode tripReserveRequest = objectMapper.createObjectNode();
+    ObjectNode trip = tripReserveRequest.putObject("trip");
+    trip.put("checkIn", checkIn)
+        .put("checkOut", checkOut)
+        .put("totalPrice", totalPrice)
+        .put("headCount", headCount)
+        .put("roomId", roomId);
+
+    MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/trips")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(createJson(tripReserveRequest))
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isCreated())
+        .andReturn();
+
+    String content = mvcResult.getResponse().getContentAsString();
+
+    return objectMapper.readValue(content, JsonNode.class).get("trip").get("id").asLong();
   }
 }
