@@ -1,6 +1,9 @@
 package com.gurudev.aircnc.controller.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -8,12 +11,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 public class BaseControllerTest {
 
+  protected static String token;
   @Autowired
   protected MockMvc mockMvc;
-
   @Autowired
   protected ObjectMapper objectMapper;
-
-  protected static String token;
 
   protected String createJson(Object dto) throws JsonProcessingException {
     return objectMapper.writeValueAsString(dto);
@@ -73,5 +77,29 @@ public class BaseControllerTest {
 
     assertThat(token).isNotNull();
 
+  }
+
+  protected Long 숙소등록() throws Exception {
+    InputStream requestInputStream = new FileInputStream(
+        "src/test/resources/room-photos-src/photo1.jpeg");
+    MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg",
+        IMAGE_JPEG_VALUE, requestInputStream);
+
+    MockHttpServletResponse response = mockMvc.perform(multipart("/api/v1/hosts/rooms")
+            .file(requestImage)
+            .param("name", "나의 숙소")
+            .param("lotAddress", "달나라 1번지")
+            .param("roadAddress", "달나라 1길")
+            .param("detailedAddress", "100호")
+            .param("postCode", "1234")
+            .param("description", "달토끼가 사는 나의 숙소")
+            .param("pricePerDay", "100000")
+            .param("capacity", "2")
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isCreated())
+        .andReturn().getResponse();
+
+    return objectMapper.readValue(response.getContentAsString(), JsonNode.class).get("room")
+        .get("id").asLong();
   }
 }

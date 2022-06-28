@@ -98,5 +98,69 @@ public final class RoomDto {
       }
     }
   }
-}
 
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  public static class RoomUpdateRequest {
+
+    private String name;
+    private String description;
+    private Integer pricePerDay;
+
+    public RoomUpdateRequest(String name, String description, Integer pricePerDay) {
+      this.name = name;
+      this.description = description;
+      this.pricePerDay = pricePerDay;
+    }
+  }
+
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class RoomUpdateResponse {
+
+    @JsonProperty("room")
+    private final Response response;
+
+    public static RoomUpdateResponse of(Room room, List<RoomPhoto> roomPhotos) {
+      return new RoomUpdateResponse(Response.of(room, roomPhotos));
+    }
+
+    @Getter
+    public static class Response {
+
+      private final long id;
+      private final String name;
+      private final String address;
+      private final String description;
+      private final int pricePerDay;
+      private final int capacity;
+      private final List<String> fileNames;
+
+      @Builder
+      public Response(long id, String name, String address, String description, int pricePerDay,
+          int capacity,
+          List<String> fileNames) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.pricePerDay = pricePerDay;
+        this.capacity = capacity;
+        this.fileNames = fileNames;
+      }
+
+      public static Response of(Room room, List<RoomPhoto> roomPhotos) {
+        return Response.builder()
+            .id(room.getId())
+            .name(room.getName())
+            .address(Address.toString(room.getAddress()))
+            .description(room.getDescription())
+            .pricePerDay(room.getPricePerDay())
+            .capacity(room.getCapacity())
+            .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
+            .build();
+      }
+    }
+  }
+}
