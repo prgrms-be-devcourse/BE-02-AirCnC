@@ -96,7 +96,7 @@ class TripServiceImplTest {
     Trip trip2 = tripService.reserve(command2);
 
     //when
-    List<Trip> findTrips = tripService.getByGuest(guest);
+    List<Trip> findTrips = tripService.getByGuestId(guest.getId());
 
     //then
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
@@ -155,7 +155,7 @@ class TripServiceImplTest {
     tripService.bulkStatusToTravelling();
 
     // then
-    List<Trip> trips = tripService.getByGuest(guest);
+    List<Trip> trips = tripService.getByGuestId(guest.getId());
 
     assertThat(trips).extracting(Trip::getStatus)
         .hasSize(2)
