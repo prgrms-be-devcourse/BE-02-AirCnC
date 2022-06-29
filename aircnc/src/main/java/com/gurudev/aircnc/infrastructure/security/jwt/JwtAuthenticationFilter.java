@@ -43,11 +43,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           log.debug("Jwt parse result: {}", claims);
 
           Long id = claims.id;
+          String email = claims.email;
           List<GrantedAuthority> authorities = getAuthorities(claims);
 
           if (Objects.nonNull(id) && authorities.size() > 0) {
             JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(new JwtAuthentication(token, id), null, authorities);
+                new JwtAuthenticationToken(new JwtAuthentication(token, id, email), null,
+                    authorities);
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);

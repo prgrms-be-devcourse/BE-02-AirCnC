@@ -38,6 +38,7 @@ public final class Jwt {
         .withIssuedAt(now)
         .withExpiresAt(new Date(now.getTime() + validity))
         .withClaim("id", claims.id)
+        .withClaim("email", claims.email)
         .withArrayClaim("roles", claims.roles)
         .sign(algorithm);
   }
@@ -50,6 +51,8 @@ public final class Jwt {
   public static class Claims {
 
     Long id;
+
+    String email;
     String[] roles;
     Date iat;
     Date exp;
@@ -65,13 +68,19 @@ public final class Jwt {
         this.roles = roles.asArray(String.class);
       }
 
+      Claim email = decodedJWT.getClaim("email");
+      if (!email.isNull()) {
+        this.email = email.asString();
+      }
+
       this.iat = decodedJWT.getIssuedAt();
       this.exp = decodedJWT.getExpiresAt();
     }
 
-    public static Claims from(Long id, String[] roles) {
+    public static Claims from(Long id, String email, String[] roles) {
       Claims claims = new Claims();
       claims.id = id;
+      claims.email = email;
       claims.roles = roles;
       return claims;
     }

@@ -46,11 +46,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
       List<GrantedAuthority> authorities = List.of(
           new SimpleGrantedAuthority(member.getRole().name()));
 
-      String token = getToken(member.getId(), authorities);
+      String token = getToken(member.getId(), Email.toString(member.getEmail()), authorities);
 
       JwtAuthenticationToken authenticated =
           new JwtAuthenticationToken(
-              new JwtAuthentication(token, member.getId()), null, authorities);
+              new JwtAuthentication(token, member.getId(), Email.toString(member.getEmail())), null,
+              authorities);
 
       authenticated.setDetails(member);
 
@@ -62,11 +63,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     }
   }
 
-  private String getToken(final Long id, final List<GrantedAuthority> authorities) {
+  private String getToken(Long id, String email, List<GrantedAuthority> authorities) {
     String[] roles = authorities.stream()
         .map(GrantedAuthority::getAuthority)
         .toArray(String[]::new);
 
-    return jwt.sign(Jwt.Claims.from(id, roles));
+    return jwt.sign(Jwt.Claims.from(id, email, roles));
   }
 }
