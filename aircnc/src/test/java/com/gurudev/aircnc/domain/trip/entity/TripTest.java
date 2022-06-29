@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.entity;
 
-import static com.gurudev.aircnc.domain.trip.entity.Trip.TRIP_HEADCOUNT_MIN_VALUE;
 import static com.gurudev.aircnc.domain.trip.entity.Trip.TRIP_TOTAL_PRICE_MIN_VALUE;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
@@ -70,9 +69,9 @@ class TripTest {
   }
 
   @Test
-  void 인원이_제한_인원_이하_일_수_없다() {
+  void 인원이_0명_이하_일_수_없다() {
     //given
-    int invalidHeadCount = TRIP_HEADCOUNT_MIN_VALUE - 1;
+    int invalidHeadCount = 0;
 
     //then
     assertThatIllegalArgumentException()

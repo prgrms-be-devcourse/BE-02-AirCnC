@@ -3,12 +3,15 @@ package com.gurudev.aircnc.infrastructure.mail;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@Disabled
 class EmailServiceTest { // 사용방법을 위한 Temporary 테스트
 
   @Autowired

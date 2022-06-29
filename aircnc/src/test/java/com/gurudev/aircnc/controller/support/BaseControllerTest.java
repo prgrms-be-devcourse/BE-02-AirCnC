@@ -1,6 +1,9 @@
 package com.gurudev.aircnc.controller.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -8,13 +11,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.gurudev.aircnc.domain.room.entity.Address;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -36,8 +45,8 @@ public class BaseControllerTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    멤버_등록("guest@naver.com", "guest1234!", "guest", "GUEST");
-    멤버_등록("host@naver.com", "host1234!", "host", "HOST");
+    멤버_등록("guest@naver.com", "guest1234!", "게스트", "GUEST");
+    멤버_등록("host@naver.com", "host1234!", "호스트", "HOST");
   }
 
   protected void 멤버_등록(String email, String password, String name, String role) throws Exception {
@@ -72,6 +81,55 @@ public class BaseControllerTest {
         JsonNode.class).get("member").get("token").asText();
 
     assertThat(token).isNotNull();
+  }
 
+  protected Long 숙소_등록(String name, Address address, String description,
+      String pricePerDay, String capacity) throws Exception {
+
+    InputStream requestInputStream = new FileInputStream(
+        "src/test/resources/room-photos-src/photo1.jpeg");
+    MockMultipartFile requestImage = new MockMultipartFile("roomPhotosFile", "photo1.jpeg",
+        IMAGE_JPEG_VALUE, requestInputStream);
+
+    MvcResult mvcResult = mockMvc.perform(multipart("/api/v1/hosts/rooms")
+            .file(requestImage)
+            .param("name", name)
+            .param("lotAddress", address.getLotAddress())
+            .param("roadAddress", address.getRoadAddress())
+            .param("detailedAddress", address.getDetailedAddress())
+            .param("postCode", address.getPostCode())
+            .param("description", description)
+            .param("pricePerDay", pricePerDay)
+            .param("capacity", capacity)
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isCreated())
+        .andReturn();
+
+    String content = mvcResult.getResponse().getContentAsString();
+
+    return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
+  }
+
+  protected Long 여행_등록(String checkIn, String checkOut,
+      int totalPrice, int headCount, long roomId) throws Exception {
+
+    ObjectNode tripReserveRequest = objectMapper.createObjectNode();
+    ObjectNode trip = tripReserveRequest.putObject("trip");
+    trip.put("checkIn", checkIn)
+        .put("checkOut", checkOut)
+        .put("totalPrice", totalPrice)
+        .put("headCount", headCount)
+        .put("roomId", roomId);
+
+    MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/trips")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(createJson(tripReserveRequest))
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isCreated())
+        .andReturn();
+
+    String content = mvcResult.getResponse().getContentAsString();
+
+    return objectMapper.readValue(content, JsonNode.class).get("trip").get("id").asLong();
   }
 }

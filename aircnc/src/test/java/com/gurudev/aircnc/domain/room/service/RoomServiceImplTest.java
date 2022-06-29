@@ -6,6 +6,7 @@ import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
+import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
@@ -14,11 +15,14 @@ import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,28 +49,33 @@ class RoomServiceImplTest {
   private Member host;
 
   private Member guest;
-  private Room room1;
-  private Room room2;
   private Member fakeHost;
 
   private List<RoomPhoto> roomPhotos;
 
+  private LocalDate checkIn;
+  private LocalDate checkOut;
+  private int totalPrice;
+  private int headCount;
+
   @BeforeEach
   void setUp() {
+    // 회원 세팅
     host = memberService.register(Command.ofRegisterMember(createHost()));
     guest = memberService.register(Command.ofRegisterMember(createGuest()));
+
+    // 가짜 회원 세팅
     MemberRegisterCommand fakeHostRegisterCommand = Command.ofRegisterMember(createHost());
     ReflectionTestUtils.setField(fakeHostRegisterCommand, "email", "fakeHost@email.com");
     fakeHost = memberService.register(fakeHostRegisterCommand);
 
-    room1 = createRoom();
-    room2 = createRoom();
-
+    //숙소의 필드 세팅
+    Room fixtureRoom = createRoom();
     roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
-
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
-    room2 = roomService.register(
-        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
+    checkIn = LocalDate.now();
+    checkOut = checkIn.plusDays(1);
+    totalPrice = between(checkIn, checkOut).getDays() * fixtureRoom.getPricePerDay();
+    headCount = fixtureRoom.getCapacity();
   }
 
   @Test
@@ -76,8 +85,9 @@ class RoomServiceImplTest {
     List<RoomPhoto> roomPhotos = List.of(createRoomPhoto(), createRoomPhoto());
 
     //then
-    Room registeredRoom =
-        roomService.register(Command.ofRegisterRoom(room, roomPhotos, host.getId()));
+    RoomRegisterCommand roomRegisterCommand = Command.ofRegisterRoom(room, roomPhotos,
+        host.getId());
+    Room registeredRoom = roomService.register(roomRegisterCommand);
 
     //then
     assertThat(registeredRoom.getId()).isNotNull();
@@ -88,20 +98,14 @@ class RoomServiceImplTest {
   @Test
   void 숙소_리스트_조회_성공() {
     //given
-    Room roomA = createRoom();
-    Room roomB = createRoom();
-
-    List<RoomPhoto> roomPhotos1 = List.of(createRoomPhoto(), createRoomPhoto());
-    List<RoomPhoto> roomPhotos2 = List.of(createRoomPhoto(), createRoomPhoto());
-
-    roomA = roomService.register(Command.ofRegisterRoom(roomA, roomPhotos1, host.getId()));
-    roomB = roomService.register(Command.ofRegisterRoom(roomB, roomPhotos2, host.getId()));
+    Room roomA = roomService.register(defaultRoomRegisterCommand());
+    Room roomB = roomService.register(defaultRoomRegisterCommand());
 
     //when
     List<Room> rooms = roomService.getAll();
 
     //then
-    assertThat(rooms).hasSize(4).containsExactly(room1, room2, roomA, roomB);
+    assertThat(rooms).hasSize(2).containsExactly(roomA, roomB);
   }
 
   @ParameterizedTest
@@ -111,17 +115,18 @@ class RoomServiceImplTest {
       " , 변경된 숙소 설명입니다, ",
       " , , 25000"
   })
-  void 숙소_이름_설명_가격_변경_성공(String updatedName, String updatedDescription,
-      Integer updatedPricePerDay) {
+  void 숙소_이름_설명_가격_변경_성공(String name, String description, Integer pricePerDay) {
     //given
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
-    String originalName = room1.getName();
-    String originalDescription = room1.getDescription();
-    Integer originalPricePerDay = room1.getPricePerDay();
-    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(room1.getHost().getId(),
-        room1.getId(), updatedName, updatedDescription, updatedPricePerDay);
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
+
+    String originalName = room.getName();
+    String originalDescription = room.getDescription();
+    int originalPricePerDay = room.getPricePerDay();
 
     //when
+    RoomUpdateCommand roomUpdateCommand =
+        new RoomUpdateCommand(room.getHost().getId(), room.getId(), name, description, pricePerDay);
     Room updatedRoom = roomService.update(roomUpdateCommand);
 
     //then
@@ -131,58 +136,67 @@ class RoomServiceImplTest {
             Room::getDescription,
             Room::getPricePerDay
         ).isEqualTo(
-            List.of(updatedName == null ? originalName : updatedName,
-                updatedDescription == null ? originalDescription : updatedDescription,
-                updatedPricePerDay == null ? originalPricePerDay : updatedPricePerDay));
+            List.of(name == null ? originalName : name,
+                description == null ? originalDescription : description,
+                pricePerDay == null ? originalPricePerDay : pricePerDay));
   }
 
   @Test
   void 해당_숙소의_호스트가_아닌_경우_변경_실패() {
     //given
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
-    RoomUpdateCommand roomUpdateCommand = new RoomUpdateCommand(fakeHost.getId(),
-        room1.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
 
     //then
+    RoomUpdateCommand roomUpdateCommand =
+        new RoomUpdateCommand(fakeHost.getId(), room.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
     assertThatNotFoundException()
         .isThrownBy(() -> roomService.update(roomUpdateCommand));
   }
 
   @Test
   void 숙소_삭제_성공() {
+    //given
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+
     //when
-    room1 = roomService.register(Command.ofRegisterRoom(room1, roomPhotos, host.getId()));
-    roomService.delete(Command.ofDeleteRoom(host.getId(), room1.getId()));
+    Room room = roomService.register(command);
+    roomService.delete(Command.ofDeleteRoom(host.getId(), room.getId()));
 
     //then
     assertThatNotFoundException()
-        .isThrownBy(() -> roomService.getById(room1.getId()));
+        .isThrownBy(() -> roomService.getById(room.getId()));
   }
 
   @Test
   void 여행_중_혹은_예약이_존재하는_숙소_삭제_실패() {
     //given
-    room2 = roomService.register(
-        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
-    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
-        room2.getPricePerDay());
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
+
+    TripReserveCommand tripReserveCommand
+        = Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
+    tripService.reserve(tripReserveCommand);
 
     //then
+    RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
     assertThatAircncRuntimeException()
-        .isThrownBy(() -> roomService.delete(Command.ofDeleteRoom(host.getId(), room2.getId())));
+        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
   @Test
   void 호스트가_아닌_경우_숙소_삭제_실패() {
     //given
-    room2 = roomService.register(
-        Command.ofRegisterRoom(room2, Collections.emptyList(), host.getId()));
-    tripService.reserve(guest, room2.getId(), LocalDate.now(), LocalDate.now().plusDays(1), 3,
-        room2.getPricePerDay());
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
 
     //then
+    RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(fakeHost.getId(), room.getId());
     assertThatAircncRuntimeException()
-        .isThrownBy(
-            () -> roomService.delete(Command.ofDeleteRoom(fakeHost.getId(), room2.getId())));
+        .isThrownBy(() -> roomService.delete(roomDeleteCommand));
+  }
+
+  private RoomRegisterCommand defaultRoomRegisterCommand() {
+    return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
   }
 }
