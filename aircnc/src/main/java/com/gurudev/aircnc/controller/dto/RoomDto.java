@@ -47,7 +47,6 @@ public final class RoomDto {
       this.pricePerDay = pricePerDay;
       this.capacity = capacity;
     }
-
   }
 
   @Getter

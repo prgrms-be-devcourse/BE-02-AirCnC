@@ -31,6 +31,7 @@ public class MemberController {
   private final MemberService memberService;
   private final AuthenticationManager authenticationManager;
 
+  /* 회원 가입 */
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
@@ -39,20 +40,27 @@ public class MemberController {
     return new ResponseEntity<>(MemberResponse.of(registeredMember), CREATED);
   }
 
+  /* 로그인 */
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+
     Request loginRequest = request.getRequest();
 
+    //토큰 생성
     JwtAuthenticationToken authToken =
         new JwtAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+
+    //인증된 토큰
     Authentication resultToken = authenticationManager.authenticate(authToken);
     JwtAuthenticationToken authenticated = (JwtAuthenticationToken) resultToken;
     JwtAuthentication principal = (JwtAuthentication) authenticated.getPrincipal();
     Member member = (Member) authenticated.getDetails();
 
+    //회원과 토큰정보 반환
     return new ResponseEntity<>(LoginResponse.of(member, principal.token), OK);
   }
 
+  /* 회원 정보 */
   @GetMapping("/me")
   public ResponseEntity<MemberResponse> memberInfo(
       @AuthenticationPrincipal JwtAuthentication authentication) {

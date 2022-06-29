@@ -43,6 +43,7 @@ public class RoomController {
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
 
+  /* 숙소 등록 */
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
@@ -62,23 +63,25 @@ public class RoomController {
     return new ResponseEntity<>(RoomRegisterResponse.of(room, roomPhotos), CREATED);
   }
 
+  /* 숙소 변경 */
   @PatchMapping("/{roomId}")
   public ResponseEntity<RoomUpdateResponse> updateRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody RoomUpdateRequest request,
       @PathVariable("roomId") Long roomId) {
 
-    Room room = roomService.update(
-        new RoomUpdateCommand(authentication.id, roomId, request.getName(),
-            request.getDescription(), request.getPricePerDay()));
+    Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
+        request.getName(), request.getDescription(), request.getPricePerDay()));
 
     return new ResponseEntity<>(RoomUpdateResponse.of(room, room.getRoomPhotos()), OK);
   }
 
+  /* 숙소 삭제 */
   @DeleteMapping("/{roomId}")
   public ResponseEntity<?> deleteRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable("roomId") Long roomId) {
+
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
 
     return new ResponseEntity<>(NO_CONTENT);
