@@ -18,7 +18,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
@@ -75,7 +75,7 @@ class TripServiceImplTest {
   @Test
   void 여행_예약_성공() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent command = defaultTripReserveCommand();
 
     //when
     Trip trip = tripService.reserve(command);
@@ -90,8 +90,8 @@ class TripServiceImplTest {
   @Test
   void 게스트의_여행_목록_조회() {
     //given
-    TripReserveCommand command1 = defaultTripReserveCommand();
-    TripReserveCommand command2 = defaultTripReserveCommand();
+    TripEvent command1 = defaultTripReserveCommand();
+    TripEvent command2 = defaultTripReserveCommand();
 
     Trip trip1 = tripService.reserve(command1);
     Trip trip2 = tripService.reserve(command2);
@@ -106,7 +106,7 @@ class TripServiceImplTest {
   @Test
   void 여행_상세_조회() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent command = defaultTripReserveCommand();
     Trip trip1 = tripService.reserve(command);
 
     //when
@@ -133,7 +133,7 @@ class TripServiceImplTest {
   @Test
   void 예약_상태의_여행_취소_성공() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent command = defaultTripReserveCommand();
     Trip reservedTrip = tripService.reserve(command);
 
     //when
@@ -146,8 +146,8 @@ class TripServiceImplTest {
   @Test
   void trip_status_변경_테스트() {
     // given
-    TripReserveCommand command1 = defaultTripReserveCommand();
-    TripReserveCommand command2 = defaultTripReserveCommand();
+    TripEvent command1 = defaultTripReserveCommand();
+    TripEvent command2 = defaultTripReserveCommand();
 
     totalPrice = between(LocalDate.now(), checkOut).getDays() * room.getPricePerDay();
     tripService.reserve(command1);
@@ -166,7 +166,7 @@ class TripServiceImplTest {
 
   }
 
-  private TripReserveCommand defaultTripReserveCommand() {
+  private TripEvent defaultTripReserveCommand() {
     return Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
 }
