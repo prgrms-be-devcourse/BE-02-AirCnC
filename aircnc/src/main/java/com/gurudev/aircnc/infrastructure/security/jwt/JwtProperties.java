@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "jwt")
+@ConfigurationProperties(prefix = "infrastructure.security.jwt")
 public class JwtProperties {
 
   private String issuer;

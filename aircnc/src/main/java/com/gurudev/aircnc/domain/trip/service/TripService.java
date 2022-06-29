@@ -14,8 +14,4 @@ public interface TripService {
 
   Trip cancel(Long tripId, Long guestId);
 
-  void bulkStatusToTravelling();
-
-  void bulkStatusToDone();
-
 }

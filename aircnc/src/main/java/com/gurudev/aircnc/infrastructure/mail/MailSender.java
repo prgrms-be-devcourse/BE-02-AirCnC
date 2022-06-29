@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.mail")
+@ConfigurationProperties(prefix = "infrastructure.mail")
 @Setter
 public class MailSender {
 
