@@ -1,5 +1,6 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.service;
 
+import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;

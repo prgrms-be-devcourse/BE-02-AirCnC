@@ -1,5 +1,8 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.service;
 
+import com.gurudev.aircnc.infrastructure.mail.entity.AuthenticationKey;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
+import com.gurudev.aircnc.infrastructure.mail.repository.AuthKeyRepository;
 import java.util.Map;
 import java.util.Random;
 import org.springframework.mail.MailException;
@@ -14,9 +17,12 @@ public class MemberEmailService extends AbstractEmailService {
   public static final String authenticationKey = createKey();
   private static final String MESSAGE_TITLE = "AirCnC 회원가입 이메일 인증";
 
+  private final AuthKeyRepository authKeyRepository;
+
   protected MemberEmailService(SpringTemplateEngine springTemplateEngine,
-      JavaMailSender emailSender) {
+      JavaMailSender emailSender, AuthKeyRepository authKeyRepository) {
     super(springTemplateEngine, emailSender);
+    this.authKeyRepository = authKeyRepository;
   }
 
   private static String createKey() {
@@ -49,6 +55,7 @@ public class MemberEmailService extends AbstractEmailService {
     try {
       emailSender.send(createMessage(receiverMail, Map.of("code", authenticationKey),
           MESSAGE_TITLE, TEMPLATE_NAME));
+      authKeyRepository.save(new AuthenticationKey(authenticationKey, receiverMail));
     } catch (MailException ex) {
       throw new RuntimeException("메일 전송에 실패하였습니다", ex);
     }

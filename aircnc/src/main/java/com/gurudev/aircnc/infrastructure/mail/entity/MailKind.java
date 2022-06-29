@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
