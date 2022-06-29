@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
@@ -12,6 +13,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
 import com.gurudev.aircnc.domain.room.service.RoomService;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,5 +73,14 @@ public class RoomController {
             request.getDescription(), request.getPricePerDay()));
 
     return new ResponseEntity<>(RoomUpdateResponse.of(room, room.getRoomPhotos()), OK);
+  }
+
+  @DeleteMapping("/{roomId}")
+  public ResponseEntity<?> deleteRoom(
+      @AuthenticationPrincipal JwtAuthentication authentication,
+      @PathVariable("roomId") Long roomId) {
+    roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
+
+    return new ResponseEntity<>(NO_CONTENT);
   }
 }
