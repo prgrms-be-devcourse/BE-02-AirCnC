@@ -42,18 +42,21 @@ public class TripServiceImpl implements TripService {
   }
 
   @Override
-  public Trip getById(Long id) {
-    return findById(id);
+  public Trip getDetailedById(Long id, Long guestId) {
+
+    return tripRepository.findByIdAndGuestId(id, guestId)
+        .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
   @Override
-  public List<Trip> getByGuest(Member guest) {
-    return tripRepository.findByGuest(guest);
+  public List<Trip> getByGuestId(Long guestId) {
+    return tripRepository.findByGuestId(guestId);
   }
 
   @Override
-  public Trip cancel(Long tripId) {
-    Trip trip = findTripByIdFetchGuest(tripId);
+  public Trip cancel(Long tripId, Long guestId) {
+
+    Trip trip = findTripByIdAndGuestId(tripId, guestId);
 
     trip.cancel();
 
@@ -70,10 +73,6 @@ public class TripServiceImpl implements TripService {
     tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
   }
 
-  private Trip findById(Long id) {
-    return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));
-  }
-
   private Room findRoomById(Long roomId) {
     return roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException(Room.class));
   }
@@ -83,8 +82,8 @@ public class TripServiceImpl implements TripService {
         .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
-  private Trip findTripByIdFetchGuest(Long id) {
-    return tripRepository.findByIdFetchGuest(id)
+  private Trip findTripByIdAndGuestId(Long id, Long guestId) {
+    return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 }

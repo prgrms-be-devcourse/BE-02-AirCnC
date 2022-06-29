@@ -44,6 +44,7 @@ class TripServiceImplTest {
   private Room room;
   private RoomPhoto roomPhoto;
 
+  private Member host;
   private Member guest;
 
   private LocalDate checkIn;
@@ -55,7 +56,7 @@ class TripServiceImplTest {
   @BeforeEach
   void setUp() {
     //회원 세팅
-    Member host = memberService.register(Command.ofRegisterMember(createHost()));
+    host = memberService.register(Command.ofRegisterMember(createHost()));
     guest = createGuest();
     guest = memberService.register(Command.ofRegisterMember(guest));
 
@@ -96,7 +97,7 @@ class TripServiceImplTest {
     Trip trip2 = tripService.reserve(command2);
 
     //when
-    List<Trip> findTrips = tripService.getByGuest(guest);
+    List<Trip> findTrips = tripService.getByGuestId(guest.getId());
 
     //then
     assertThat(findTrips).hasSize(2).containsExactly(trip1, trip2);
@@ -109,13 +110,14 @@ class TripServiceImplTest {
     Trip trip1 = tripService.reserve(command);
 
     //when
-    Trip trip = tripService.getById(trip1.getId());
+    Trip trip = tripService.getDetailedById(trip1.getId(), guest.getId());
 
     //then
     assertThat(trip).isEqualTo(trip1);
     assertThat(trip.getGuest()).isEqualTo(guest);
     assertThat(trip.getRoom()).isEqualTo(room);
     assertThat(trip.getRoom().getRoomPhotos()).containsExactly(roomPhoto);
+    assertThat(trip.getRoom().getHost()).isEqualTo(host);
   }
 
   @Test
@@ -125,7 +127,7 @@ class TripServiceImplTest {
 
     //then
     assertThatNotFoundException()
-        .isThrownBy(() -> tripService.getById(invalidTripId));
+        .isThrownBy(() -> tripService.getDetailedById(invalidTripId, guest.getId()));
   }
 
   @Test
@@ -135,7 +137,7 @@ class TripServiceImplTest {
     Trip reservedTrip = tripService.reserve(command);
 
     //when
-    Trip cancelledTrip = tripService.cancel(reservedTrip.getId());
+    Trip cancelledTrip = tripService.cancel(reservedTrip.getId(), guest.getId());
 
     //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
@@ -155,7 +157,7 @@ class TripServiceImplTest {
     tripService.bulkStatusToTravelling();
 
     // then
-    List<Trip> trips = tripService.getByGuest(guest);
+    List<Trip> trips = tripService.getByGuestId(guest.getId());
 
     assertThat(trips).extracting(Trip::getStatus)
         .hasSize(2)
