@@ -80,6 +80,13 @@ public class RoomServiceImpl implements RoomService {
     return findById(id);
   }
 
+  // TODO: 예약 가능한 날짜 반환
+  @Override
+  public Room getDetailById(Long id) {
+    return roomRepository.findByIdFetchRoomPhotosAndHost(id)
+        .orElseThrow(() -> new NotFoundException(Room.class));
+  }
+
   private Room findById(Long id) {
     return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(Room.class));
   }
