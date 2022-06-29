@@ -17,4 +17,6 @@ public interface RoomService {
   void delete(RoomDeleteCommand roomDeleteCommand);
 
   Room getById(Long id);
+
+  Room getDetailById(Long id);
 }
