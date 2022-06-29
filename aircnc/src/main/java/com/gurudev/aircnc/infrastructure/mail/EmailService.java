@@ -1,10 +1,10 @@
 package com.gurudev.aircnc.infrastructure.mail;
 
 import java.util.Map;
+import org.springframework.scheduling.annotation.Async;
 
 public interface EmailService {
 
-  //TODO : 숙소 등록, 변경, 삭제, 여행 등록, 삭제 메시지 작성
-
+  @Async
   void send(String receiverEmail, Map<String, Object> contentMap, MailKind mailKind);
 }
