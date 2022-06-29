@@ -2,6 +2,7 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
@@ -10,6 +11,7 @@ import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -22,6 +24,7 @@ import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCom
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,4 +170,41 @@ class TripServiceImplTest {
   private TripReserveCommand defaultTripReserveCommand() {
     return Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
+
+  @Test
+  void 예약_불가능한_날짜_조회_성공() {
+    // given
+    
+    //예약1
+    LocalDate firstCheckIn = LocalDate.now();
+    LocalDate firstCheckOut = LocalDate.now().plusDays(1);
+    int firstTotalPrice = between(firstCheckIn, firstCheckOut).getDays() * room.getPricePerDay();
+    tripService
+        .reserve(Command.ofReserveTrip(
+                new Trip(guest, room, firstCheckIn, firstCheckOut, firstTotalPrice, headCount)
+            )
+        );
+    
+    //예약2
+    LocalDate secondCheckIn = LocalDate.now().plusDays(4);
+    LocalDate secondCheckOut = LocalDate.now().plusDays(7);
+    int secondTotalPrice = between(secondCheckIn, secondCheckOut).getDays() * room.getPricePerDay();
+    tripService
+        .reserve(Command.ofReserveTrip(
+                new Trip(guest, room, secondCheckIn, secondCheckOut, secondTotalPrice, headCount)
+            )
+        );
+    //예약 -> 여행 중 
+    tripService.bulkStatusToTravelling();
+
+    // when
+    List<Trip> trips
+        = tripService.findByRoomIdAndTripStatus(room.getId(), Set.of(RESERVED, TRAVELLING));
+
+    // then
+    assertThat(trips).extracting(Trip::getStatus, Trip::getCheckIn, Trip::getCheckOut).hasSize(2)
+        .contains(tuple(TRAVELLING, firstCheckIn, firstCheckOut),
+            tuple(RESERVED, secondCheckIn, secondCheckOut));
+  }
+
 }
