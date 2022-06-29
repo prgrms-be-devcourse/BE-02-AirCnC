@@ -3,12 +3,10 @@ package com.gurudev.aircnc.infrastructure.mail;
 import java.util.Map;
 import java.util.Random;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 
@@ -22,26 +20,6 @@ public class MemberEmailService extends AbstractEmailService {
   protected MemberEmailService(@Autowired SpringTemplateEngine springTemplateEngine,
       @Autowired JavaMailSender emailSender) {
     super(springTemplateEngine, emailSender);
-  }
-
-
-  private MimeMessage createMessage(String receiverMail) {
-    try {
-      MimeMessage message = emailSender.createMimeMessage();
-
-      message.addRecipients(RecipientType.TO, receiverMail); //보내는 대상
-      message.setSubject(MESSAGE_TITLE); //제목
-
-      Context context = new Context();
-      context.setVariable("code", authenticationKey);
-      String content = springTemplateEngine.process(TEMPLATE_NAME, context);
-
-      message.setText(content, CHARSET, CONTENT_TYPE); //내용
-      message.setFrom(sender); //보내는 사람
-      return message;
-    } catch (Exception ex) {
-      throw new RuntimeException("메일 내용 생성에 실패했습니다", ex);
-    }
   }
 
   public static String createKey() {
@@ -70,9 +48,12 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   @Override
-  public void send(String receiverMail, Map<String, String> contentMap, MailKind mailKind) {
+  public void send(String receiverMail, Map<String, Object> contentMap, MailKind mailKind) {
     try {
-      MimeMessage signUpMsg = createMessage(receiverMail);
+      MimeMessage signUpMsg = createMessage(
+          receiverMail, Map.of("code", authenticationKey),
+          mailKind, MESSAGE_TITLE, TEMPLATE_NAME);
+
       emailSender.send(signUpMsg);
     } catch (MailException ex) {
       throw new RuntimeException("메일 전송에 실패하였습니다", ex);
