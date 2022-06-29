@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.infrastructure.scheduler;
 
-import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.domain.trip.service.TripServiceForScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TripStatusScheduler {
 
-  private final TripService tripService;
+  private final TripServiceForScheduler tripServiceForScheduler;
 
   /**
    * checkIn 스케쥴 오전 12시가 되면 해당 날짜에 해당하는 RESERVED -> TRAVELLING
    **/
   @Scheduled(cron = "0 0 0 * * *")
   public void bulkStatusUpdateToTravelling() {
-    tripService.bulkStatusToTravelling();
+    tripServiceForScheduler.bulkStatusToTravelling();
   }
 
   /**
@@ -27,7 +27,7 @@ public class TripStatusScheduler {
    **/
   @Scheduled(cron = "0 0 0 * * *")
   public void bulkStatusUpdateToDone() {
-    tripService.bulkStatusToDone();
+    tripServiceForScheduler.bulkStatusToDone();
   }
 
 }

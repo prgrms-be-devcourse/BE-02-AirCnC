@@ -3,13 +3,13 @@ package com.gurudev.aircnc.domain.member.entity;
 import static com.gurudev.aircnc.constant.Regex.PASSWORD_ENCODING_PREFIX;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static com.gurudev.aircnc.exception.Preconditions.checkState;
+import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @EqualsAndHashCode
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Password {
 
   public static final Pattern ENCODED_PATTERN = Pattern.compile(PASSWORD_ENCODING_PREFIX);

@@ -1,9 +1,9 @@
 package com.gurudev.aircnc.controller;
 
+import static com.gurudev.aircnc.controller.ApiResponse.created;
+import static com.gurudev.aircnc.controller.ApiResponse.ok;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
@@ -31,33 +31,41 @@ public class MemberController {
   private final MemberService memberService;
   private final AuthenticationManager authenticationManager;
 
+  /* 회원 가입 */
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
     Member registeredMember = memberService.register(memberDto.toCommand());
 
-    return new ResponseEntity<>(MemberResponse.of(registeredMember), CREATED);
+    return created(MemberResponse.of(registeredMember));
   }
 
+  /* 로그인 */
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+
     Request loginRequest = request.getRequest();
 
+    //토큰 생성
     JwtAuthenticationToken authToken =
         new JwtAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+
+    //인증된 토큰
     Authentication resultToken = authenticationManager.authenticate(authToken);
     JwtAuthenticationToken authenticated = (JwtAuthenticationToken) resultToken;
     JwtAuthentication principal = (JwtAuthentication) authenticated.getPrincipal();
     Member member = (Member) authenticated.getDetails();
 
-    return new ResponseEntity<>(LoginResponse.of(member, principal.token), OK);
+    //회원과 토큰정보 반환
+    return ok(LoginResponse.of(member, principal.token));
   }
 
+  /* 회원 정보 */
   @GetMapping("/me")
   public ResponseEntity<MemberResponse> memberInfo(
       @AuthenticationPrincipal JwtAuthentication authentication) {
     Member getMember = memberService.getById(authentication.id);
 
-    return new ResponseEntity<>(MemberResponse.of(getMember), OK);
+    return ok(MemberResponse.of(getMember));
   }
 }
