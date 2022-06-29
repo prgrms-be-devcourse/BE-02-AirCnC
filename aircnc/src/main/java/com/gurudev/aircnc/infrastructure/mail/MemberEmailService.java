@@ -3,26 +3,24 @@ package com.gurudev.aircnc.infrastructure.mail;
 import java.util.Map;
 import java.util.Random;
 import javax.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-
-@Component
+@Service
 public class MemberEmailService extends AbstractEmailService {
 
   private static final String TEMPLATE_NAME = "register-member";
   public static final String authenticationKey = createKey();
   private static final String MESSAGE_TITLE = "AirCnC 회원가입 이메일 인증";
 
-  protected MemberEmailService(@Autowired SpringTemplateEngine springTemplateEngine,
-      @Autowired JavaMailSender emailSender) {
+  protected MemberEmailService(SpringTemplateEngine springTemplateEngine,
+      JavaMailSender emailSender) {
     super(springTemplateEngine, emailSender);
   }
 
-  public static String createKey() {
+  private static String createKey() {
     StringBuilder key = new StringBuilder();
     Random rnd = new Random();
 

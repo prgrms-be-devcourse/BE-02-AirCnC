@@ -4,19 +4,18 @@ import static java.lang.String.format;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-@Component
+@Service
 public class RoomEmailService extends AbstractEmailService {
 
   private static final String TEMPLATE_NAME = "room-template";
 
-  protected RoomEmailService(@Autowired SpringTemplateEngine springTemplateEngine,
-      @Autowired JavaMailSender emailSender) {
+  protected RoomEmailService(SpringTemplateEngine springTemplateEngine,
+      JavaMailSender emailSender) {
     super(springTemplateEngine, emailSender);
   }
 

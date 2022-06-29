@@ -40,19 +40,23 @@ public abstract class AbstractEmailService implements EmailService {
       MimeMessage message = emailSender.createMimeMessage();
 
       message.addRecipients(RecipientType.TO, receiverMail); //보내는 대상
+      message.setFrom(sender); //보내는 사람
       message.setSubject(title); //제목
 
-      Context context = new Context();
-      for (Entry<String, Object> entry : contentMap.entrySet()) {
-        context.setVariable(entry.getKey(), entry.getValue());
-      }
-      String content = springTemplateEngine.process(templateName, context);
+      String content = getContent(contentMap, templateName);
 
       message.setText(content, CHARSET, CONTENT_TYPE); //내용
-      message.setFrom(sender); //보내는 사람
       return message;
     } catch (Exception ex) {
       throw new RuntimeException("메일 내용 생성에 실패했습니다", ex);
     }
+  }
+
+  private String getContent(Map<String, Object> contentMap, String templateName) {
+    Context context = new Context();
+    for (Entry<String, Object> entry : contentMap.entrySet()) {
+      context.setVariable(entry.getKey(), entry.getValue());
+    }
+    return springTemplateEngine.process(templateName, context);
   }
 }
