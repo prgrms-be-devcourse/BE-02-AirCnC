@@ -1,8 +1,10 @@
 package com.gurudev.aircnc.infrastructure.mail;
 
-import java.time.LocalDate;
+import com.gurudev.aircnc.domain.room.entity.Room;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.util.Fixture;
 import java.util.Collections;
-import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,36 +28,49 @@ class EmailServiceTest { // 사용방법을 위한 Temporary 테스트
   @Qualifier("tripEmailService")
   private EmailService tripEmailService;
 
+  private Room room;
+
+  private Trip trip;
+
+  @BeforeEach
+  void setup() {
+    room = Fixture.createRoom();
+
+    trip = Fixture.createTrip();
+  }
+
   @Test
-  void 이메일_인증_전송_테스트() {
+  void 이메일_인증_전송_테스트() throws InterruptedException {
     memberEmailService.send("rlfrmsdh1@gmail.com", Collections.emptyMap(), MailKind.REGISTER);
+    Thread.sleep(5000);
   }
 
   @Test
-  void 숙소_삭제_이메일_전송_테스트() {
+  void 숙소_삭제_이메일_전송_테스트() throws InterruptedException {
     roomEmailService.send("rlfrmsdh1@gmail.com",
-        Map.of("name", "숙소이름", "address", "숙소주소", "pricePerDay", 30000), MailKind.DELETE);
+        room.toMap(), MailKind.DELETE);
+    Thread.sleep(5000); // 비동기여서 전송될때까지 기다려주는 로직
   }
 
   @Test
-  void 숙소_등록_이메일_전송_테스트() {
+  void 숙소_등록_이메일_전송_테스트() throws InterruptedException {
     roomEmailService.send("rlfrmsdh1@gmail.com",
-        Map.of("name", "숙소이름", "address", "숙소주소", "pricePerDay", 30000), MailKind.REGISTER);
+        room.toMap(), MailKind.REGISTER);
+    Thread.sleep(5000);
   }
 
   @Test
-  void 숙소_변경_이메일_전송_테스트() {
+  void 숙소_변경_이메일_전송_테스트() throws InterruptedException {
     roomEmailService.send("rlfrmsdh1@gmail.com",
-        Map.of("name", "숙소이름", "address", "숙소주소", "pricePerDay", 30000), MailKind.UPDATE);
+        room.toMap(), MailKind.UPDATE);
+    Thread.sleep(5000);
   }
 
   @Test
-  void 여행_변경_이메일_전송_테스트() {
+  void 여행_변경_이메일_전송_테스트() throws InterruptedException {
     tripEmailService.send("rlfrmsdh1@gmail.com",
-        Map.of("checkIn", LocalDate.now().minusDays(5),
-            "checkOut", LocalDate.now(),
-            "totalPrice", 100000,
-            "headCount", 5), MailKind.UPDATE);
+        trip.toMap(), MailKind.UPDATE);
+    Thread.sleep(5000);
   }
 }
 
