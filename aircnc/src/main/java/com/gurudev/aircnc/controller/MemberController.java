@@ -1,9 +1,9 @@
 package com.gurudev.aircnc.controller;
 
+import static com.gurudev.aircnc.controller.ApiResponse.created;
+import static com.gurudev.aircnc.controller.ApiResponse.ok;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberRegisterRequest;
 import static com.gurudev.aircnc.controller.dto.MemberDto.MemberResponse;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest;
 import com.gurudev.aircnc.controller.dto.MemberDto.LoginRequest.Request;
@@ -37,7 +37,7 @@ public class MemberController {
       @RequestBody MemberRegisterRequest memberDto) {
     Member registeredMember = memberService.register(memberDto.toCommand());
 
-    return new ResponseEntity<>(MemberResponse.of(registeredMember), CREATED);
+    return created(MemberResponse.of(registeredMember));
   }
 
   /* 로그인 */
@@ -57,7 +57,7 @@ public class MemberController {
     Member member = (Member) authenticated.getDetails();
 
     //회원과 토큰정보 반환
-    return new ResponseEntity<>(LoginResponse.of(member, principal.token), OK);
+    return ok(LoginResponse.of(member, principal.token));
   }
 
   /* 회원 정보 */
@@ -66,6 +66,6 @@ public class MemberController {
       @AuthenticationPrincipal JwtAuthentication authentication) {
     Member getMember = memberService.getById(authentication.id);
 
-    return new ResponseEntity<>(MemberResponse.of(getMember), OK);
+    return ok(MemberResponse.of(getMember));
   }
 }

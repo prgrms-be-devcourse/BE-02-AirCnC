@@ -1,8 +1,8 @@
 package com.gurudev.aircnc.controller;
 
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static com.gurudev.aircnc.controller.ApiResponse.created;
+import static com.gurudev.aircnc.controller.ApiResponse.ok;
 
 import com.gurudev.aircnc.controller.dto.TripDto.TripDetailedResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
@@ -53,7 +53,7 @@ public class TripController {
 
     Trip trip = tripService.reserve(tripReserveCommand);
 
-    return new ResponseEntity<>(TripResponse.of(trip), CREATED);
+    return created(TripResponse.of(trip));
   }
 
   /* 여행 목록 조회 */
@@ -63,7 +63,7 @@ public class TripController {
 
     List<Trip> trips = tripService.getByGuestId(authentication.id);
 
-    return new ResponseEntity<>(TripResponseList.of(trips), OK);
+    return ok(TripResponseList.of(trips));
   }
 
   /* 여행 상세 조회 */
@@ -74,7 +74,7 @@ public class TripController {
 
     Trip trip = tripService.getDetailedById(tripId, authentication.id);
 
-    return new ResponseEntity<>(TripDetailedResponse.of(trip), OK);
+    return ok(TripDetailedResponse.of(trip));
   }
 
   /* 여행 취소 */
@@ -85,6 +85,6 @@ public class TripController {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
 
-    return new ResponseEntity<>(TripResponse.of(trip), OK);
+    return ok(TripResponse.of(trip));
   }
 }
