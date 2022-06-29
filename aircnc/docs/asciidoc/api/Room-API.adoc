@@ -1,0 +1,20 @@
+[[HOST-ROOM-API]]
+== 호스트 숙소 API
+
+'''
+
+모든 호스트 숙소 API 에는 인증 토큰이 필요합니다.
+
+operation::/trip-controller-test/여행_예약_성공/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 숙소 등록
+
+operation::/room-controller-test/숙소_등록_api/[snippets='request-parameters,request-parts,http-response,response-fields']
+
+=== 숙소 변경
+
+operation::/room-controller-test/숙소_변경/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 숙소 삭제
+
+operation::/room-controller-test/숙소_삭제/[snippets='http-request,http-response']
