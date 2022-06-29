@@ -1,0 +1,16 @@
+[[MEMBER-API]]
+== 회원 API
+
+'''
+
+=== 회원 가입
+
+operation::/member-controller-test/회원가입_api/[snippets='http-request,http-response,response-body,response-fields']
+
+=== 로그인
+
+operation::/member-controller-test/로그인_api/[snippets='http-request,http-response,response-body,response-fields']
+
+=== 정보 조회
+
+operation::/member-controller-test/정보조회_api/[snippets='http-request,response-body,response-fields']
