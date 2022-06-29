@@ -2,8 +2,10 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import java.util.List;
+import java.util.Set;
 
 public interface TripService {
 
@@ -19,4 +21,5 @@ public interface TripService {
 
   void bulkStatusToDone();
 
+  List<Trip> findByRoomIdAndTripStatus(Long roomId, Set<TripStatus> reserved);
 }

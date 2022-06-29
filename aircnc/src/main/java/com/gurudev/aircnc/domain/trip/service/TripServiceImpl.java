@@ -5,12 +5,16 @@ import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,5 +90,11 @@ public class TripServiceImpl implements TripService {
   private Trip findTripByIdFetchGuest(Long id) {
     return tripRepository.findByIdFetchGuest(id)
         .orElseThrow(() -> new NotFoundException(Trip.class));
+  }
+
+  @Override
+  public List<Trip> findByRoomIdAndTripStatus(Long roomId, Set<TripStatus> tripStatuses) {
+    PageRequest pageRequest = PageRequest.of(0, 2000, Sort.by("checkIn").descending());
+    return tripRepository.findByRoomIdAndStatusSet(roomId, tripStatuses, pageRequest);
   }
 }
