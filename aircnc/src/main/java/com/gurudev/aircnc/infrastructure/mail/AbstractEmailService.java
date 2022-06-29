@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.infrastructure.mail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.mail.internet.InternetAddress;
@@ -34,7 +35,7 @@ public abstract class AbstractEmailService implements EmailService {
   }
 
   protected MimeMessage createMessage(
-      String receiverMail, Map<String, Object> contentMap, MailKind mailKind,
+      String receiverMail, Map<String, Object> contentMap,
       String title, String templateName) {
     try {
       MimeMessage message = emailSender.createMimeMessage();
@@ -50,6 +51,12 @@ public abstract class AbstractEmailService implements EmailService {
     } catch (Exception ex) {
       throw new RuntimeException("메일 내용 생성에 실패했습니다", ex);
     }
+  }
+
+  protected Map<String, Object> putMailKind(Map<String, Object> map, MailKind mailKind) {
+    Map<String, Object> addedMap = new HashMap<>(map);
+    addedMap.put("behavior", mailKind.getStatus());
+    return addedMap;
   }
 
   private String getContent(Map<String, Object> contentMap, String templateName) {

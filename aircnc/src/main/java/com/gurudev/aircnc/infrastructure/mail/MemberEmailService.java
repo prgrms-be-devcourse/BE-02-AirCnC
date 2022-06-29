@@ -2,7 +2,6 @@ package com.gurudev.aircnc.infrastructure.mail;
 
 import java.util.Map;
 import java.util.Random;
-import javax.mail.internet.MimeMessage;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -48,11 +47,8 @@ public class MemberEmailService extends AbstractEmailService {
   @Override
   public void send(String receiverMail, Map<String, Object> contentMap, MailKind mailKind) {
     try {
-      MimeMessage signUpMsg = createMessage(
-          receiverMail, Map.of("code", authenticationKey),
-          mailKind, MESSAGE_TITLE, TEMPLATE_NAME);
-
-      emailSender.send(signUpMsg);
+      emailSender.send(createMessage(receiverMail, Map.of("code", authenticationKey),
+          MESSAGE_TITLE, TEMPLATE_NAME));
     } catch (MailException ex) {
       throw new RuntimeException("메일 전송에 실패하였습니다", ex);
     }
