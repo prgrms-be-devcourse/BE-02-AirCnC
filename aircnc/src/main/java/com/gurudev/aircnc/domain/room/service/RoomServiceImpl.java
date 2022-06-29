@@ -80,7 +80,7 @@ public class RoomServiceImpl implements RoomService {
     return findById(id);
   }
 
-  // TODO: 예약 가능한 날짜 반환
+  // TODO: 예약 불가능한 날짜 반환
   @Override
   public Room getDetailById(Long id) {
     return roomRepository.findByIdFetchRoomPhotosAndHost(id)
