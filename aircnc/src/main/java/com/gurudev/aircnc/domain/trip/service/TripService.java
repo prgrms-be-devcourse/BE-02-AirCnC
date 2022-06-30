@@ -1,10 +1,8 @@
 package com.gurudev.aircnc.domain.trip.service;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.entity.TripStatus;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import java.util.List;
-import java.util.Set;
 
 public interface TripService {
 

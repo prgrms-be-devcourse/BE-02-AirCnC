@@ -1,5 +1,6 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.service;
 
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,17 +44,15 @@ public abstract class AbstractEmailService implements EmailService {
       message.addRecipients(RecipientType.TO, receiverMail); //보내는 대상
       message.setFrom(sender); //보내는 사람
       message.setSubject(title); //제목
+      message.setText(getContent(contentMap, templateName), CHARSET, CONTENT_TYPE); //내용
 
-      String content = getContent(contentMap, templateName);
-
-      message.setText(content, CHARSET, CONTENT_TYPE); //내용
       return message;
     } catch (Exception ex) {
       throw new RuntimeException("메일 내용 생성에 실패했습니다", ex);
     }
   }
 
-  protected Map<String, Object> putMailKind(Map<String, Object> map, MailKind mailKind) {
+  protected Map<String, Object> putMailKind(Map<String, Object> map, MailType mailKind) {
     Map<String, Object> addedMap = new HashMap<>(map);
     addedMap.put("behavior", mailKind.getStatus());
     return addedMap;

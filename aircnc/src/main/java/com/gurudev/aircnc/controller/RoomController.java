@@ -16,6 +16,8 @@ import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,8 @@ public class RoomController {
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
 
+  private final EmailService roomEmailService;
+
   /* 숙소 등록 */
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
@@ -60,7 +64,8 @@ public class RoomController {
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
-    return created(RoomRegisterResponse.of(room, roomPhotos));
+    roomEmailService.send(authentication.email, room.toMap(), MailType.REGISTER);
+    return created(RoomRegisterResponse.of(room));
   }
 
   /* 숙소 변경 */
@@ -73,7 +78,8 @@ public class RoomController {
     Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
         request.getName(), request.getDescription(), request.getPricePerDay()));
 
-    return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
+    roomEmailService.send(authentication.email, room.toMap(), MailType.UPDATE);
+    return ok(RoomUpdateResponse.of(room));
   }
 
   /* 숙소 삭제 */
@@ -82,8 +88,10 @@ public class RoomController {
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable("roomId") Long roomId) {
 
+    Room room = roomService.getById(roomId);
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
 
+    roomEmailService.send(authentication.email, room.toMap(), MailType.DELETE);
     return noContent();
   }
 }

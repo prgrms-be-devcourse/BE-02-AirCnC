@@ -47,6 +47,7 @@ public class Member extends BaseIdEntity {
   /**
    * 회원 가입시 사용되는 생성자 <br> 회원 가입을 위해 이메일, 비밀번호, 이름, 생년월일, 전화번호, 역할을 제공해야 한다.
    */
+
   public Member(Email email, Password password, String name, LocalDate birthDate,
       PhoneNumber phoneNumber, Role role) {
     checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");

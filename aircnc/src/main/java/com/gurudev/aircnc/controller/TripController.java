@@ -3,15 +3,19 @@ package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.ApiResponse.created;
 import static com.gurudev.aircnc.controller.ApiResponse.ok;
+import static com.gurudev.aircnc.controller.dto.TripDto.TripReserveResponse;
 
+import com.gurudev.aircnc.controller.dto.TripDto.TripCancelResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripDetailedResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
-import com.gurudev.aircnc.controller.dto.TripDto.TripResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripResponseList;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.ReserveService;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +36,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class TripController {
 
   private final TripService tripService;
+  private final ReserveService reserveService;
+
+  private final EmailService tripEmailService;
 
   /* 여행 예약 */
   @PostMapping
-  public ResponseEntity<TripResponse> tripReserve(
+  public ResponseEntity<TripReserveResponse> reserveTrip(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody TripReserveRequest tripReserveRequest) {
 
     Request request = tripReserveRequest.getRequest();
 
-    TripReserveCommand tripReserveCommand =
-        new TripReserveCommand(
+    TripEvent tripEvent =
+        new TripEvent(
             authentication.id,
             request.getRoomId(),
             request.getCheckIn(),
@@ -51,9 +58,9 @@ public class TripController {
             request.getTotalPrice()
         );
 
-    Trip trip = tripService.reserve(tripReserveCommand);
-
-    return created(TripResponse.of(trip));
+    TripEvent reserveTripInfo = reserveService.reserve(tripEvent);
+    // tripEmailService.send(authentication.email, trip.toMap(), MailKind.REGISTER); // fix me : 수정해 주세용
+    return created(TripReserveResponse.of(reserveTripInfo));
   }
 
   /* 여행 목록 조회 */
@@ -79,12 +86,13 @@ public class TripController {
 
   /* 여행 취소 */
   @PostMapping("/{tripId}/cancel")
-  public ResponseEntity<TripResponse> cancelTrip(
+  public ResponseEntity<TripCancelResponse> cancelTrip(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable Long tripId) {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
+    tripEmailService.send(authentication.email, trip.toMap(), MailType.DELETE);
 
-    return ok(TripResponse.of(trip));
+    return ok(TripCancelResponse.of(trip));
   }
 }

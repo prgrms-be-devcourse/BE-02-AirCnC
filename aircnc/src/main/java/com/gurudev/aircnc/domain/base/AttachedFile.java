@@ -2,7 +2,6 @@ package com.gurudev.aircnc.domain.base;
 
 import static org.springframework.util.StringUtils.hasText;
 
-import com.gurudev.aircnc.exception.AircncRuntimeException;
 import java.io.IOException;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,19 +21,19 @@ public class AttachedFile {
     try {
       this.bytes = multipartFile.getBytes();
     } catch (IOException e) {
-      throw new AircncRuntimeException("파일 등록 중 예외 발생", e);
+      throw new IllegalStateException("파일 등록 중 예외 발생", e);
     }
   }
 
   private void checkMultipartFile(MultipartFile multipartFile) {
     if (multipartFile == null || multipartFile.getSize() <= 0 || !hasText(
         multipartFile.getOriginalFilename())) {
-      throw new AircncRuntimeException("파일 등록 중 예외 발생");
+      throw new IllegalArgumentException("사진을 등록하지 않았습니다");
     }
 
     String contentType = multipartFile.getContentType();
     if (!(hasText(contentType) && contentType.toLowerCase().startsWith("image"))) {
-      throw new AircncRuntimeException("파일 등록 중 예외 발생");
+      throw new IllegalArgumentException("지원되지 않는 확장파일입니다");
     }
   }
 }

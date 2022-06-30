@@ -1,5 +1,8 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.service;
 
+import com.gurudev.aircnc.infrastructure.mail.entity.EmailAuthKey;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.repository.EmailAuthKeyRepository;
 import java.util.Map;
 import java.util.Random;
 import org.springframework.mail.MailException;
@@ -11,12 +14,14 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 public class MemberEmailService extends AbstractEmailService {
 
   private static final String TEMPLATE_NAME = "register-member";
-  public static final String authenticationKey = createKey();
   private static final String MESSAGE_TITLE = "AirCnC 회원가입 이메일 인증";
 
+  private final EmailAuthKeyRepository emailAuthKeyRepository;
+
   protected MemberEmailService(SpringTemplateEngine springTemplateEngine,
-      JavaMailSender emailSender) {
+      JavaMailSender emailSender, EmailAuthKeyRepository emailAuthKeyRepository) {
     super(springTemplateEngine, emailSender);
+    this.emailAuthKeyRepository = emailAuthKeyRepository;
   }
 
   private static String createKey() {
@@ -45,12 +50,19 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   @Override
-  public void send(String receiverMail, Map<String, Object> contentMap, MailKind mailKind) {
+  public void send(String receiverMail, Map<String, Object> contentMap, MailType mailKind) {
     try {
-      emailSender.send(createMessage(receiverMail, Map.of("code", authenticationKey),
+      emailSender.send(createMessage(receiverMail, Map.of("code", createKey()),
           MESSAGE_TITLE, TEMPLATE_NAME));
+      emailAuthKeyRepository.save(new EmailAuthKey(createKey(), receiverMail));
     } catch (MailException ex) {
       throw new RuntimeException("메일 전송에 실패하였습니다", ex);
     }
+  }
+
+  public boolean validateKey(String AuthKey, String email) {
+    EmailAuthKey key = emailAuthKeyRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("해당 인증키가 존재하지 않습니다"));
+    return key.validateKey(AuthKey);
   }
 }

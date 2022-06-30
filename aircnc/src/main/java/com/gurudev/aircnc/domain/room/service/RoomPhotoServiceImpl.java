@@ -16,13 +16,9 @@ public class RoomPhotoServiceImpl implements RoomPhotoService {
 
   private final S3Client s3Client;
 
-  @Transactional
   @Override
   public RoomPhoto upload(AttachedFile attachedFiles) {
-    String path = s3Client.upload(
-        attachedFiles.getBytes(),
-        BASE_PATH
-    );
+    String path = s3Client.upload(attachedFiles.getBytes(), BASE_PATH);
 
     return new RoomPhoto(path);
   }

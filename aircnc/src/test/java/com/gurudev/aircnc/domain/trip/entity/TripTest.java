@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
-import com.gurudev.aircnc.exception.TripReservationException;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
@@ -94,7 +93,7 @@ class TripTest {
     int invalidTotalPrice = this.totalPrice + 1;
 
     //then
-    assertThatExceptionOfType(TripReservationException.class)
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
   }
 
@@ -104,7 +103,7 @@ class TripTest {
     int invalidCapacity = room.getCapacity() + 1;
 
     //then
-    assertThatExceptionOfType(TripReservationException.class)
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidCapacity));
   }
 

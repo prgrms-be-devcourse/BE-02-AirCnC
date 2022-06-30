@@ -9,10 +9,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
   Optional<Room> findByIdAndHostId(Long id, Long hostId);
 
-  Optional<Room> findById(Long id);
-
-  void deleteById(Long id);
-
   @Query("select r "
       + "from Room r "
       + "join fetch r.roomPhotos "

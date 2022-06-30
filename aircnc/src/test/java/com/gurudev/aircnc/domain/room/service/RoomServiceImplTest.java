@@ -4,10 +4,10 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -20,7 +20,7 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
@@ -174,13 +174,13 @@ class RoomServiceImplTest {
     RoomRegisterCommand command = defaultRoomRegisterCommand();
     Room room = roomService.register(command);
 
-    TripReserveCommand tripReserveCommand
+    TripEvent tripEvent
         = Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
-    tripService.reserve(tripReserveCommand);
+    tripService.reserve(tripEvent);
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
@@ -192,7 +192,7 @@ class RoomServiceImplTest {
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(fakeHost.getId(), room.getId());
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 

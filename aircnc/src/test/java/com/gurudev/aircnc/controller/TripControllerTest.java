@@ -15,16 +15,25 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
 import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 class TripControllerTest extends RestDocsTestSupport {
+
+  @Autowired
+  private TripService tripService;
 
   @Test
   void 여행_예약_성공() throws Exception {
@@ -55,14 +64,14 @@ class TripControllerTest extends RestDocsTestSupport {
         //then
         .andExpect(status().isCreated())
         .andExpectAll(
-            jsonPath("$.trip.id").exists(),
+            jsonPath("$.trip.guestId").exists(),
+            jsonPath("$.trip.roomId").exists(),
             jsonPath("$.trip.checkIn").value(checkIn),
             jsonPath("$.trip.checkOut").value(checkOut),
             jsonPath("$.trip.totalPrice").value("100000"),
-            jsonPath("$.trip.headCount").value("2"),
-            jsonPath("$.trip.status").value("RESERVED")
+            jsonPath("$.trip.headCount").value("2")
         )
-
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -77,13 +86,12 @@ class TripControllerTest extends RestDocsTestSupport {
                     fieldWithPath("trip.headCount").type(NUMBER).description("인원 수")
                 ),
                 responseFields(
-                    fieldWithPath("trip.id").type(NUMBER).description("여행 아이디"),
+                    fieldWithPath("trip.guestId").type(NUMBER).description("게스트 아이디"),
+                    fieldWithPath("trip.roomId").type(NUMBER).description("숙소 아이디"),
                     fieldWithPath("trip.checkIn").type(STRING).description("체크인 날짜"),
                     fieldWithPath("trip.checkOut").type(STRING).description("체크아웃 날짜"),
                     fieldWithPath("trip.totalPrice").type(NUMBER).description("총 가격"),
-                    fieldWithPath("trip.headCount").type(NUMBER).description("인원 수"),
-                    fieldWithPath("trip.roomId").type(NUMBER).description("숙소 아이디"),
-                    fieldWithPath("trip.status").type(STRING).description("여행 상태 (항상 RESERVED)")
+                    fieldWithPath("trip.headCount").type(NUMBER).description("인원 수")
                 )
             )
         );
@@ -94,8 +102,8 @@ class TripControllerTest extends RestDocsTestSupport {
   void 여행_목록_조회_성공() throws Exception {
     //given
     //여행 필드
-    String checkIn = now().toString();
-    String checkOut = now().plusDays(1).toString();
+    LocalDate checkIn = now();
+    LocalDate checkOut = now().plusDays(1);
 
     //숙소 세팅
     로그인("host@naver.com", "host1234!");
@@ -103,8 +111,8 @@ class TripControllerTest extends RestDocsTestSupport {
         "달토끼가 사는 나의 숙소", "100000", "2");
 
     //조회할 여행 등록
-    로그인("guest@naver.com", "guest1234!");
-    Long tripId = 여행_등록(checkIn, checkOut, 100000, 2, roomId);
+    Long guestId = 로그인("guest@naver.com", "guest1234!");
+    Long tripId = 여행_등록_서비스(checkIn, checkOut, 100000, 2, roomId, guestId);
 
     //when
     mockMvc.perform(get("/api/v1/trips")
@@ -115,12 +123,13 @@ class TripControllerTest extends RestDocsTestSupport {
         .andExpectAll(
             jsonPath("$.trips", hasSize(1)),
             jsonPath("$.trips[0].id").value(tripId),
-            jsonPath("$.trips[0].checkIn").value(checkIn),
-            jsonPath("$.trips[0].checkOut").value(checkOut),
+            jsonPath("$.trips[0].checkIn").value(checkIn.toString()),
+            jsonPath("$.trips[0].checkOut").value(checkOut.toString()),
             jsonPath("$.trips[0].totalPrice").value("100000"),
             jsonPath("$.trips[0].headCount").value("2"),
             jsonPath("$.trips[0].status").exists()
         )
+        .andDo(print())
         .andDo(
             restDocs.document(
                 requestHeaders(
@@ -144,8 +153,8 @@ class TripControllerTest extends RestDocsTestSupport {
   void 여행_상세_조회_성공() throws Exception {
     //given
     //여행 필드
-    String checkIn = now().toString();
-    String checkOut = now().plusDays(1).toString();
+    LocalDate checkIn = now();
+    LocalDate checkOut = now().plusDays(1);
 
     //숙소 세팅
     로그인("host@naver.com", "host1234!");
@@ -153,8 +162,8 @@ class TripControllerTest extends RestDocsTestSupport {
         "달토끼가 사는 나의 숙소", "100000", "2");
 
     //상세 조회할 여행 등록
-    로그인("guest@naver.com", "guest1234!");
-    Long tripId = 여행_등록(checkIn, checkOut, 100000, 2, roomId);
+    Long guestId = 로그인("guest@naver.com", "guest1234!");
+    Long tripId = 여행_등록_서비스(checkIn, checkOut, 100000, 2, roomId, guestId);
 
     //when
     mockMvc.perform(get("/api/v1/trips/{tripId}", tripId)
@@ -164,8 +173,8 @@ class TripControllerTest extends RestDocsTestSupport {
         .andExpect(status().isOk())
         .andExpectAll(
             jsonPath("$.trip.id").value(tripId),
-            jsonPath("$.trip.checkIn").value(checkIn),
-            jsonPath("$.trip.checkOut").value(checkOut),
+            jsonPath("$.trip.checkIn").value(checkIn.toString()),
+            jsonPath("$.trip.checkOut").value(checkOut.toString()),
             jsonPath("$.trip.totalPrice").value("100000"),
             jsonPath("$.trip.headCount").value("2"),
             jsonPath("$.trip.status").value("RESERVED"),
@@ -175,6 +184,7 @@ class TripControllerTest extends RestDocsTestSupport {
             jsonPath("$.trip.room.hostName").value("호스트"),
             jsonPath("$.trip.room.address").value("달나라 1길 100호")
         )
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -205,8 +215,8 @@ class TripControllerTest extends RestDocsTestSupport {
   void 여행_취소_성공() throws Exception {
     //given
     //여행 필드
-    String checkIn = now().toString();
-    String checkOut = now().plusDays(1).toString();
+    LocalDate checkIn = now();
+    LocalDate checkOut = now().plusDays(1);
 
     //숙소 세팅
     로그인("host@naver.com", "host1234!");
@@ -214,8 +224,8 @@ class TripControllerTest extends RestDocsTestSupport {
         "달토끼가 사는 나의 숙소", "100000", "2");
 
     //취소할 여행 등록
-    로그인("guest@naver.com", "guest1234!");
-    Long tripId = 여행_등록(checkIn, checkOut, 100000, 2, roomId);
+    Long guestId = 로그인("guest@naver.com", "guest1234!");
+    Long tripId = 여행_등록_서비스(checkIn, checkOut, 100000, 2, roomId, guestId);
 
     //when
     mockMvc.perform(post("/api/v1/trips/{tripId}/cancel", tripId)
@@ -225,13 +235,14 @@ class TripControllerTest extends RestDocsTestSupport {
         .andExpect(status().isOk())
         .andExpectAll(
             jsonPath("$.trip.id").value(tripId),
-            jsonPath("$.trip.checkIn").value(checkIn),
-            jsonPath("$.trip.checkOut").value(checkOut),
+            jsonPath("$.trip.checkIn").value(checkIn.toString()),
+            jsonPath("$.trip.checkOut").value(checkOut.toString()),
             jsonPath("$.trip.totalPrice").value("100000"),
             jsonPath("$.trip.headCount").value("2"),
             jsonPath("$.trip.status").value("CANCELLED"),
             jsonPath("$.trip.roomId").value(roomId)
         )
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -253,4 +264,16 @@ class TripControllerTest extends RestDocsTestSupport {
             )
         );
   }
+
+  private Long 여행_등록_서비스(LocalDate checkIn, LocalDate checkOut,
+      int totalPrice, int headCount, Long roomId, Long guestId) {
+
+    Trip reservedTrip = tripService.reserve(
+        new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice));
+
+    return reservedTrip.getId();
+
+  }
 }
+
+
