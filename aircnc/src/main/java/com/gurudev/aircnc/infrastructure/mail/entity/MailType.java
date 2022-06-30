@@ -1,11 +1,11 @@
 package com.gurudev.aircnc.infrastructure.mail.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
 @Getter
-public enum MailKind {
+@RequiredArgsConstructor
+public enum MailType {
   REGISTER("등록"),
   UPDATE("변경"),
   DELETE("삭제");

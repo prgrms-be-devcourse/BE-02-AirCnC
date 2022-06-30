@@ -14,7 +14,7 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.ReserveService;
 import com.gurudev.aircnc.domain.trip.service.TripService;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
-import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
@@ -91,7 +91,7 @@ public class TripController {
       @PathVariable Long tripId) {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
-    tripEmailService.send(authentication.email, trip.toMap(), MailKind.DELETE);
+    tripEmailService.send(authentication.email, trip.toMap(), MailType.DELETE);
     return ok(TripResponse.of(trip));
   }
 }

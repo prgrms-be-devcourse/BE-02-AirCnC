@@ -3,8 +3,8 @@ package com.gurudev.aircnc.controller;
 import static com.gurudev.aircnc.controller.ApiResponse.noContent;
 
 import com.gurudev.aircnc.exception.AircncRuntimeException;
-import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
-import com.gurudev.aircnc.infrastructure.mail.service.MemberEmailService;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EmailController {
 
-  private final MemberEmailService memberEmailService;
+  private final EmailService memberEmailService;
 
   @PostMapping
   public ResponseEntity<?> emailSend(@RequestBody Map<String, String> email) {
-    memberEmailService.send(email.get("email"), Collections.emptyMap(), MailKind.REGISTER);
+    memberEmailService.send(email.get("email"), Collections.emptyMap(), MailType.REGISTER);
     return noContent();
   }
 
