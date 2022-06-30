@@ -32,14 +32,14 @@ public class SecurityConfig {
         .authorizeRequests(
             auth -> {
               auth.antMatchers("/api/v1/members", "/api/v1/login").permitAll();
-              auth.anyRequest().permitAll();
+              auth.antMatchers("/api/v1/hosts/**")
+                  .hasAuthority("HOST"); // .access("hasRole('HOST')")
+              auth.anyRequest().authenticated();
             }
         )
 
         .sessionManagement().sessionCreationPolicy(STATELESS)
-
         .and().apply(jwtConfig)
-
         .and().build();
   }
 
