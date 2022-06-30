@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode(callSuper = false, of = "fileName")
+@EqualsAndHashCode(callSuper = false)
 public class RoomPhoto extends BaseIdEntity {
 
   private String fileName;

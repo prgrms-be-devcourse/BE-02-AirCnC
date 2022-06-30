@@ -3,7 +3,8 @@ package com.gurudev.aircnc.domain.member.service;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
@@ -18,7 +19,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -49,8 +49,10 @@ class MemberServiceTest {
             new PhoneNumber(command.getPhoneNumber()), Role.valueOf(command.getRole())));
 
     //생성된 회원의 비밀번호 암호와 여부 검증
-    assertThat(member.getPassword().matches(passwordEncryptor, new Password(command.getPassword())))
-        .isTrue();
+    Password password = member.getPassword();
+    assertThatNoException()
+        .isThrownBy(
+            () -> password.checkPassword(passwordEncryptor, new Password(command.getPassword())));
   }
 
   @Test
@@ -105,7 +107,7 @@ class MemberServiceTest {
     //then
     Email email = new Email(command.getEmail());
     Password invalidPassword = new Password("invalidPassword");
-    assertThatExceptionOfType(BadCredentialsException.class)
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> memberService.login(email, invalidPassword));
   }
 }

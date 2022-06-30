@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.member.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import org.junit.jupiter.api.Test;
@@ -38,10 +39,9 @@ class PasswordTest {
     password.encode(passwordEncryptor);
 
     //when
-    boolean matchResult = password.matches(passwordEncryptor, new Password("password"));
-
     //then
-    assertThat(matchResult).isTrue();
+    assertThatNoException().isThrownBy(
+        () -> password.checkPassword(passwordEncryptor, new Password("password")));
   }
 
   @ParameterizedTest
@@ -51,11 +51,9 @@ class PasswordTest {
     Password password = new Password(rawPassword);
     password.encode(passwordEncryptor);
 
-    //when
-    boolean matchResult = password.matches(passwordEncryptor, new Password("invalidPassword"));
-
     //then
-    assertThat(matchResult).isFalse();
+    assertThatIllegalArgumentException().isThrownBy(
+        () -> password.checkPassword(passwordEncryptor, new Password("invalidPassword")));
   }
 
   @Test
@@ -65,6 +63,6 @@ class PasswordTest {
 
     //then
     assertThatIllegalStateException()
-        .isThrownBy(() -> password.matches(passwordEncryptor, new Password("nonEncrypted")));
+        .isThrownBy(() -> password.checkPassword(passwordEncryptor, new Password("nonEncrypted")));
   }
 }
