@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.infrastructure.mail.service;
 
 import com.gurudev.aircnc.infrastructure.mail.entity.AuthenticationKey;
-import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.repository.AuthKeyRepository;
 import java.util.Map;
 import java.util.Random;
@@ -50,7 +50,7 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   @Override
-  public void send(String receiverMail, Map<String, Object> contentMap, MailKind mailKind) {
+  public void send(String receiverMail, Map<String, Object> contentMap, MailType mailKind) {
     try {
       emailSender.send(createMessage(receiverMail, Map.of("code", createKey()),
           MESSAGE_TITLE, TEMPLATE_NAME));

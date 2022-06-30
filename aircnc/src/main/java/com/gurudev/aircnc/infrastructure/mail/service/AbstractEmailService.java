@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.infrastructure.mail.service;
 
-import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +54,7 @@ public abstract class AbstractEmailService implements EmailService {
     }
   }
 
-  protected Map<String, Object> putMailKind(Map<String, Object> map, MailKind mailKind) {
+  protected Map<String, Object> putMailKind(Map<String, Object> map, MailType mailKind) {
     Map<String, Object> addedMap = new HashMap<>(map);
     addedMap.put("behavior", mailKind.getStatus());
     return addedMap;
