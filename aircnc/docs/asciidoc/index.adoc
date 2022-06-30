@@ -1,0 +1,13 @@
+= AirCnC
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+include::overview.adoc[]
+include::api/Member-API.adoc[]
+include::api/Room-API.adoc[]
+include::api/Trip-API.adoc[]

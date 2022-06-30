@@ -4,7 +4,7 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ class TripServiceForSchedulerImplTest extends BaseTripServiceTest {
   @Test
   void 여행_상태_bulk_업데이트_테스트() {
     // given
-    TripReserveCommand command1 = defaultTripReserveCommand();
-    TripReserveCommand command2 = defaultTripReserveCommand();
+    TripEvent tripEvent1 = defaultTripReserveCommand();
+    TripEvent tripEvent2 = defaultTripReserveCommand();
 
-    tripService.reserve(command1);
-    tripService.reserve(command2);
+    tripService.reserve(tripEvent1);
+    tripService.reserve(tripEvent2);
 
     // when
     tripServiceForScheduler.bulkStatusToTravelling();

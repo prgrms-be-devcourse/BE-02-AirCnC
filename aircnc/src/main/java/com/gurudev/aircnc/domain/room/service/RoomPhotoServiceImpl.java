@@ -21,7 +21,6 @@ public class RoomPhotoServiceImpl implements RoomPhotoService {
   public RoomPhoto upload(AttachedFile attachedFiles) {
     String path = s3Client.upload(
         attachedFiles.getBytes(),
-        attachedFiles.getMetadata(),
         BASE_PATH
     );
 
