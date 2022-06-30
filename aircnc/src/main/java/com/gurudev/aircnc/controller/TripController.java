@@ -13,7 +13,7 @@ import com.gurudev.aircnc.controller.dto.TripDto.TripResponseList;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.ReserveService;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +44,8 @@ public class TripController {
 
     Request request = tripReserveRequest.getRequest();
 
-    TripEvent tripEvent =
-        new TripEvent(
+    TripReserveCommand tripReserveCommand =
+        new TripReserveCommand(
             authentication.id,
             request.getRoomId(),
             request.getCheckIn(),
@@ -54,7 +54,7 @@ public class TripController {
             request.getTotalPrice()
         );
 
-    TripEvent reserveTripInfo = reserveService.reserve(tripEvent);
+    TripReserveCommand reserveTripInfo = reserveService.reserve(tripReserveCommand);
     return created(TripReserveResponse.of(reserveTripInfo));
   }
 

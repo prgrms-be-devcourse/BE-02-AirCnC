@@ -2,7 +2,6 @@ package com.gurudev.aircnc.infrastructure.event;
 
 import static com.gurudev.aircnc.exception.Preconditions.checkState;
 
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
