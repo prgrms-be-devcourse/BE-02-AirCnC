@@ -16,6 +16,8 @@ import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
+import com.gurudev.aircnc.infrastructure.mail.EmailService;
+import com.gurudev.aircnc.infrastructure.mail.MailKind;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,8 @@ public class RoomController {
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
 
+  private final EmailService roomEmailService;
+
   /* 숙소 등록 */
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
@@ -60,6 +64,7 @@ public class RoomController {
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
+    roomEmailService.send(authentication.email, room.toMap(), MailKind.REGISTER);
     return created(RoomRegisterResponse.of(room, roomPhotos));
   }
 
@@ -73,6 +78,7 @@ public class RoomController {
     Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
         request.getName(), request.getDescription(), request.getPricePerDay()));
 
+    roomEmailService.send(authentication.email, room.toMap(), MailKind.UPDATE);
     return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
   }
 
@@ -84,6 +90,8 @@ public class RoomController {
 
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
 
+    Room room = roomService.getById(roomId);
+    roomEmailService.send(authentication.email, room.toMap(), MailKind.DELETE);
     return noContent();
   }
 }
