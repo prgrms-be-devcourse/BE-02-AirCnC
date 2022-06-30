@@ -42,7 +42,7 @@ public class TripController {
 
   /* 여행 예약 */
   @PostMapping
-  public ResponseEntity<TripReserveResponse> tripReserve(
+  public ResponseEntity<TripReserveResponse> reserveTrip(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody TripReserveRequest tripReserveRequest) {
 
@@ -92,6 +92,7 @@ public class TripController {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
     tripEmailService.send(authentication.email, trip.toMap(), MailType.DELETE);
+
     return ok(TripCancelResponse.of(trip));
   }
 }
