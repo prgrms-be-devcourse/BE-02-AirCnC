@@ -8,6 +8,7 @@ import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -175,5 +176,52 @@ public final class TripDto {
       }
     }
   }
+
+
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class TripInfoResponse {
+
+    @JsonProperty("trip")
+    private final Response response;
+
+    public static TripInfoResponse of(TripEvent tripEvent) {
+      return new TripInfoResponse(Response.of(tripEvent));
+    }
+
+    @Getter
+    public static class Response {
+
+      private final long guestId;
+      private final long roomId;
+      private final LocalDate checkIn;
+      private final LocalDate checkOut;
+      private final int totalPrice;
+      private final int headCount;
+
+      @Builder
+      private Response(long guestId, long roomId,
+          LocalDate checkIn, LocalDate checkOut, int totalPrice, int headCount) {
+        this.guestId = guestId;
+        this.roomId = roomId;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.totalPrice = totalPrice;
+        this.headCount = headCount;
+      }
+
+      public static Response of(TripEvent tripEvent) {
+        return Response.builder()
+            .guestId(tripEvent.getGuestId())
+            .roomId(tripEvent.getRoomId())
+            .checkIn(tripEvent.getCheckIn())
+            .checkOut(tripEvent.getCheckOut())
+            .totalPrice(tripEvent.getTotalPrice())
+            .headCount(tripEvent.getHeadCount())
+            .build();
+      }
+    }
+  }
+
 
 }

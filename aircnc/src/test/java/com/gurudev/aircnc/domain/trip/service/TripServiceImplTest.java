@@ -6,7 +6,7 @@ import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +15,10 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 여행_예약_성공() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent tripEvent = defaultTripReserveCommand();
 
     //when
-    Trip trip = tripService.reserve(command);
+    Trip trip = tripService.reserve(tripEvent);
 
     //then
     assertThat(trip.getId()).isNotNull();
@@ -30,8 +30,8 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 게스트의_여행_목록_조회() {
     //given
-    TripReserveCommand command1 = defaultTripReserveCommand();
-    TripReserveCommand command2 = defaultTripReserveCommand();
+    TripEvent command1 = defaultTripReserveCommand();
+    TripEvent command2 = defaultTripReserveCommand();
 
     Trip trip1 = tripService.reserve(command1);
     Trip trip2 = tripService.reserve(command2);
@@ -46,7 +46,7 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 여행_상세_조회() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent command = defaultTripReserveCommand();
     Trip trip1 = tripService.reserve(command);
 
     //when
@@ -73,7 +73,7 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 예약_상태의_여행_취소_성공() {
     //given
-    TripReserveCommand command = defaultTripReserveCommand();
+    TripEvent command = defaultTripReserveCommand();
     Trip reservedTrip = tripService.reserve(command);
 
     //when
@@ -82,5 +82,6 @@ class TripServiceImplTest extends BaseTripServiceTest {
     //then
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
+
 
 }

@@ -4,7 +4,6 @@ import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.exception.AircncRuntimeException;
 import java.io.IOException;
-import java.util.Map;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +13,6 @@ public class AttachedFile {
   private final String originalFileName;
   private final String contentType;
   private final byte[] bytes;
-  private final Map<String, String> metadata;
 
   public AttachedFile(MultipartFile multipartFile) {
     checkMultipartFile(multipartFile);
@@ -26,7 +24,6 @@ public class AttachedFile {
     } catch (IOException e) {
       throw new AircncRuntimeException("파일 등록 중 예외 발생", e);
     }
-    this.metadata = Map.of("originalFileName", originalFileName);
   }
 
   private void checkMultipartFile(MultipartFile multipartFile) {
