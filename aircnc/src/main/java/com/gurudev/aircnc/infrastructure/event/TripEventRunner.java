@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.infrastructure.event;
 
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,12 +28,12 @@ public class TripEventRunner implements Runnable {
   }
 
   private void handlingInCaseOfSuccess(TripEvent tripEvent) {
-    log.info("여행이 예약되었습니다! " + tripEvent.toString());
+    log.info("여행이 예약되었습니다! ");
     // TODO 예약 성공 메일 보내기
   }
 
   private void handlingInCaseOfFailure(TripEvent tripEvent) {
-    log.info("여행 예약이 실패하였습니다! " + tripEvent.toString());
+    log.info("여행 예약이 실패하였습니다! ");
     // TODO 예약 실패 메일 보내기
   }
 }

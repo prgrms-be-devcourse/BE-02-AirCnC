@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 public final class TripCommand {
 
   @Getter
-  public static class TripEvent {
+  public static class TripReserveCommand {
 
     private Long guestId;
     private Long roomId;
@@ -20,9 +21,8 @@ public final class TripCommand {
     private LocalDate checkOut;
     private int headCount;
     private int totalPrice;
-    private EventStatus status = EventStatus.STAND_BY;
 
-    public TripEvent(Long guestId, Long roomId, LocalDate checkIn,
+    public TripReserveCommand(Long guestId, Long roomId, LocalDate checkIn,
         LocalDate checkOut, int headCount, int totalPrice) {
       this.guestId = guestId;
       this.roomId = roomId;
@@ -32,10 +32,10 @@ public final class TripCommand {
       this.totalPrice = totalPrice;
     }
 
-    public static TripEvent of(TripReserveRequest tripReserveRequest, Long guestId) {
+    public static TripReserveCommand of(TripReserveRequest tripReserveRequest, Long guestId) {
       Request request = tripReserveRequest.getRequest();
 
-      return new TripEvent(
+      return new TripReserveCommand(
           guestId,
           request.getRoomId(),
           request.getCheckIn(),
@@ -45,21 +45,10 @@ public final class TripCommand {
       );
     }
 
-    public boolean isStandBy() {
-      return this.status == EventStatus.STAND_BY;
+    public TripEvent toTripEvent() {
+      return new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice);
     }
 
-    public boolean isQueueWait() {
-      return this.status == EventStatus.QUEUE_WAIT;
-    }
-
-    public void updateStatus(EventStatus status) {
-      this.status = status;
-    }
-
-    public static enum EventStatus {
-      STAND_BY, QUEUE, QUEUE_WAIT
-    }
 
   }
 }
