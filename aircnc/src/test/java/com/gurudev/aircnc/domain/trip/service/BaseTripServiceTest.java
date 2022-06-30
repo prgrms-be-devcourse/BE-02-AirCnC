@@ -17,12 +17,14 @@ import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.util.Command;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @Disabled
@@ -50,6 +52,12 @@ public abstract class BaseTripServiceTest {
 
   protected int headCount;
   protected int totalPrice;
+
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
+
+  @MockBean(name = "roomEmailService")
+  private EmailService roomEmailService;
 
   @BeforeEach
   void setUp() {
