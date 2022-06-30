@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.repository;
 
-import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import java.time.LocalDate;
@@ -15,21 +14,22 @@ import org.springframework.data.repository.query.Param;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-  List<Trip> findByGuest(Member guest);
+  List<Trip> findByGuestId(Long guestId);
 
   @Query("select t "
       + "from Trip t "
       + "join fetch t.guest "
       + "join fetch t.room r "
+      + "join fetch r.host "
       + "join fetch r.roomPhotos "
-      + "where t.id = :id")
-  Optional<Trip> findById(Long id);
+      + "where t.id = :id and t.guest.id = :guestId")
+  Optional<Trip> findByIdAndGuestId(Long id, Long guestId);
 
   @Query("select t "
       + "from Trip t "
       + "join fetch t.guest "
-      + "where t.id = :id")
-  Optional<Trip> findByIdFetchGuest(Long id);
+      + "where t.id = :id and t.guest.id = :guestId")
+  Optional<Trip> findTripByIdAndGuestId(Long id, Long guestId);
 
   @Query("select t "
       + "from Trip t "
@@ -49,4 +49,5 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "where t.checkOut = :date "
       + "and t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING")
   int bulkStatusToDone(@Param("date") LocalDate date);
+
 }

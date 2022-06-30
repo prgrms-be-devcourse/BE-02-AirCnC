@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
@@ -11,15 +10,11 @@ public interface TripService {
 
   Trip reserve(TripReserveCommand command);
 
-  Trip getById(Long id);
+  Trip getDetailedById(Long id, Long guestId);
 
-  List<Trip> getByGuest(Member guest);
+  List<Trip> getByGuestId(Long guestId);
 
-  Trip cancel(Long tripId);
-
-  void bulkStatusToTravelling();
-
-  void bulkStatusToDone();
+  Trip cancel(Long tripId, Long guestId);
 
   List<Trip> findByRoomIdAndTripStatus(Long roomId, Set<TripStatus> reserved);
 }

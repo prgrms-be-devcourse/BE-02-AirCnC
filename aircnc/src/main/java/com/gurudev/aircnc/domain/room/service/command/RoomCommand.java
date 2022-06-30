@@ -18,24 +18,15 @@ public final class RoomCommand {
   public static class RoomRegisterCommand {
 
     private final String name;
-
     private final String lotAddress;
-
     private final String roadAddress;
-
     private final String detailedAddress;
-
     private final String postCode;
-
     private final String description;
-
     private final int pricePerDay;
-
     private final int capacity;
-
-    private final List<String> photoFileNames = new ArrayList<>();
-
     private final Long hostId;
+    private final List<String> photoFileNames = new ArrayList<>();
 
     private RoomRegisterCommand(String name, String lotAddress, String roadAddress,
         String detailedAddress,
@@ -90,13 +81,9 @@ public final class RoomCommand {
   public static class RoomUpdateCommand {
 
     private final Long hostId;
-
     private final Long roomId;
-
     private final String name;
-
     private final String description;
-
     private final Integer pricePerDay;
 
     public RoomUpdateCommand(Long hostId, Long roomId, String name, String description,
@@ -113,7 +100,6 @@ public final class RoomCommand {
   public static class RoomDeleteCommand {
 
     private final Long hostId;
-
     private final Long roomId;
 
     public RoomDeleteCommand(Long hostId, Long roomId) {

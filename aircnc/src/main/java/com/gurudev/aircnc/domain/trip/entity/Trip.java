@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -15,6 +16,7 @@ import com.gurudev.aircnc.exception.TripCancelException;
 import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +47,7 @@ public class Trip extends BaseIdEntity {
 
   private int headCount;
 
+  @Enumerated(STRING)
   private TripStatus status;
 
   public Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,

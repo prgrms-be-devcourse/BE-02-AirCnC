@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -16,20 +15,15 @@ public class S3Client {
   private final String url;
   private final String bucketName;
 
-  public String upload(byte[] bytes, Map<String, String> metadata, String basePath) {
+  public String upload(byte[] bytes, String basePath) {
     String name = basePath + "/" + UUID.randomUUID();
-    return upload(new ByteArrayInputStream(bytes), bytes.length, name + ".jpeg", "image/jpeg",
-        metadata);
+    return upload(new ByteArrayInputStream(bytes), bytes.length, name + ".jpeg", "image/jpeg");
   }
 
-  public String upload(InputStream in, long length, String key, String contentType,
-      Map<String, String> metadata) {
+  public String upload(InputStream in, long length, String key, String contentType) {
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentLength(length);
     objectMetadata.setContentType(contentType);
-    if (metadata != null && !metadata.isEmpty()) {
-      objectMetadata.setUserMetadata(metadata);
-    }
 
     PutObjectRequest request = new PutObjectRequest(bucketName, key, in, objectMetadata);
     return executePut(request);

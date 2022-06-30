@@ -1,7 +1,8 @@
 package com.gurudev.aircnc.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static com.gurudev.aircnc.controller.ApiResponse.created;
+import static com.gurudev.aircnc.controller.ApiResponse.noContent;
+import static com.gurudev.aircnc.controller.ApiResponse.ok;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
@@ -12,6 +13,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
 import com.gurudev.aircnc.domain.room.service.RoomService;
+import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomDeleteCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCommand;
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +43,7 @@ public class RoomController {
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
 
+  /* 숙소 등록 */
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
@@ -56,19 +60,30 @@ public class RoomController {
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
-    return new ResponseEntity<>(RoomRegisterResponse.of(room, roomPhotos), CREATED);
+    return created(RoomRegisterResponse.of(room, roomPhotos));
   }
 
+  /* 숙소 변경 */
   @PatchMapping("/{roomId}")
   public ResponseEntity<RoomUpdateResponse> updateRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody RoomUpdateRequest request,
       @PathVariable("roomId") Long roomId) {
 
-    Room room = roomService.update(
-        new RoomUpdateCommand(authentication.id, roomId, request.getName(),
-            request.getDescription(), request.getPricePerDay()));
+    Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
+        request.getName(), request.getDescription(), request.getPricePerDay()));
 
-    return new ResponseEntity<>(RoomUpdateResponse.of(room, room.getRoomPhotos()), OK);
+    return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
+  }
+
+  /* 숙소 삭제 */
+  @DeleteMapping("/{roomId}")
+  public ResponseEntity<?> deleteRoom(
+      @AuthenticationPrincipal JwtAuthentication authentication,
+      @PathVariable("roomId") Long roomId) {
+
+    roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
+
+    return noContent();
   }
 }

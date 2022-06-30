@@ -9,7 +9,6 @@ import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.exception.NotFoundException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -46,36 +45,25 @@ public class TripServiceImpl implements TripService {
   }
 
   @Override
-  public Trip getById(Long id) {
-    return findById(id);
+  public Trip getDetailedById(Long id, Long guestId) {
+
+    return tripRepository.findByIdAndGuestId(id, guestId)
+        .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
   @Override
-  public List<Trip> getByGuest(Member guest) {
-    return tripRepository.findByGuest(guest);
+  public List<Trip> getByGuestId(Long guestId) {
+    return tripRepository.findByGuestId(guestId);
   }
 
   @Override
-  public Trip cancel(Long tripId) {
-    Trip trip = findTripByIdFetchGuest(tripId);
+  public Trip cancel(Long tripId, Long guestId) {
+
+    Trip trip = findTripByIdAndGuestId(tripId, guestId);
 
     trip.cancel();
 
     return trip;
-  }
-
-  @Override
-  public void bulkStatusToTravelling() {
-    tripRepository.bulkStatusToTravelling(LocalDate.now());
-  }
-
-  @Override
-  public void bulkStatusToDone() {
-    tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
-  }
-
-  private Trip findById(Long id) {
-    return tripRepository.findById(id).orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
   private Room findRoomById(Long roomId) {
@@ -87,8 +75,8 @@ public class TripServiceImpl implements TripService {
         .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
-  private Trip findTripByIdFetchGuest(Long id) {
-    return tripRepository.findByIdFetchGuest(id)
+  private Trip findTripByIdAndGuestId(Long id, Long guestId) {
+    return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
   }
 
