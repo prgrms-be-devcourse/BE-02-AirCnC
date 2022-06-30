@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
 
     Password encodedPassword = member.getPassword();
 
-    encodedPassword.checkPassword(passwordEncryptor, password);
+    encodedPassword.verifyPassword(passwordEncryptor, password);
 
     return member;
   }

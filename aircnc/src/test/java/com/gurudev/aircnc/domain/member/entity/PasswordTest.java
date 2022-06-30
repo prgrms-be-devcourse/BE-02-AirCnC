@@ -41,7 +41,7 @@ class PasswordTest {
     //when
     //then
     assertThatNoException().isThrownBy(
-        () -> password.checkPassword(passwordEncryptor, new Password("password")));
+        () -> password.verifyPassword(passwordEncryptor, new Password("password")));
   }
 
   @ParameterizedTest
@@ -53,7 +53,7 @@ class PasswordTest {
 
     //then
     assertThatIllegalArgumentException().isThrownBy(
-        () -> password.checkPassword(passwordEncryptor, new Password("invalidPassword")));
+        () -> password.verifyPassword(passwordEncryptor, new Password("invalidPassword")));
   }
 
   @Test
@@ -63,6 +63,6 @@ class PasswordTest {
 
     //then
     assertThatIllegalStateException()
-        .isThrownBy(() -> password.checkPassword(passwordEncryptor, new Password("nonEncrypted")));
+        .isThrownBy(() -> password.verifyPassword(passwordEncryptor, new Password("nonEncrypted")));
   }
 }

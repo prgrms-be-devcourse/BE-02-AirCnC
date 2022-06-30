@@ -2,6 +2,7 @@ package com.gurudev.aircnc.domain.room.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
@@ -12,7 +13,6 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
-import com.gurudev.aircnc.exception.RoomDeleteException;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -64,15 +64,24 @@ public class RoomServiceImpl implements RoomService {
     Room findRoom = roomRepository.findById(roomDeleteCommand.getRoomId())
         .orElseThrow(() -> new NotFoundException(Room.class));
 
-    PageRequest limitOne = PageRequest.of(0, 1);
-    if (tripRepository.findByRoomIdAndStatusSet(
-        roomDeleteCommand.getRoomId(),
-        Set.of(RESERVED, TRAVELLING), limitOne).size() == 1
-        || !findRoom.getHost().getId().equals(roomDeleteCommand.getHostId())) {
-      throw new RoomDeleteException("숙소를 삭제 할 수 없습니다");
-    }
+    checkArgument(isDeletable(findRoom.getHost().getId(), roomDeleteCommand.getRoomId(),
+        roomDeleteCommand.getHostId()), "숙소를 삭제 할 수 없습니다");
 
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
+  }
+
+  // 이미 예약, 진행중인 trip이 있는 경우 삭제 불가 로직
+  // TODO : 쿼리 최적화
+  private boolean isDeletable(Long findRoomHostId, Long roomId, Long hostId) {
+    if (!findRoomHostId.equals(hostId)) {
+      return false;
+    }
+
+    PageRequest limitOne = PageRequest.of(0, 1);
+    boolean containReservation = tripRepository.findByRoomIdAndStatusSet(
+        roomId, Set.of(RESERVED, TRAVELLING), limitOne).size() == 1;
+
+    return !containReservation;
   }
 
   @Override

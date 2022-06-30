@@ -52,7 +52,7 @@ class MemberServiceTest {
     Password password = member.getPassword();
     assertThatNoException()
         .isThrownBy(
-            () -> password.checkPassword(passwordEncryptor, new Password(command.getPassword())));
+            () -> password.verifyPassword(passwordEncryptor, new Password(command.getPassword())));
   }
 
   @Test

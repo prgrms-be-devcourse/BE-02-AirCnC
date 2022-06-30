@@ -44,7 +44,7 @@ public class Password {
     this.password = encoder.encode(this.password);
   }
 
-  public void checkPassword(PasswordEncryptor encryptor, Password rawPassword) {
+  public void verifyPassword(PasswordEncryptor encryptor, Password rawPassword) {
     checkState(ENCODED_PATTERN.matcher(this.password).find(), "비밀번호가 암호화되지 않았습니다");
 
     if (!encryptor.matches(rawPassword.getPassword(), this.password)) {

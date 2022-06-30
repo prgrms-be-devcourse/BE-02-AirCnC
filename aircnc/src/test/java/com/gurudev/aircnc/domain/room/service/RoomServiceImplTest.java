@@ -4,10 +4,10 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
-import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -180,7 +180,7 @@ class RoomServiceImplTest {
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
@@ -192,7 +192,7 @@ class RoomServiceImplTest {
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(fakeHost.getId(), room.getId());
-    assertThatAircncRuntimeException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
