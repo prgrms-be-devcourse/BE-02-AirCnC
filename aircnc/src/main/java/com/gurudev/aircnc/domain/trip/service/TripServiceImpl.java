@@ -6,7 +6,7 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.exception.NotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +24,19 @@ public class TripServiceImpl implements TripService {
 
   @Transactional
   @Override
-  public Trip reserve(TripReserveCommand command) {
-    Room room = findRoomById(command.getRoomId());
-    Member guest = findMemberById(command.getGuestId());
+  public Trip reserve(TripEvent tripEvent) {
+    Room room = findRoomById(tripEvent.getRoomId());
+    Member guest = findMemberById(tripEvent.getGuestId());
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
     return tripRepository.save(
         new Trip(guest,
             room,
-            command.getCheckIn(),
-            command.getCheckOut(),
-            command.getTotalPrice(),
-            command.getHeadCount())
+            tripEvent.getCheckIn(),
+            tripEvent.getCheckOut(),
+            tripEvent.getTotalPrice(),
+            tripEvent.getHeadCount())
     );
   }
 

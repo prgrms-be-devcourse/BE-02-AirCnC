@@ -20,7 +20,7 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
+import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
 import java.time.LocalDate;
 import java.util.List;
@@ -174,9 +174,9 @@ class RoomServiceImplTest {
     RoomRegisterCommand command = defaultRoomRegisterCommand();
     Room room = roomService.register(command);
 
-    TripReserveCommand tripReserveCommand
+    TripEvent tripEvent
         = Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
-    tripService.reserve(tripReserveCommand);
+    tripService.reserve(tripEvent);
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
