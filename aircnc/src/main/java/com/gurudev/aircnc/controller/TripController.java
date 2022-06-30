@@ -14,8 +14,6 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.ReserveService;
 import com.gurudev.aircnc.domain.trip.service.TripService;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
-import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
-import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +36,6 @@ public class TripController {
   private final TripService tripService;
   private final ReserveService reserveService;
 
-  private final EmailService tripEmailService;
-
   /* 여행 예약 */
   @PostMapping
   public ResponseEntity<TripReserveResponse> reserveTrip(
@@ -59,7 +55,6 @@ public class TripController {
         );
 
     TripEvent reserveTripInfo = reserveService.reserve(tripEvent);
-    // tripEmailService.send(authentication.email, trip.toMap(), MailKind.REGISTER); // fix me : 수정해 주세용
     return created(TripReserveResponse.of(reserveTripInfo));
   }
 
@@ -91,7 +86,6 @@ public class TripController {
       @PathVariable Long tripId) {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
-    tripEmailService.send(authentication.email, trip.toMap(), MailType.DELETE);
 
     return ok(TripCancelResponse.of(trip));
   }
