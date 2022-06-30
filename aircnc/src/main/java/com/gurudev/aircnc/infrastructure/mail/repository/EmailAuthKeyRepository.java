@@ -1,13 +1,13 @@
 package com.gurudev.aircnc.infrastructure.mail.repository;
 
-import com.gurudev.aircnc.infrastructure.mail.entity.AuthenticationKey;
+import com.gurudev.aircnc.infrastructure.mail.entity.EmailAuthKey;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthKeyRepository extends JpaRepository<AuthenticationKey, Long> {
+public interface EmailAuthKeyRepository extends JpaRepository<EmailAuthKey, Long> {
 
-  Optional<AuthenticationKey> findByEmail(String email);
+  Optional<EmailAuthKey> findByEmail(String email);
 
 }

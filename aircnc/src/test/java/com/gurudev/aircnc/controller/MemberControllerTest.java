@@ -3,6 +3,7 @@ package com.gurudev.aircnc.controller;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +39,8 @@ class MemberControllerTest extends RestDocsTestSupport {
             jsonPath("$.member.birthDate").value("1998-04-21"),
             jsonPath("$.member.phoneNumber").value("010-1234-5678"),
             jsonPath("$.member.role").value("GUEST")
-        );
+        )
+        .andDo(print());
   }
 
   @Test
@@ -63,7 +65,8 @@ class MemberControllerTest extends RestDocsTestSupport {
             jsonPath("$.member.name").value("seunghan"),
             jsonPath("$.member.role").value("GUEST"),
             jsonPath("$.member.token").exists()
-        );
+        )
+        .andDo(print());
   }
 
   @Test
@@ -84,6 +87,7 @@ class MemberControllerTest extends RestDocsTestSupport {
             jsonPath("$.member.birthDate").value("1998-04-21"),
             jsonPath("$.member.phoneNumber").value("010-1234-5678"),
             jsonPath("$.member.role").value("GUEST")
-        );
+        )
+        .andDo(print());
   }
 }

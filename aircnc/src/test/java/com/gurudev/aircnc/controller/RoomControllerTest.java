@@ -19,6 +19,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,6 +69,7 @@ class RoomControllerTest extends RestDocsTestSupport {
             jsonPath("$.room.fileNames", hasSize(1))
         )
 
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -131,6 +133,7 @@ class RoomControllerTest extends RestDocsTestSupport {
             jsonPath("$.room.fileNames", hasSize(1))
         )
 
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -167,7 +170,7 @@ class RoomControllerTest extends RestDocsTestSupport {
             .header(AUTHORIZATION, token))
         //then
         .andExpect(status().isNoContent())
-
+        .andDo(print())
         //docs
         .andDo(restDocs.document(
             requestHeaders(

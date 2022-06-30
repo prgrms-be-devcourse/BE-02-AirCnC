@@ -15,6 +15,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,7 +71,7 @@ class TripControllerTest extends RestDocsTestSupport {
             jsonPath("$.trip.totalPrice").value("100000"),
             jsonPath("$.trip.headCount").value("2")
         )
-
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -128,6 +129,7 @@ class TripControllerTest extends RestDocsTestSupport {
             jsonPath("$.trips[0].headCount").value("2"),
             jsonPath("$.trips[0].status").exists()
         )
+        .andDo(print())
         .andDo(
             restDocs.document(
                 requestHeaders(
@@ -182,6 +184,7 @@ class TripControllerTest extends RestDocsTestSupport {
             jsonPath("$.trip.room.hostName").value("호스트"),
             jsonPath("$.trip.room.address").value("달나라 1길 100호")
         )
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(
@@ -239,6 +242,7 @@ class TripControllerTest extends RestDocsTestSupport {
             jsonPath("$.trip.status").value("CANCELLED"),
             jsonPath("$.trip.roomId").value(roomId)
         )
+        .andDo(print())
         //docs
         .andDo(
             restDocs.document(

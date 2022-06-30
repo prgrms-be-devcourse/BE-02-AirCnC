@@ -1,18 +1,19 @@
 package com.gurudev.aircnc.infrastructure.mail.entity;
 
+import static lombok.AccessLevel.PROTECTED;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AuthenticationKey {
+@NoArgsConstructor(access = PROTECTED)
+public class EmailAuthKey {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +22,10 @@ public class AuthenticationKey {
   @Column(unique = true, length = 8, nullable = false)
   private String key;
 
-  @Column(unique = true, nullable = false)
+  @Column(nullable = false)
   private String email;
 
-  public AuthenticationKey(String key, String email) {
+  public EmailAuthKey(String key, String email) {
     this.key = key;
     this.email = email;
   }
