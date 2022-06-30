@@ -63,6 +63,9 @@ class RoomServiceImplTest {
   @MockBean(name = "roomEmailService")
   private EmailService roomEmailService;
 
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
+
   @BeforeEach
   void setUp() {
     // 회원 세팅
