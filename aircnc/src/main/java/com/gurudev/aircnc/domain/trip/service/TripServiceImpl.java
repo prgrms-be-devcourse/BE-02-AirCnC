@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.trip.service;
 
+import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
@@ -8,6 +9,8 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.exception.NotFoundException;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ public class TripServiceImpl implements TripService {
   private final MemberRepository memberRepository;
   private final RoomRepository roomRepository;
 
+  private final EmailService tripEmailService;
+
   @Transactional
   @Override
   public Trip reserve(TripEvent tripEvent) {
@@ -30,6 +35,7 @@ public class TripServiceImpl implements TripService {
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
+    tripEmailService.send(Email.toString(guest.getEmail()), room.toMap(), MailType.REGISTER);
     return tripRepository.save(
         new Trip(guest, room,
             tripEvent.getCheckIn(),
@@ -58,6 +64,8 @@ public class TripServiceImpl implements TripService {
 
     trip.cancel();
 
+    Member guest = trip.getGuest();
+    tripEmailService.send(Email.toString(guest.getEmail()), trip.toMap(), MailType.DELETE);
     return trip;
   }
 

@@ -12,12 +12,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,6 +42,12 @@ public class BaseControllerTest {
   protected String createJson(Object dto) throws JsonProcessingException {
     return objectMapper.writeValueAsString(dto);
   }
+
+  @MockBean(name = "roomEmailService")
+  private EmailService roomEmailService;
+
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
 
   @BeforeEach
   void setUp() throws Exception {
