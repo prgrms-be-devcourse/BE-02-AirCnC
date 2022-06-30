@@ -199,4 +199,28 @@ class RoomServiceImplTest {
   private RoomRegisterCommand defaultRoomRegisterCommand() {
     return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
   }
+
+  @Test
+  void 숙소_상세_조회_성공() {
+    //given
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
+
+    //when
+    Room detailRoom = roomService.getDetailById(room.getId());
+
+    //then
+    assertThat(detailRoom).isEqualTo(room);
+    assertThat(detailRoom.getRoomPhotos()).containsAll(roomPhotos);
+    assertThat(detailRoom.getHost()).isEqualTo(host);
+  }
+
+  @Test
+  void 숙소_상세_조회_실패() {
+    //given
+    Long invalidRoomId = -1L;
+
+    //then
+    assertThatNotFoundException().isThrownBy(() -> roomService.getDetailById(invalidRoomId));
+  }
 }

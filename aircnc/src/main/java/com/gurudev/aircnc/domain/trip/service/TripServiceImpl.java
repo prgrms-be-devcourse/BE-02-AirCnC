@@ -8,7 +8,6 @@ import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.exception.NotFoundException;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,16 +60,6 @@ public class TripServiceImpl implements TripService {
     trip.cancel();
 
     return trip;
-  }
-
-  @Override
-  public void bulkStatusToTravelling() {
-    tripRepository.bulkStatusToTravelling(LocalDate.now());
-  }
-
-  @Override
-  public void bulkStatusToDone() {
-    tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
   }
 
   private Room findRoomById(Long roomId) {

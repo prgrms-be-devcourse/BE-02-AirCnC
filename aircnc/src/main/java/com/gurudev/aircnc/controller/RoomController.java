@@ -1,8 +1,8 @@
 package com.gurudev.aircnc.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static com.gurudev.aircnc.controller.ApiResponse.created;
+import static com.gurudev.aircnc.controller.ApiResponse.noContent;
+import static com.gurudev.aircnc.controller.ApiResponse.ok;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
@@ -43,6 +43,7 @@ public class RoomController {
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
 
+  /* 숙소 등록 */
   @PostMapping
   public ResponseEntity<RoomRegisterResponse> registerRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
@@ -59,28 +60,30 @@ public class RoomController {
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
-    return new ResponseEntity<>(RoomRegisterResponse.of(room, roomPhotos), CREATED);
+    return created(RoomRegisterResponse.of(room, roomPhotos));
   }
 
+  /* 숙소 변경 */
   @PatchMapping("/{roomId}")
   public ResponseEntity<RoomUpdateResponse> updateRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody RoomUpdateRequest request,
       @PathVariable("roomId") Long roomId) {
 
-    Room room = roomService.update(
-        new RoomUpdateCommand(authentication.id, roomId, request.getName(),
-            request.getDescription(), request.getPricePerDay()));
+    Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
+        request.getName(), request.getDescription(), request.getPricePerDay()));
 
-    return new ResponseEntity<>(RoomUpdateResponse.of(room, room.getRoomPhotos()), OK);
+    return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
   }
 
+  /* 숙소 삭제 */
   @DeleteMapping("/{roomId}")
   public ResponseEntity<?> deleteRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable("roomId") Long roomId) {
+
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
 
-    return new ResponseEntity<>(NO_CONTENT);
+    return noContent();
   }
 }

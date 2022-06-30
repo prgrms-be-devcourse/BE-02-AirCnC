@@ -1,15 +1,17 @@
 package com.gurudev.aircnc.domain.trip.service.command;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import static lombok.AccessLevel.PRIVATE;
+
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class TripCommand {
+@NoArgsConstructor(access = PRIVATE)
+public final class TripCommand {
 
   @Getter
-  @JsonIgnoreProperties({"status"})
   public static class TripEvent {
 
     private Long guestId;
