@@ -4,6 +4,7 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
+import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
@@ -13,6 +14,8 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,8 @@ public class RoomServiceImpl implements RoomService {
   private final RoomRepository roomRepository;
   private final TripRepository tripRepository;
 
+  private final EmailService roomEmailService;
+
   @Transactional
   @Override
   public Room register(RoomRegisterCommand roomRegisterCommand) {
@@ -38,7 +43,7 @@ public class RoomServiceImpl implements RoomService {
         .orElseThrow(() -> new NotFoundException(Member.class));
 
     room.assignHost(host);
-
+    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.REGISTER);
     return roomRepository.save(room);
   }
 
@@ -54,6 +59,9 @@ public class RoomServiceImpl implements RoomService {
         .findByIdAndHostId(roomUpdateCommand.getRoomId(), roomUpdateCommand.getHostId())
         .orElseThrow(() -> new NotFoundException(Room.class));
 
+    Member host = room.getHost();
+
+    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.UPDATE);
     return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
         roomUpdateCommand.getPricePerDay());
   }
@@ -67,6 +75,8 @@ public class RoomServiceImpl implements RoomService {
     checkArgument(isDeletable(findRoom.getHost().getId(), roomDeleteCommand.getRoomId(),
         roomDeleteCommand.getHostId()), "숙소를 삭제 할 수 없습니다");
 
+    Member host = findRoom.getHost();
+    roomEmailService.send(Email.toString(host.getEmail()), findRoom.toMap(), MailType.DELETE);
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
 
