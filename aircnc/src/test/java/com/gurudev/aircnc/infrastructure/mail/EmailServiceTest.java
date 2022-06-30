@@ -3,6 +3,8 @@ package com.gurudev.aircnc.infrastructure.mail;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.util.Fixture;
+import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

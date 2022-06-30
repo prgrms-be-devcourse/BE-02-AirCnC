@@ -1,7 +1,8 @@
-package com.gurudev.aircnc.infrastructure.mail;
+package com.gurudev.aircnc.infrastructure.mail.service;
 
 import static java.lang.String.format;
 
+import com.gurudev.aircnc.infrastructure.mail.entity.MailKind;
 import java.util.Map;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
