@@ -56,8 +56,8 @@ public final class RoomDto {
     @JsonProperty("room")
     private final Response response;
 
-    public static RoomRegisterResponse of(Room room, List<RoomPhoto> roomPhotos) {
-      return new RoomRegisterResponse(Response.of(room, roomPhotos));
+    public static RoomRegisterResponse of(Room room) {
+      return new RoomRegisterResponse(Response.of(room));
     }
 
     @Getter
@@ -73,8 +73,7 @@ public final class RoomDto {
 
       @Builder
       public Response(long id, String name, String address, String description, int pricePerDay,
-          int capacity,
-          List<String> fileNames) {
+          int capacity, List<String> fileNames) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -84,7 +83,7 @@ public final class RoomDto {
         this.fileNames = fileNames;
       }
 
-      public static Response of(Room room, List<RoomPhoto> roomPhotos) {
+      public static Response of(Room room) {
         return Response.builder()
             .id(room.getId())
             .name(room.getName())
@@ -92,7 +91,8 @@ public final class RoomDto {
             .description(room.getDescription())
             .pricePerDay(room.getPricePerDay())
             .capacity(room.getCapacity())
-            .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
+            .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
+                .collect(Collectors.toList()))
             .build();
       }
     }
@@ -121,8 +121,8 @@ public final class RoomDto {
     @JsonProperty("room")
     private final Response response;
 
-    public static RoomUpdateResponse of(Room room, List<RoomPhoto> roomPhotos) {
-      return new RoomUpdateResponse(Response.of(room, roomPhotos));
+    public static RoomUpdateResponse of(Room room) {
+      return new RoomUpdateResponse(Response.of(room));
     }
 
     @Getter
@@ -138,8 +138,7 @@ public final class RoomDto {
 
       @Builder
       public Response(long id, String name, String address, String description, int pricePerDay,
-          int capacity,
-          List<String> fileNames) {
+          int capacity, List<String> fileNames) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -149,7 +148,7 @@ public final class RoomDto {
         this.fileNames = fileNames;
       }
 
-      public static Response of(Room room, List<RoomPhoto> roomPhotos) {
+      public static Response of(Room room) {
         return Response.builder()
             .id(room.getId())
             .name(room.getName())
@@ -157,7 +156,8 @@ public final class RoomDto {
             .description(room.getDescription())
             .pricePerDay(room.getPricePerDay())
             .capacity(room.getCapacity())
-            .fileNames(roomPhotos.stream().map(RoomPhoto::getFileName).collect(Collectors.toList()))
+            .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
+                .collect(Collectors.toList()))
             .build();
       }
     }

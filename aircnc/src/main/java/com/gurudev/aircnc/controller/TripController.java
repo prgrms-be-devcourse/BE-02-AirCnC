@@ -3,12 +3,12 @@ package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.ApiResponse.created;
 import static com.gurudev.aircnc.controller.ApiResponse.ok;
-import static com.gurudev.aircnc.controller.dto.TripDto.TripInfoResponse;
+import static com.gurudev.aircnc.controller.dto.TripDto.TripReserveResponse;
 
+import com.gurudev.aircnc.controller.dto.TripDto.TripCancelResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripDetailedResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
-import com.gurudev.aircnc.controller.dto.TripDto.TripResponse;
 import com.gurudev.aircnc.controller.dto.TripDto.TripResponseList;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.ReserveService;
@@ -42,7 +42,7 @@ public class TripController {
 
   /* 여행 예약 */
   @PostMapping
-  public ResponseEntity<TripInfoResponse> tripReserve(
+  public ResponseEntity<TripReserveResponse> tripReserve(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @RequestBody TripReserveRequest tripReserveRequest) {
 
@@ -60,7 +60,7 @@ public class TripController {
 
     TripEvent reserveTripInfo = reserveService.reserve(tripEvent);
     // tripEmailService.send(authentication.email, trip.toMap(), MailKind.REGISTER); // fix me : 수정해 주세용
-    return created(TripInfoResponse.of(reserveTripInfo));
+    return created(TripReserveResponse.of(reserveTripInfo));
   }
 
   /* 여행 목록 조회 */
@@ -86,12 +86,12 @@ public class TripController {
 
   /* 여행 취소 */
   @PostMapping("/{tripId}/cancel")
-  public ResponseEntity<TripResponse> cancelTrip(
+  public ResponseEntity<TripCancelResponse> cancelTrip(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable Long tripId) {
 
     Trip trip = tripService.cancel(tripId, authentication.id);
     tripEmailService.send(authentication.email, trip.toMap(), MailType.DELETE);
-    return ok(TripResponse.of(trip));
+    return ok(TripCancelResponse.of(trip));
   }
 }

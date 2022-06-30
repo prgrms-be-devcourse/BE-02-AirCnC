@@ -38,13 +38,13 @@ public final class TripDto {
 
   @Getter
   @RequiredArgsConstructor(access = PRIVATE)
-  public static class TripResponse {
+  public static class TripCancelResponse {
 
     @JsonProperty("trip")
     private final Response response;
 
-    public static TripResponse of(Trip trip) {
-      return new TripResponse(Response.of(trip));
+    public static TripCancelResponse of(Trip trip) {
+      return new TripCancelResponse(Response.of(trip));
     }
   }
 
@@ -108,71 +108,72 @@ public final class TripDto {
     public static TripDetailedResponse of(Trip trip) {
       return new TripDetailedResponse(DetailedResponse.of(trip));
     }
-  }
-
-  @Getter
-  public static class DetailedResponse {
-
-    private final long id;
-    private final LocalDate checkIn;
-    private final LocalDate checkOut;
-    private final int totalPrice;
-    private final int headCount;
-    private final String status;
-    @JsonProperty("room")
-    private final RoomResponse roomResponse;
-
-    @Builder(access = PRIVATE)
-    private DetailedResponse(long id, LocalDate checkIn, LocalDate checkOut, int totalPrice,
-        int headCount, String status, Room room) {
-      this.id = id;
-      this.checkIn = checkIn;
-      this.checkOut = checkOut;
-      this.totalPrice = totalPrice;
-      this.headCount = headCount;
-      this.status = status;
-      this.roomResponse = RoomResponse.of(room);
-    }
-
-    public static DetailedResponse of(Trip trip) {
-      return DetailedResponse.builder()
-          .id(trip.getId())
-          .checkIn(trip.getCheckIn())
-          .checkOut(trip.getCheckOut())
-          .totalPrice(trip.getTotalPrice())
-          .headCount(trip.getHeadCount())
-          .status(trip.getStatus().name())
-          .room(trip.getRoom())
-          .build();
-    }
 
     @Getter
-    public static class RoomResponse {
+    public static class DetailedResponse {
 
       private final long id;
-      private final String name;
-      private final String address;
-      private final String hostName;
-      private final List<String> fileNames;
+      private final LocalDate checkIn;
+      private final LocalDate checkOut;
+      private final int totalPrice;
+      private final int headCount;
+      private final String status;
+      @JsonProperty("room")
+      private final RoomResponse roomResponse;
 
-      @Builder
-      private RoomResponse(long id, String name, String address, String hostName,
-          List<String> fileNames) {
+      @Builder(access = PRIVATE)
+      private DetailedResponse(long id, LocalDate checkIn, LocalDate checkOut, int totalPrice,
+          int headCount, String status, Room room) {
         this.id = id;
-        this.name = name;
-        this.address = address;
-        this.hostName = hostName;
-        this.fileNames = fileNames;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.totalPrice = totalPrice;
+        this.headCount = headCount;
+        this.status = status;
+        this.roomResponse = RoomResponse.of(room);
       }
 
-      public static RoomResponse of(Room room) {
-        return RoomResponse.builder()
-            .id(room.getId())
-            .name(room.getName())
-            .address(Address.toString(room.getAddress()))
-            .hostName(room.getHost().getName())
-            .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName).collect(toList()))
+      public static DetailedResponse of(Trip trip) {
+        return DetailedResponse.builder()
+            .id(trip.getId())
+            .checkIn(trip.getCheckIn())
+            .checkOut(trip.getCheckOut())
+            .totalPrice(trip.getTotalPrice())
+            .headCount(trip.getHeadCount())
+            .status(trip.getStatus().name())
+            .room(trip.getRoom())
             .build();
+      }
+
+      @Getter
+      public static class RoomResponse {
+
+        private final long id;
+        private final String name;
+        private final String address;
+        private final String hostName;
+        private final List<String> fileNames;
+
+        @Builder
+        private RoomResponse(long id, String name, String address, String hostName,
+            List<String> fileNames) {
+          this.id = id;
+          this.name = name;
+          this.address = address;
+          this.hostName = hostName;
+          this.fileNames = fileNames;
+        }
+
+        public static RoomResponse of(Room room) {
+          return RoomResponse.builder()
+              .id(room.getId())
+              .name(room.getName())
+              .address(Address.toString(room.getAddress()))
+              .hostName(room.getHost().getName())
+              .fileNames(
+                  room.getRoomPhotos().stream().map(RoomPhoto::getFileName).collect(toList()))
+              .build();
+        }
       }
     }
   }
@@ -180,13 +181,13 @@ public final class TripDto {
 
   @Getter
   @RequiredArgsConstructor(access = PRIVATE)
-  public static class TripInfoResponse {
+  public static class TripReserveResponse {
 
     @JsonProperty("trip")
     private final Response response;
 
-    public static TripInfoResponse of(TripEvent tripEvent) {
-      return new TripInfoResponse(Response.of(tripEvent));
+    public static TripReserveResponse of(TripEvent tripEvent) {
+      return new TripReserveResponse(Response.of(tripEvent));
     }
 
     @Getter

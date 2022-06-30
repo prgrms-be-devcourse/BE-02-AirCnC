@@ -65,7 +65,7 @@ public class RoomController {
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
 
     roomEmailService.send(authentication.email, room.toMap(), MailType.REGISTER);
-    return created(RoomRegisterResponse.of(room, roomPhotos));
+    return created(RoomRegisterResponse.of(room));
   }
 
   /* 숙소 변경 */
@@ -79,7 +79,7 @@ public class RoomController {
         request.getName(), request.getDescription(), request.getPricePerDay()));
 
     roomEmailService.send(authentication.email, room.toMap(), MailType.UPDATE);
-    return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
+    return ok(RoomUpdateResponse.of(room));
   }
 
   /* 숙소 삭제 */
