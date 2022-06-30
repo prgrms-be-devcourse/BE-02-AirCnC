@@ -31,8 +31,7 @@ public class TripServiceImpl implements TripService {
     //TODO: 예약 겹치는지 검증 로직 필요
 
     return tripRepository.save(
-        new Trip(guest,
-            room,
+        new Trip(guest, room,
             tripEvent.getCheckIn(),
             tripEvent.getCheckOut(),
             tripEvent.getTotalPrice(),

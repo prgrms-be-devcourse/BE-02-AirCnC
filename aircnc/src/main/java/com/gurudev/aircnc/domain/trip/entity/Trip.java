@@ -13,7 +13,6 @@ import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
-import com.gurudev.aircnc.exception.TripReservationException;
 import java.time.LocalDate;
 import java.util.Map;
 import javax.persistence.Entity;
@@ -74,20 +73,16 @@ public class Trip extends BaseIdEntity {
   }
 
   private void checkHeadCount(int headCount, Room room) {
-    if (room.getCapacity() < headCount) {
-      throw new TripReservationException("인원 수가 유효하지 않습니다");
-    }
+    checkArgument(headCount <= room.getCapacity(), "인원 수가 유효하지 않습니다");
   }
 
   /**
    * 서버의 총 가격과 요청 총 가격 검증
    */
-  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut, int requestTotalPrice,
-      Room room) {
+  private void checkTotalPrice(LocalDate checkIn, LocalDate checkOut,
+      int requestTotalPrice, Room room) {
     int calculatedTotalPrice = getDays(checkIn, checkOut) * room.getPricePerDay();
-    if (requestTotalPrice != calculatedTotalPrice) {
-      throw new TripReservationException("총 가격이 유효하지 않습니다");
-    }
+    checkArgument(requestTotalPrice == calculatedTotalPrice, "총 가격이 유효하지 않습니다");
   }
 
   private int getDays(LocalDate from, LocalDate to) {
