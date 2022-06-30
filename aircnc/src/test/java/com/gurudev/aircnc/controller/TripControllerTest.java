@@ -24,7 +24,7 @@ import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

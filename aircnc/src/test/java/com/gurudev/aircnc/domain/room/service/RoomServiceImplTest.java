@@ -20,8 +20,8 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

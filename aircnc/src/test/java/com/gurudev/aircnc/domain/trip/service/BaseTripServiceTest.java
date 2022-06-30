@@ -15,8 +15,8 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomService;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +70,7 @@ public abstract class BaseTripServiceTest {
     totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
   }
 
-  protected TripEvent defaultTripReserveCommand() {
+  protected TripEvent defaultTripEvent() {
     return Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
 }
