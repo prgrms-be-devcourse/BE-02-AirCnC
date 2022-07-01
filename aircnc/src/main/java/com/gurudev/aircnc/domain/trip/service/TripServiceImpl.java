@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+import static java.time.LocalDate.*;
+import static java.util.stream.Collectors.*;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -9,7 +9,6 @@ import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.repository.RoomRepository;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
@@ -17,12 +16,8 @@ import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,13 +75,9 @@ public class TripServiceImpl implements TripService {
 
   @Override
   public List<LocalDate> getReservedDaysById(Long roomId) {
-    List<Trip> trips
-        = tripRepository.findTripsByRoomIdRelatedWithToday(roomId, LocalDate.now());
-    
-    List<LocalDate> result = trips.stream()
-        .flatMap(trip -> Stream.of(trip.getCheckIn(), trip.getCheckOut()))
-        .collect(Collectors.toList());
-    return result;
+    return tripRepository.findTripsByRoomIdRelatedWithToday(roomId, now())
+        .stream().flatMap(trip -> Stream.of(trip.getCheckIn(), trip.getCheckOut()))
+        .collect(toList());
   }
 
   private Room findRoomById(Long roomId) {

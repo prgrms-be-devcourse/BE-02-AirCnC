@@ -5,6 +5,7 @@ import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
@@ -94,34 +95,21 @@ class TripServiceImplTest extends BaseTripServiceTest {
     // given
 
     //예약1
-    LocalDate firstCheckIn = LocalDate.now();
-    LocalDate firstCheckOut = LocalDate.now().plusDays(1);
-    int firstTotalPrice = between(firstCheckIn, firstCheckOut).getDays() * room.getPricePerDay();
+    LocalDate checkIn1 = LocalDate.now();
+    LocalDate checkOut1 = LocalDate.now().plusDays(1);
+    int firstTotalPrice = between(checkIn1, checkOut1).getDays() * room.getPricePerDay();
     tripService.reserve(Command.ofReserveTrip(
-        new Trip(guest, room, firstCheckIn, firstCheckOut, firstTotalPrice, headCount)));
+        new Trip(guest, room, checkIn1, checkOut1, firstTotalPrice, headCount)));
     //예약2
-    LocalDate secondCheckIn = LocalDate.now().plusDays(4);
-    LocalDate secondCheckOut = LocalDate.now().plusDays(7);
-    int secondTotalPrice = between(secondCheckIn, secondCheckOut).getDays() * room.getPricePerDay();
+    LocalDate checkIn2 = LocalDate.now().plusDays(4);
+    LocalDate checkOut2 = LocalDate.now().plusDays(7);
+    int secondTotalPrice = between(checkIn2, checkOut2).getDays() * room.getPricePerDay();
    tripService.reserve(Command.ofReserveTrip(
-        new Trip(guest, room, secondCheckIn, secondCheckOut, secondTotalPrice, headCount)));
+        new Trip(guest, room, checkIn2, checkOut2, secondTotalPrice, headCount)));
     // when
     List<LocalDate> reservedDays = tripService.getReservedDaysById(room.getId());
 
     // then
-    assertThat(reservedDays).containsExactly(firstCheckIn,firstCheckOut,secondCheckIn,secondCheckOut);
+    assertThat(reservedDays).containsExactly(checkIn1,checkOut1,checkIn2,checkOut2);
   }
-
-  @Test
-  void 예약_불가능한_날짜_없음(){
-    //given
-    //예약 없음
-
-    //when
-    List<LocalDate> reservedDays = tripService.getReservedDaysById(room.getId());
-
-    // then
-    Assertions.assertThat(reservedDays).isEmpty();
-  }
-
 }

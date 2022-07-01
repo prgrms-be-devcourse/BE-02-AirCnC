@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.domain.trip.service;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import java.util.List;
