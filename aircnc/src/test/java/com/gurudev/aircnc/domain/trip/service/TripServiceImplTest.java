@@ -3,11 +3,17 @@ package com.gurudev.aircnc.domain.trip.service;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
+import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.util.Command;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TripServiceImplTest extends BaseTripServiceTest {
@@ -83,5 +89,39 @@ class TripServiceImplTest extends BaseTripServiceTest {
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
 
+  @Test
+  void 예약_불가능한_날짜_조회() {
+    // given
+
+    //예약1
+    LocalDate firstCheckIn = LocalDate.now();
+    LocalDate firstCheckOut = LocalDate.now().plusDays(1);
+    int firstTotalPrice = between(firstCheckIn, firstCheckOut).getDays() * room.getPricePerDay();
+    tripService.reserve(Command.ofReserveTrip(
+        new Trip(guest, room, firstCheckIn, firstCheckOut, firstTotalPrice, headCount)));
+    //예약2
+    LocalDate secondCheckIn = LocalDate.now().plusDays(4);
+    LocalDate secondCheckOut = LocalDate.now().plusDays(7);
+    int secondTotalPrice = between(secondCheckIn, secondCheckOut).getDays() * room.getPricePerDay();
+   tripService.reserve(Command.ofReserveTrip(
+        new Trip(guest, room, secondCheckIn, secondCheckOut, secondTotalPrice, headCount)));
+    // when
+    List<LocalDate> reservedDays = tripService.getReservedDaysById(room.getId());
+
+    // then
+    assertThat(reservedDays).containsExactly(firstCheckIn,firstCheckOut,secondCheckIn,secondCheckOut);
+  }
+
+  @Test
+  void 예약_불가능한_날짜_없음(){
+    //given
+    //예약 없음
+
+    //when
+    List<LocalDate> reservedDays = tripService.getReservedDaysById(room.getId());
+
+    // then
+    Assertions.assertThat(reservedDays).isEmpty();
+  }
 
 }
