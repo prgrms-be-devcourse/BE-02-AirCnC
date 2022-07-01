@@ -36,6 +36,16 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "where t.room.id = :roomId and t.status in :statusSet")
   List<Trip> findByRoomIdAndStatusSet(Long roomId, Set<TripStatus> statusSet, Pageable pageable);
 
+  @Query("select t "
+      + "from Trip t "
+      + "where t.room.id = :roomId "
+      + "and (t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED "
+      + "or t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING) "
+      + "and ((t.checkIn < :today and t.checkOut >= :today) "
+      + "or t.checkIn >= :today)"
+      + "order by t.checkIn asc ")
+  List<Trip> findTripsByRoomIdRelatedWithToday(Long roomId, LocalDate today);
+
   @Modifying(clearAutomatically = true)
   @Query("update Trip t "
       + "set t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING "

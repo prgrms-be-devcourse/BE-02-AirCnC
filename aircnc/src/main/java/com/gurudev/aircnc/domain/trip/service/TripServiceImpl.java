@@ -1,5 +1,8 @@
 package com.gurudev.aircnc.domain.trip.service;
 
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
@@ -12,8 +15,11 @@ import com.gurudev.aircnc.exception.NotFoundException;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -51,7 +57,6 @@ public class TripServiceImpl implements TripService {
 
   @Override
   public Trip getDetailedById(Long id, Long guestId) {
-
     return tripRepository.findByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
   }
@@ -73,6 +78,19 @@ public class TripServiceImpl implements TripService {
     return trip;
   }
 
+  @Override
+  public List<LocalDate> getReservedDaysById(Long roomId) {
+//    PageRequest pageRequest = PageRequest.of(0, 2000, Sort.by("checkIn").descending());
+    List<Trip> trips
+        = tripRepository.findTripsByRoomIdRelatedWithToday(roomId, LocalDate.now());
+    
+    List<LocalDate> result = trips.stream()
+        .flatMap(trip -> Stream.of(trip.getCheckIn(), trip.getCheckOut()))
+        .collect(Collectors.toList());
+    System.out.println("result = " + result);
+    return result;
+  }
+
   private Room findRoomById(Long roomId) {
     return roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException(Room.class));
   }
@@ -85,11 +103,5 @@ public class TripServiceImpl implements TripService {
   private Trip findTripByIdAndGuestId(Long id, Long guestId) {
     return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
-  }
-
-  @Override
-  public List<Trip> findByRoomIdAndTripStatus(Long roomId, Set<TripStatus> tripStatuses) {
-    PageRequest pageRequest = PageRequest.of(0, 2000, Sort.by("checkIn").descending());
-    return tripRepository.findByRoomIdAndStatusSet(roomId, tripStatuses, pageRequest);
   }
 }
