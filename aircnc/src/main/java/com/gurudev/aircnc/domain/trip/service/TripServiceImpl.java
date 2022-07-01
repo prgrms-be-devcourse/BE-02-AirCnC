@@ -80,14 +80,12 @@ public class TripServiceImpl implements TripService {
 
   @Override
   public List<LocalDate> getReservedDaysById(Long roomId) {
-//    PageRequest pageRequest = PageRequest.of(0, 2000, Sort.by("checkIn").descending());
     List<Trip> trips
         = tripRepository.findTripsByRoomIdRelatedWithToday(roomId, LocalDate.now());
     
     List<LocalDate> result = trips.stream()
         .flatMap(trip -> Stream.of(trip.getCheckIn(), trip.getCheckOut()))
         .collect(Collectors.toList());
-    System.out.println("result = " + result);
     return result;
   }
 
