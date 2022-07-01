@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.infrastructure.event;
 
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

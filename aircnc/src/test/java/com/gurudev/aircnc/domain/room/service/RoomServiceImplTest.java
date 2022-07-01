@@ -20,8 +20,9 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
 import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,12 @@ class RoomServiceImplTest {
   private LocalDate checkOut;
   private int totalPrice;
   private int headCount;
+
+  @MockBean(name = "roomEmailService")
+  private EmailService roomEmailService;
+
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
 
   @BeforeEach
   void setUp() {

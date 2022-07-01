@@ -6,7 +6,7 @@ import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripEvent;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 여행_예약_성공() {
     //given
-    TripEvent tripEvent = defaultTripReserveCommand();
+    TripEvent tripEvent = defaultTripEvent();
 
     //when
     Trip trip = tripService.reserve(tripEvent);
@@ -30,11 +30,11 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 게스트의_여행_목록_조회() {
     //given
-    TripEvent command1 = defaultTripReserveCommand();
-    TripEvent command2 = defaultTripReserveCommand();
+    TripEvent tripEvent1 = defaultTripEvent();
+    TripEvent tripEvent2 = defaultTripEvent();
 
-    Trip trip1 = tripService.reserve(command1);
-    Trip trip2 = tripService.reserve(command2);
+    Trip trip1 = tripService.reserve(tripEvent1);
+    Trip trip2 = tripService.reserve(tripEvent2);
 
     //when
     List<Trip> findTrips = tripService.getByGuestId(guest.getId());
@@ -46,8 +46,8 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 여행_상세_조회() {
     //given
-    TripEvent command = defaultTripReserveCommand();
-    Trip trip1 = tripService.reserve(command);
+    TripEvent tripEvent = defaultTripEvent();
+    Trip trip1 = tripService.reserve(tripEvent);
 
     //when
     Trip trip = tripService.getDetailedById(trip1.getId(), guest.getId());
@@ -73,8 +73,8 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 예약_상태의_여행_취소_성공() {
     //given
-    TripEvent command = defaultTripReserveCommand();
-    Trip reservedTrip = tripService.reserve(command);
+    TripEvent tripEvent = defaultTripEvent();
+    Trip reservedTrip = tripService.reserve(tripEvent);
 
     //when
     Trip cancelledTrip = tripService.cancel(reservedTrip.getId(), guest.getId());
