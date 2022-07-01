@@ -3,11 +3,18 @@ package com.gurudev.aircnc.domain.trip.service;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
+import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.util.Command;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TripServiceImplTest extends BaseTripServiceTest {
@@ -83,5 +90,26 @@ class TripServiceImplTest extends BaseTripServiceTest {
     assertThat(cancelledTrip.getStatus()).isEqualTo(CANCELLED);
   }
 
+  @Test
+  void 예약_불가능한_날짜_조회() {
+    // given
 
+    //예약1
+    LocalDate checkIn1 = LocalDate.now();
+    LocalDate checkOut1 = LocalDate.now().plusDays(1);
+    int firstTotalPrice = between(checkIn1, checkOut1).getDays() * room.getPricePerDay();
+    tripService.reserve(Command.ofReserveTrip(
+        new Trip(guest, room, checkIn1, checkOut1, firstTotalPrice, headCount)));
+    //예약2
+    LocalDate checkIn2 = LocalDate.now().plusDays(4);
+    LocalDate checkOut2 = LocalDate.now().plusDays(7);
+    int secondTotalPrice = between(checkIn2, checkOut2).getDays() * room.getPricePerDay();
+   tripService.reserve(Command.ofReserveTrip(
+        new Trip(guest, room, checkIn2, checkOut2, secondTotalPrice, headCount)));
+    // when
+    List<LocalDate> reservedDays = tripService.getReservedDaysById(room.getId());
+
+    // then
+    assertThat(reservedDays).containsExactly(checkIn1,checkOut1,checkIn2,checkOut2);
+  }
 }
