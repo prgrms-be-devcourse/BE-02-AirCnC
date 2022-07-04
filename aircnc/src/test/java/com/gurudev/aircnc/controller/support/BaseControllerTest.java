@@ -12,16 +12,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +42,12 @@ public class BaseControllerTest {
   protected String createJson(Object dto) throws JsonProcessingException {
     return objectMapper.writeValueAsString(dto);
   }
+
+  @MockBean(name = "roomEmailService")
+  private EmailService roomEmailService;
+
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -65,22 +71,26 @@ public class BaseControllerTest {
         .andExpect(status().isCreated());
   }
 
-  protected void 로그인(String email, String password) throws Exception {
+  protected Long 로그인(String email, String password) throws Exception {
     ObjectNode loginRequest = objectMapper.createObjectNode();
     ObjectNode member = loginRequest.putObject("member");
     member.put("email", email)
         .put("password", password);
 
-    MockHttpServletResponse response = mockMvc.perform(post("/api/v1/login")
+    MvcResult mvcResult = mockMvc.perform(post("/api/v1/login")
             .contentType(MediaType.APPLICATION_JSON)
             .content(loginRequest.toString()))
         .andExpect(status().isOk())
-        .andReturn().getResponse();
+        .andReturn();
 
-    token = objectMapper.readValue(response.getContentAsString(),
+    String content = mvcResult.getResponse().getContentAsString();
+
+    token = objectMapper.readValue(content,
         JsonNode.class).get("member").get("token").asText();
 
     assertThat(token).isNotNull();
+
+    return objectMapper.readValue(content, JsonNode.class).get("member").get("id").asLong();
   }
 
   protected Long 숙소_등록(String name, Address address, String description,
@@ -110,26 +120,26 @@ public class BaseControllerTest {
     return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
   }
 
-  protected Long 여행_등록(String checkIn, String checkOut,
-      int totalPrice, int headCount, long roomId) throws Exception {
-
-    ObjectNode tripReserveRequest = objectMapper.createObjectNode();
-    ObjectNode trip = tripReserveRequest.putObject("trip");
-    trip.put("checkIn", checkIn)
-        .put("checkOut", checkOut)
-        .put("totalPrice", totalPrice)
-        .put("headCount", headCount)
-        .put("roomId", roomId);
-
-    MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/trips")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(createJson(tripReserveRequest))
-            .header(AUTHORIZATION, token))
-        .andExpect(status().isCreated())
-        .andReturn();
-
-    String content = mvcResult.getResponse().getContentAsString();
-
-    return objectMapper.readValue(content, JsonNode.class).get("trip").get("id").asLong();
-  }
+//  protected Long 여행_등록(String checkIn, String checkOut,
+//      int totalPrice, int headCount, long roomId) throws Exception {
+//
+//    ObjectNode tripReserveRequest = objectMapper.createObjectNode();
+//    ObjectNode trip = tripReserveRequest.putObject("trip");
+//    trip.put("checkIn", checkIn)
+//        .put("checkOut", checkOut)
+//        .put("totalPrice", totalPrice)
+//        .put("headCount", headCount)
+//        .put("roomId", roomId);
+//
+//    MvcResult mvcResult = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/trips")
+//            .contentType(MediaType.APPLICATION_JSON)
+//            .content(createJson(tripReserveRequest))
+//            .header(AUTHORIZATION, token))
+//        .andExpect(status().isCreated())
+//        .andReturn();
+//
+//    String content = mvcResult.getResponse().getContentAsString();
+//
+//    return objectMapper.readValue(content, JsonNode.class).get("trip").get("id").asLong();
+//  }
 }

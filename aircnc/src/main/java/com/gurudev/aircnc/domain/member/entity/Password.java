@@ -44,10 +44,12 @@ public class Password {
     this.password = encoder.encode(this.password);
   }
 
-  public boolean matches(PasswordEncryptor encryptor, Password rawPassword) {
+  public void verifyPassword(PasswordEncryptor encryptor, Password rawPassword) {
     checkState(ENCODED_PATTERN.matcher(this.password).find(), "비밀번호가 암호화되지 않았습니다");
 
-    return encryptor.matches(rawPassword.getPassword(), this.password);
+    if (!encryptor.matches(rawPassword.getPassword(), this.password)) {
+      throw new IllegalArgumentException("비밀번호가 올바르지 않습니다");
+    }
   }
 
 }

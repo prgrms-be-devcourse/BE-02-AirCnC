@@ -1,10 +1,11 @@
 package com.gurudev.aircnc.exception;
 
-import lombok.AccessLevel;
+import static lombok.AccessLevel.PRIVATE;
+
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Preconditions {
+@NoArgsConstructor(access = PRIVATE)
+public final class Preconditions {
 
   public static void checkArgument(boolean expression, Object errorMessage) {
     if (!expression) {

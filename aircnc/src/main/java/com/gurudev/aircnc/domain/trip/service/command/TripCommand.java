@@ -4,6 +4,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest;
 import com.gurudev.aircnc.controller.dto.TripDto.TripReserveRequest.Request;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +44,11 @@ public final class TripCommand {
           request.getTotalPrice()
       );
     }
+
+    public TripEvent toTripEvent() {
+      return new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice);
+    }
+
+
   }
 }

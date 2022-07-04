@@ -20,15 +20,10 @@ public final class MemberCommand {
   public static class MemberRegisterCommand {
 
     private final String email;
-
     private final String password;
-
     private final String name;
-
     private final LocalDate birthDate;
-
     private final String phoneNumber;
-
     private final String role;
 
     public Member toEntity() {

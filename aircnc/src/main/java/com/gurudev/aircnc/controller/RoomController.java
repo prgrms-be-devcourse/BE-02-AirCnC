@@ -6,6 +6,7 @@ import static com.gurudev.aircnc.controller.ApiResponse.ok;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
+import com.gurudev.aircnc.controller.dto.RoomDto.RoomResponseList;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateResponse;
 import com.gurudev.aircnc.domain.base.AttachedFile;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,8 +61,7 @@ public class RoomController {
     //숙소, S3에 저장된 숙소 사진의 파일 이름을 DB에 저장
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
-
-    return created(RoomRegisterResponse.of(room, roomPhotos));
+    return created(RoomRegisterResponse.of(room));
   }
 
   /* 숙소 변경 */
@@ -72,8 +73,7 @@ public class RoomController {
 
     Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
         request.getName(), request.getDescription(), request.getPricePerDay()));
-
-    return ok(RoomUpdateResponse.of(room, room.getRoomPhotos()));
+    return ok(RoomUpdateResponse.of(room));
   }
 
   /* 숙소 삭제 */
@@ -83,7 +83,15 @@ public class RoomController {
       @PathVariable("roomId") Long roomId) {
 
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
-
     return noContent();
+  }
+
+  /* 호스트 자신의 숙소 조회 */
+  @GetMapping
+  public ResponseEntity<RoomResponseList> getHostRooms(
+      @AuthenticationPrincipal JwtAuthentication authentication) {
+    List<Room> rooms = roomService.getByHostId(authentication.id);
+
+    return ok(RoomResponseList.of(rooms));
   }
 }

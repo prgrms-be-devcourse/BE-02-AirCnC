@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class TripServiceForSchedulerImpl implements
-    TripServiceForScheduler {
+public class TripServiceForSchedulerImpl implements TripServiceForScheduler {
 
   private final TripRepository tripRepository;
 
@@ -20,13 +19,14 @@ public class TripServiceForSchedulerImpl implements
   public void bulkStatusToTravelling() {
     int count = tripRepository.bulkStatusToTravelling(LocalDate.now());
 
-    log.info("{} number of trip status changed : 예약 -> 여행 중", count);
+
+    log.info("{}개의 여행 : 여행 예약 -> 여행 중", count);
   }
 
   @Override
   public void bulkStatusToDone() {
     int count = tripRepository.bulkStatusToDone(LocalDate.now().minusDays(1));
 
-    log.info("{} number of trip status changed : 여행 중 -> 여행 종료", count);
+    log.info("{}개의 여행 : 여행 중 -> 여행 완료", count);
   }
 }

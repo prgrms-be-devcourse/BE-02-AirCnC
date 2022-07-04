@@ -18,15 +18,6 @@ spring:
     prefix: classpath:/mail-templates/
     cache: false
 
-infrastructure:
-  aws:
-    s3:
-      region: ap-northeast-2
-      accessKey: ${aws.accessKey}
-      secretKey: ${aws.secretKey}
-      url: https://s3.ap-northeast-2.amazonaws.com
-      bucketName: dev-aircnc
-
   mail:
     default-encoding: UTF-8
     port: 465
@@ -45,6 +36,15 @@ infrastructure:
           starttls:
             enabled: true
             required: true
+
+infrastructure:
+  aws:
+    s3:
+      region: ap-northeast-2
+      accessKey: ${aws.accessKey}
+      secretKey: ${aws.secretKey}
+      url: https://s3.ap-northeast-2.amazonaws.com
+      bucketName: dev-aircnc
 
   security:
     jwt:

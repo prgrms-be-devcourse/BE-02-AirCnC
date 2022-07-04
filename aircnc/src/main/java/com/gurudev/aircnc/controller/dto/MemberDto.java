@@ -114,13 +114,15 @@ public final class MemberDto {
     @Getter
     public static class Response {
 
+      private final Long id;
       private final String email;
       private final String name;
       private final String role;
       private final String token;
 
       @Builder(access = PRIVATE)
-      private Response(String email, String name, Role role, String token) {
+      private Response(Long id, String email, String name, Role role, String token) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.role = role.name();
@@ -129,6 +131,7 @@ public final class MemberDto {
 
       public static Response of(Member member, String token) {
         return Response.builder()
+            .id(member.getId())
             .email(Email.toString(member.getEmail()))
             .name(member.getName())
             .role(member.getRole())

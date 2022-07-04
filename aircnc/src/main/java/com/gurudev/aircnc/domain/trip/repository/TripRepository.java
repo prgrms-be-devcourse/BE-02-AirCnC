@@ -37,6 +37,14 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "      com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED)")
   boolean existsTravellingOrReservedByRoom(Room room);
 
+  @Query("select t "
+      + "from Trip t "
+      + "where t.room.id = :roomId "
+      + "and (t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED "
+      + "or t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING) "
+      + "and t.checkOut >= :today ")
+  List<Trip> findTripsByRoomIdRelatedWithToday(Long roomId, LocalDate today);
+
   @Modifying(clearAutomatically = true)
   @Query("update Trip t "
       + "set t.status = com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING "

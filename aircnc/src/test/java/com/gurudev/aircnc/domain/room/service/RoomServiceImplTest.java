@@ -20,8 +20,9 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.trip.service.TripService;
-import com.gurudev.aircnc.domain.trip.service.command.TripCommand.TripReserveCommand;
 import com.gurudev.aircnc.domain.util.Command;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,12 @@ class RoomServiceImplTest {
   private LocalDate checkOut;
   private int totalPrice;
   private int headCount;
+
+  @MockBean(name = "roomEmailService")
+  private EmailService roomEmailService;
+
+  @MockBean(name = "tripEmailService")
+  private EmailService tripEmailService;
 
   @BeforeEach
   void setUp() {
@@ -174,9 +182,9 @@ class RoomServiceImplTest {
     RoomRegisterCommand command = defaultRoomRegisterCommand();
     Room room = roomService.register(command);
 
-    TripReserveCommand tripReserveCommand
+    TripEvent tripEvent
         = Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
-    tripService.reserve(tripReserveCommand);
+    tripService.reserve(tripEvent);
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
@@ -198,5 +206,49 @@ class RoomServiceImplTest {
 
   private RoomRegisterCommand defaultRoomRegisterCommand() {
     return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
+  }
+
+  @Test
+  void 숙소_상세_조회_성공() {
+    //given
+    RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
+
+    //when
+    Room detailRoom = roomService.getDetailById(room.getId());
+
+    //then
+    assertThat(detailRoom).isEqualTo(room);
+    assertThat(detailRoom.getRoomPhotos()).containsAll(roomPhotos);
+    assertThat(detailRoom.getHost()).isEqualTo(host);
+  }
+
+  @Test
+  void 숙소_상세_조회_실패() {
+    //given
+    Long invalidRoomId = -1L;
+
+    //then
+    assertThatNotFoundException().isThrownBy(() -> roomService.getDetailById(invalidRoomId));
+  }
+
+  @Test
+  void 호스트가_자신의_숙소_조회() {
+    // given
+    Room roomA = roomService.register(defaultRoomRegisterCommand());
+    Room roomB = roomService.register(defaultRoomRegisterCommand());
+
+    Room yourRegisteredRoom = roomService.register(
+        Command.ofRegisterRoom(createRoom(), roomPhotos, fakeHost.getId()));
+
+    // when
+    List<Room> myRooms = roomService.getByHostId(host.getId());
+
+    // then
+    assertThat(myRooms).hasSize(2)
+        .containsExactly(roomA, roomB)
+        .extracting(Room::getHost)
+        .containsExactly(host, host);
+
   }
 }
