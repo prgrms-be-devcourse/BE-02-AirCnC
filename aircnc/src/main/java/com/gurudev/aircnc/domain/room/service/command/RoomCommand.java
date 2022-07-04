@@ -31,8 +31,9 @@ public final class RoomCommand {
     private RoomRegisterCommand(String name, String lotAddress, String roadAddress,
         String detailedAddress,
         String postCode, String description, int pricePerDay, int capacity,
-        List<String> photofileNames,
+        List<String> photoFileNames,
         Long memberId) {
+
       this.name = name;
       this.lotAddress = lotAddress;
       this.roadAddress = roadAddress;
@@ -41,13 +42,14 @@ public final class RoomCommand {
       this.description = description;
       this.pricePerDay = pricePerDay;
       this.capacity = capacity;
-      this.photoFileNames.addAll(photofileNames);
+      this.photoFileNames.addAll(photoFileNames);
       this.hostId = memberId;
     }
 
     public static RoomRegisterCommand of(RoomRegisterRequest registerRequest,
         List<RoomPhoto> photos,
         Long hostId) {
+
       List<String> roomPhotoFiles = photos.stream()
           .map(RoomPhoto::getFileName)
           .collect(toList());

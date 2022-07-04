@@ -5,10 +5,8 @@ import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.infrastructure.aws.s3.S3Client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RoomPhotoServiceImpl implements RoomPhotoService {
 
@@ -16,7 +14,6 @@ public class RoomPhotoServiceImpl implements RoomPhotoService {
 
   private final S3Client s3Client;
 
-  @Transactional
   @Override
   public RoomPhoto upload(AttachedFile attachedFiles) {
     String path = s3Client.upload(

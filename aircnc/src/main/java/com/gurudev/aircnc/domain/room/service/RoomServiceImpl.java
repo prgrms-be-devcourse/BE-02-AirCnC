@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
@@ -12,11 +11,8 @@ import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomRegisterCo
 import com.gurudev.aircnc.domain.room.service.command.RoomCommand.RoomUpdateCommand;
 import com.gurudev.aircnc.domain.trip.repository.TripRepository;
 import com.gurudev.aircnc.exception.NotFoundException;
-import com.gurudev.aircnc.exception.RoomDeleteException;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,13 +30,13 @@ public class RoomServiceImpl implements RoomService {
   public Room register(RoomRegisterCommand roomRegisterCommand) {
     Room room = roomRegisterCommand.toEntity();
 
-    Member host = memberRepository.findById(roomRegisterCommand.getHostId())
-        .orElseThrow(() -> new NotFoundException(Member.class));
+    Member host = findMemberById(roomRegisterCommand.getHostId());
 
     room.assignHost(host);
 
     return roomRepository.save(room);
   }
+
 
   @Override
   public List<Room> getAll() {
@@ -61,19 +57,16 @@ public class RoomServiceImpl implements RoomService {
   @Transactional
   @Override
   public void delete(RoomDeleteCommand roomDeleteCommand) {
-    Room findRoom = roomRepository.findById(roomDeleteCommand.getRoomId())
+    Room room = roomRepository.findById(roomDeleteCommand.getRoomId())
         .orElseThrow(() -> new NotFoundException(Room.class));
 
-    PageRequest limitOne = PageRequest.of(0, 1);
-    if (tripRepository.findByRoomIdAndStatusSet(
-        roomDeleteCommand.getRoomId(),
-        Set.of(RESERVED, TRAVELLING), limitOne).size() == 1
-        || !findRoom.getHost().getId().equals(roomDeleteCommand.getHostId())) {
-      throw new RoomDeleteException("숙소를 삭제 할 수 없습니다");
-    }
+    Member host = findMemberById(roomDeleteCommand.getHostId());
+
+    checkArgument(deletable(room, host), "숙소를 삭제 할 수 없습니다");
 
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
+
 
   @Override
   public Room getById(Long id) {
@@ -84,4 +77,16 @@ public class RoomServiceImpl implements RoomService {
     return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(Room.class));
   }
 
+  private Member findMemberById(Long id) {
+    return memberRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException(Member.class));
+  }
+
+  /*
+   * 여행중이거나 예약중인 여행이 없으면서
+   * 자신의 숙소인 경우 삭제 가능
+   */
+  private boolean deletable(Room room, Member host) {
+    return !tripRepository.existsTravellingOrReservedByRoom(room) && room.isOwnedBy(host);
+  }
 }
