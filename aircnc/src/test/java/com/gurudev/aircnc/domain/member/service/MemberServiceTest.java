@@ -10,8 +10,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
-import com.gurudev.aircnc.domain.member.entity.PhoneNumber;
-import com.gurudev.aircnc.domain.member.entity.Role;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
 import com.gurudev.aircnc.domain.util.Command;
 import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
@@ -37,6 +35,7 @@ class MemberServiceTest {
     //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
+    Password rawPassword = command.getPassword();
 
     //when
     member = memberService.register(command);
@@ -45,14 +44,13 @@ class MemberServiceTest {
     //생성된 회원의 필드가 회원 가입 명령의 필드와 일치하는지 검증
     assertThat(member).extracting(Member::getEmail, Member::getName, Member::getBirthDate,
             Member::getPhoneNumber, Member::getRole)
-        .isEqualTo(List.of(new Email(command.getEmail()), command.getName(), command.getBirthDate(),
-            new PhoneNumber(command.getPhoneNumber()), Role.valueOf(command.getRole())));
+        .isEqualTo(List.of(command.getEmail(), command.getName(), command.getBirthDate(),
+            command.getPhoneNumber(), command.getRole()));
 
     //생성된 회원의 비밀번호 암호와 여부 검증
     Password password = member.getPassword();
     assertThatNoException()
-        .isThrownBy(
-            () -> password.verifyPassword(passwordEncryptor, new Password(command.getPassword())));
+        .isThrownBy(() -> password.verifyPassword(passwordEncryptor, rawPassword));
   }
 
   @Test
@@ -74,7 +72,7 @@ class MemberServiceTest {
     //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
-    Email email = new Email(command.getEmail());
+    Email email = command.getEmail();
 
     //then
     assertThatNotFoundException()
@@ -86,15 +84,15 @@ class MemberServiceTest {
     //given
     Member member = createGuest();
     MemberRegisterCommand command = Command.ofRegisterMember(member);
-    memberService.register(command);
+    Password rawPassword = command.getPassword();
+    Email email = command.getEmail();
+    member = memberService.register(command);
 
     //when
-    String rawPassword = command.getPassword();
-    Email email = new Email(command.getEmail());
-    Member loginMember = memberService.login(email, new Password(rawPassword));
+    Member loginMember = memberService.login(email, rawPassword);
 
     //then
-    assertThat(loginMember.getEmail()).isEqualTo(email);
+    assertThat(loginMember).isEqualTo(member);
   }
 
   @Test
@@ -105,7 +103,7 @@ class MemberServiceTest {
     memberService.register(command);
 
     //then
-    Email email = new Email(command.getEmail());
+    Email email = command.getEmail();
     Password invalidPassword = new Password("invalidPassword");
     assertThatIllegalArgumentException()
         .isThrownBy(() -> memberService.login(email, invalidPassword));
