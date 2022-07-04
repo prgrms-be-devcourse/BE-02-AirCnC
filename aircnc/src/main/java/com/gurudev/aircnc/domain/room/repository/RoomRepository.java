@@ -20,7 +20,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
   @Query("select distinct r "
       + "from Room r "
       + "join fetch r.roomPhotos "
-      + "join fetch r.host "
       + "where r.host = :host")
   List<Room> findByHost(Member host);
 }

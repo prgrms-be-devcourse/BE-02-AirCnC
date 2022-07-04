@@ -20,5 +20,5 @@ public interface RoomService {
 
   Room getDetailById(Long id);
 
-  List<Room> getByHostId(Long id);
+  List<Room> getByHostId(Long hostId);
 }
