@@ -64,8 +64,8 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   public boolean validateKey(String AuthKey, String email) {
-    List<EmailAuthKey> keyList = emailAuthKeyRepository.findByEmail(email,
-        Sort.by(Direction.DESC, "createdAt"));
+    List<EmailAuthKey> keyList = emailAuthKeyRepository.findByEmail(
+        email, Sort.by(Direction.DESC, "createdAt"));
     if (keyList.isEmpty()) {
       return false;
     }

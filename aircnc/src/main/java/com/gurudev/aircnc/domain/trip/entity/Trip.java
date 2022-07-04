@@ -14,7 +14,6 @@ import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
 import java.time.LocalDate;
-import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
@@ -99,13 +98,4 @@ public class Trip extends BaseIdEntity {
 
     this.status = CANCELLED;
   }
-
-  public Map<String, Object> toMap() {
-    return Map.of("checkIn", checkIn,
-        "checkOut", checkOut,
-        "totalPrice", totalPrice,
-        "headCount", headCount,
-        "status", status);
-  }
-
 }

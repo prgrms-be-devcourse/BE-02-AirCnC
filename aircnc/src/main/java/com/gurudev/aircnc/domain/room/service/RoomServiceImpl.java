@@ -2,6 +2,7 @@ package com.gurudev.aircnc.domain.room.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
+import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
@@ -43,7 +44,7 @@ public class RoomServiceImpl implements RoomService {
         .orElseThrow(() -> new NotFoundException(Member.class));
 
     room.assignHost(host);
-    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.REGISTER);
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.REGISTER);
     return roomRepository.save(room);
   }
 
@@ -61,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
 
     Member host = room.getHost();
 
-    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.UPDATE);
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.UPDATE);
     return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
         roomUpdateCommand.getPricePerDay());
   }
@@ -69,14 +70,14 @@ public class RoomServiceImpl implements RoomService {
   @Transactional
   @Override
   public void delete(RoomDeleteCommand roomDeleteCommand) {
-    Room findRoom = roomRepository.findById(roomDeleteCommand.getRoomId())
+    Room room = roomRepository.findById(roomDeleteCommand.getRoomId())
         .orElseThrow(() -> new NotFoundException(Room.class));
 
-    checkArgument(isDeletable(findRoom.getHost().getId(), roomDeleteCommand.getRoomId(),
+    checkArgument(isDeletable(room.getHost().getId(), roomDeleteCommand.getRoomId(),
         roomDeleteCommand.getHostId()), "숙소를 삭제 할 수 없습니다");
 
-    Member host = findRoom.getHost();
-    roomEmailService.send(Email.toString(host.getEmail()), findRoom.toMap(), MailType.DELETE);
+    Member host = room.getHost();
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.DELETE);
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
 

@@ -1,7 +1,8 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import static java.time.LocalDate.*;
-import static java.util.stream.Collectors.*;
+import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
+import static java.time.LocalDate.now;
+import static java.util.stream.Collectors.toList;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -40,7 +41,6 @@ public class TripServiceImpl implements TripService {
 
     //TODO: 예약 겹치는지 검증 로직 필요
 
-    tripEmailService.send(Email.toString(guest.getEmail()), room.toMap(), MailType.REGISTER);
     return tripRepository.save(
         new Trip(guest, room,
             tripEvent.getCheckIn(),
@@ -69,7 +69,7 @@ public class TripServiceImpl implements TripService {
     trip.cancel();
 
     Member guest = trip.getGuest();
-    tripEmailService.send(Email.toString(guest.getEmail()), trip.toMap(), MailType.DELETE);
+    tripEmailService.send(Email.toString(guest.getEmail()), toMap(trip), MailType.DELETE);
     return trip;
   }
 
