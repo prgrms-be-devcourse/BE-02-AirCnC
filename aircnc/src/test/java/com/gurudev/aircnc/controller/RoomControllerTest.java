@@ -17,6 +17,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -179,5 +180,48 @@ class RoomControllerTest extends RestDocsTestSupport {
                 parameterWithName("roomId").description("숙소 아이디")
             )
         ));
+  }
+
+  @Test
+  void 호스트_자신의_숙소_조회() throws Exception {
+    // given
+    Long hostId = 로그인("host@naver.com", "host1234!");
+
+    숙소_등록("나의 숙소", new Address("달나라 1번지", "달나라 1길", "100호", "1234"), "달토끼가 사는 나의 숙소",
+        "100000", "2");
+    숙소_등록("나의 숙소", new Address("달나라 1번지", "달나라 1길", "100호", "1234"), "달토끼가 사는 나의 숙소",
+        "100000", "2");
+
+    // when
+    mockMvc.perform(get("/api/v1/hosts/rooms/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(AUTHORIZATION, token))
+        .andExpect(status().isOk())
+        .andExpectAll(
+            jsonPath("$.rooms[0].id").exists(),
+            jsonPath("$.rooms[0].name").value("나의 숙소"),
+            jsonPath("$.rooms[0].address").value("달나라 1길 100호"),
+            jsonPath("$.rooms[0].description").value("달토끼가 사는 나의 숙소"),
+            jsonPath("$.rooms[0].pricePerDay").value("100000"),
+            jsonPath("$.rooms[0].capacity").value("2"),
+            jsonPath("$.rooms", hasSize(2)))
+        //docs
+        .andDo(
+            restDocs.document(
+                requestHeaders(
+                    headerWithName(AUTHORIZATION).description("인증 토큰")
+                ),
+                responseFields(
+                    fieldWithPath("rooms[]").type(ARRAY).description("숙소 목록"),
+                    fieldWithPath("rooms[].id").type(NUMBER).description("숙소 아이디"),
+                    fieldWithPath("rooms[].name").type(STRING).description("이름"),
+                    fieldWithPath("rooms[].address").type(STRING).description("주소"),
+                    fieldWithPath("rooms[].description").type(STRING).description("설명"),
+                    fieldWithPath("rooms[].pricePerDay").type(NUMBER).description("1박당 가격"),
+                    fieldWithPath("rooms[].capacity").type(NUMBER).description("인원 수"),
+                    fieldWithPath("rooms[].fileNames").type(ARRAY).description("등록한 파일의 이름")
+                )
+            )
+        );
   }
 }
