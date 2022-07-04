@@ -19,4 +19,6 @@ public interface RoomService {
   Room getById(Long id);
 
   Room getDetailById(Long id);
+
+  List<Room> getByHostId(Long id);
 }
