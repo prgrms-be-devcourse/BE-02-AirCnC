@@ -6,6 +6,7 @@ import static com.gurudev.aircnc.controller.ApiResponse.ok;
 
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
+import com.gurudev.aircnc.controller.dto.RoomDto.RoomResponseList;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateResponse;
 import com.gurudev.aircnc.domain.base.AttachedFile;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,5 +84,14 @@ public class RoomController {
 
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
     return noContent();
+  }
+
+  /* 호스트 자신의 숙소 조회 */
+  @GetMapping
+  public ResponseEntity<RoomResponseList> getHostRooms(
+      @AuthenticationPrincipal JwtAuthentication authentication) {
+    List<Room> rooms = roomService.getByHostId(authentication.id);
+
+    return ok(RoomResponseList.of(rooms));
   }
 }
