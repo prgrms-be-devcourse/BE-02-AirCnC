@@ -1,7 +1,6 @@
 package com.gurudev.aircnc.controller.support;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,7 +28,6 @@ public abstract class RestDocsTestSupport extends BaseControllerTest {
     this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
         .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
         .apply(springSecurity())
-        .alwaysDo(print())
         .alwaysDo(restDocs)
         .addFilters(new CharacterEncodingFilter("UTF-8", true)) // 한글 깨짐 방지
         .build();

@@ -1,18 +1,19 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface TripService {
 
-  Trip reserve(Member guest, Long roomId, LocalDate checkIn, LocalDate checkOut, int headCount,
-      int totalPrice);
+  Trip reserve(TripEvent command);
 
-  Trip getById(Long id);
+  Trip getDetailedById(Long id, Long guestId);
 
-  List<Trip> getByGuest(Member guest);
+  List<Trip> getByGuestId(Long guestId);
 
-  Trip cancel(Long tripId);
+  Trip cancel(Long tripId, Long guestId);
+
+  List<LocalDate> getReservedDaysById(Long roomId);
 }

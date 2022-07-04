@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div style='margin:100px;'></div>
+<h1> 안녕하세요 AirCnC 입니다. </h1>
+<br>
+<p th:text="|숙소가 ${behavior} 되었습니다.|">
+  <br>
+<p>감사합니다!
+  <br>
+<div text-align='center' style='border:1px solid black; font-family:verdana,serif'></div>
+<h3 style='color:blue;'> 숙소 상세 정보</h3>
+<div style='font-size:130%'>
+  <strong th:text="|숙소이름 : ${name}|"></strong><br>
+  <strong th:text="|주소 : ${address}|"></strong><br>
+  <strong th:text="|1박당 가격 : ${pricePerDay}|"></strong><br>
+</div>
+</html>

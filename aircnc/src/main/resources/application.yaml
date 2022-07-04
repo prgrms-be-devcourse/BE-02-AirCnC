@@ -14,12 +14,40 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-jwt:
-  issuer: "gurudev"
-  client-secret: ${jwt.client.secret:secret}
-  expiry-seconds: 1800
+  thymeleaf:
+    prefix: classpath:/mail-templates/
+    cache: false
 
-room-photos:
-  path: src/main/resources/room-photos/
+  mail:
+    default-encoding: UTF-8
+    port: 465
+    protocol: smtp
+    host: "smtp.gmail.com"
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            port: 465
+            fallback: false
+            class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enabled: true
+            required: true
 
+infrastructure:
+  aws:
+    s3:
+      region: ap-northeast-2
+      accessKey: ${aws.accessKey}
+      secretKey: ${aws.secretKey}
+      url: https://s3.ap-northeast-2.amazonaws.com
+      bucketName: dev-aircnc
 
+  security:
+    jwt:
+      issuer: "gurudev"
+      client-secret: ${jwt.secret}
+      expiry-seconds: 1800

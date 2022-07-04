@@ -1,8 +1,11 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -16,87 +19,95 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
 @Transactional
+@SpringBootTest(webEnvironment = NONE)
 class MemberServiceTest {
 
   @Autowired
   private MemberService memberService;
 
-  private final MemberRegisterCommand memberRegisterCmd = Command.ofHost();
+  @Autowired
+  private PasswordEncryptor passwordEncryptor;
 
-  private final PasswordEncryptor passwordEncryptor = new PasswordEncryptor();
 
   @Test
-  void 회원_생성_성공_테스트() {
-    Member member = memberService.register(memberRegisterCmd);
+  void 회원_가입_성공_테스트() {
+    //given
+    Member member = createGuest();
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
 
-    assertThat(member).extracting(
-        Member::getEmail,
-        Member::getName,
-        Member::getBirthDate,
-        Member::getPhoneNumber,
-        Member::getRole
-    ).isEqualTo(
-        List.of(new Email(memberRegisterCmd.getEmail()),
-            memberRegisterCmd.getName(),
-            memberRegisterCmd.getBirthDate(),
-            new PhoneNumber(memberRegisterCmd.getPhoneNumber()),
-            Role.valueOf(memberRegisterCmd.getRole())));
-    assertThat(member.getPassword().matches(
-        passwordEncryptor,
-        new Password(memberRegisterCmd.getPassword()))).isTrue();
+    //when
+    member = memberService.register(command);
+
+    //then
+    //생성된 회원의 필드가 회원 가입 명령의 필드와 일치하는지 검증
+    assertThat(member).extracting(Member::getEmail, Member::getName, Member::getBirthDate,
+            Member::getPhoneNumber, Member::getRole)
+        .isEqualTo(List.of(new Email(command.getEmail()), command.getName(), command.getBirthDate(),
+            new PhoneNumber(command.getPhoneNumber()), Role.valueOf(command.getRole())));
+
+    //생성된 회원의 비밀번호 암호와 여부 검증
+    Password password = member.getPassword();
+    assertThatNoException()
+        .isThrownBy(
+            () -> password.verifyPassword(passwordEncryptor, new Password(command.getPassword())));
   }
 
   @Test
   void 회원_조회_성공_테스트() {
-    Member member = memberService.register(memberRegisterCmd);
+    //given
+    Member member = createGuest();
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    member = memberService.register(command);
 
+    //when
     Member foundMember = memberService.getByEmail(member.getEmail());
 
-    assertThat(foundMember).extracting(
-        Member::getEmail,
-        Member::getPassword,
-        Member::getName,
-        Member::getBirthDate,
-        Member::getPhoneNumber,
-        Member::getRole
-    ).isEqualTo(
-        List.of(member.getEmail(), member.getPassword(),
-            member.getName(), member.getBirthDate(),
-            member.getPhoneNumber(),
-            member.getRole()));
+    //then
+    assertThat(foundMember).isEqualTo(member);
   }
 
   @Test
   void 존재하지_않는_회원에_대한_조회_실패() {
-    Email email = new Email(memberRegisterCmd.getEmail());
+    //given
+    Member member = createGuest();
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    Email email = new Email(command.getEmail());
 
+    //then
     assertThatNotFoundException()
         .isThrownBy(() -> memberService.getByEmail(email));
   }
 
   @Test
   void 로그인_성공_테스트() {
-    String rawPassword = memberRegisterCmd.getPassword();
-    Email email = new Email(memberRegisterCmd.getEmail());
-    memberService.register(memberRegisterCmd);
+    //given
+    Member member = createGuest();
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    memberService.register(command);
 
+    //when
+    String rawPassword = command.getPassword();
+    Email email = new Email(command.getEmail());
     Member loginMember = memberService.login(email, new Password(rawPassword));
 
+    //then
     assertThat(loginMember.getEmail()).isEqualTo(email);
   }
 
   @Test
   void 로그인_실패_테스트() {
-    memberService.register(memberRegisterCmd);
-    Email email = new Email(memberRegisterCmd.getEmail());
-    Password illegalPassword = new Password("wrongpassword");
+    //given
+    Member member = createGuest();
+    MemberRegisterCommand command = Command.ofRegisterMember(member);
+    memberService.register(command);
 
-    assertThatThrownBy(() -> memberService.login(email, illegalPassword)).isInstanceOf(
-        BadCredentialsException.class);
+    //then
+    Email email = new Email(command.getEmail());
+    Password invalidPassword = new Password("invalidPassword");
+    assertThatIllegalArgumentException()
+        .isThrownBy(() -> memberService.login(email, invalidPassword));
   }
 }

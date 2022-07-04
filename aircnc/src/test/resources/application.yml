@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/aircnc?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/aircnctest?serverTimezone=UTC&characterEncoding=UTF-8
     username: ${db.username:root}
     password: ${db.password:1234}
 
@@ -13,6 +13,37 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  mail:
+    default-encoding: UTF-8
+    port: 465
+    protocol: smtp
+    host: "smtp.gmail.com"
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            port: 465
+            fallback: false
+            class: javax.net.ssl.SSLSocketFactory
+          auth: true
+          starttls:
+            enabled: true
+            required: true
 
-room-photos:
-  path: src/test/resources/room-photos-dest/
+infrastructure:
+  aws:
+    s3:
+      region: ap-northeast-2
+      accessKey: ${aws.accessKey}
+      secretKey: ${aws.secretKey}
+      url: https://s3.ap-northeast-2.amazonaws.com
+      bucketName: dev-aircnc
+
+
+  security:
+    jwt:
+      issuer: "gurudev"
+      client-secret: ${jwt.secret}
+      expiry-seconds: 1800

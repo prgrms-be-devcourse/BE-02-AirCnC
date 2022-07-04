@@ -1,15 +1,15 @@
 package com.gurudev.aircnc.domain.member.service;
 
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
+
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.entity.Password;
 import com.gurudev.aircnc.domain.member.repository.MemberRepository;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
-import com.gurudev.aircnc.exception.AircncRuntimeException;
 import com.gurudev.aircnc.exception.NotFoundException;
 import com.gurudev.aircnc.infrastructure.security.PasswordEncryptor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +25,15 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member getById(Long id) {
     return memberRepository.findById(id)
-        .orElseThrow(() -> new AircncRuntimeException("멤버 없음"));
+        .orElseThrow(() -> new NotFoundException(Member.class));
   }
 
-  @Override
   @Transactional
+  @Override
   public Member register(MemberRegisterCommand command) {
     Member member = command.toEntity();
+    checkArgument(!isDuplicated(member), "이미 등록된 이메일입니다");
+
     member.getPassword().encode(passwordEncryptor);
     return memberRepository.save(member);
   }
@@ -48,10 +50,12 @@ public class MemberServiceImpl implements MemberService {
 
     Password encodedPassword = member.getPassword();
 
-    if (!encodedPassword.matches(passwordEncryptor, password)) {
-      throw new BadCredentialsException("비밀번호가 올바르지 않습니다");
-    }
+    encodedPassword.verifyPassword(passwordEncryptor, password);
 
     return member;
+  }
+
+  private boolean isDuplicated(Member member) {
+    return memberRepository.findByEmail(member.getEmail()).isPresent();
   }
 }

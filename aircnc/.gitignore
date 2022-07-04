@@ -172,7 +172,6 @@ gradle-app.setting
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+# log files ignore
+logs/*.log
 # End of https://www.toptal.com/developers/gitignore/api/gradle,macos,windows,intellij+all
-
-### 로컬 숙소 사진 등록 테스트 결과
-src/test/resources/room-photos-dest/*.jpeg
