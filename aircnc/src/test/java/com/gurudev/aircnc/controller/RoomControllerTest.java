@@ -219,7 +219,7 @@ class RoomControllerTest extends RestDocsTestSupport {
                     fieldWithPath("rooms[].description").type(STRING).description("설명"),
                     fieldWithPath("rooms[].pricePerDay").type(NUMBER).description("1박당 가격"),
                     fieldWithPath("rooms[].capacity").type(NUMBER).description("인원 수"),
-                    fieldWithPath("rooms[].fileNames").type(ARRAY).description("등록한 파일의 이름")
+                    fieldWithPath("rooms[].fileNames").type(ARRAY).description("등록된 파일의 이름")
                 )
             )
         );
