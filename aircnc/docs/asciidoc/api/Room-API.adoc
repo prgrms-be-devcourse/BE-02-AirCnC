@@ -18,3 +18,7 @@ operation::/room-controller-test/숙소_변경/[snippets='http-request,request-f
 === 숙소 삭제
 
 operation::/room-controller-test/숙소_삭제/[snippets='http-request,http-response']
+
+=== 호스트 숙소 조회
+
+operation::/room-controller-test/호스트_자신의_숙소_조회/[snippets='http-request,http-response,response-fields'']
