@@ -119,7 +119,7 @@ path prefix : `/api/v1`
 | 여행 상세 조회 | `/trips/{tripId}`        | `GET`  |
 | 여행 취소    | `/trips/{tripId}/cancel` | `POST` |
 
-- 더 자세한 API 명세를 확인 하시려면 `docs` 폴더를 확인해주세요
+- 더 자세한 API 명세를 확인 하시려면 [위키](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/AirCnC-api-v1-%EB%AA%85%EC%84%B8) 를 확인해주세요:
 
 ### 회의 결과 및 스프린트 회고
 - 스프린트 0 (22.06.15 ~ 22.06.17) 회의 결과<br>
