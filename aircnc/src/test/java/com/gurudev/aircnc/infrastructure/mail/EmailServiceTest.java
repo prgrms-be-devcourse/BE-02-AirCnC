@@ -73,9 +73,23 @@ class EmailServiceTest { // 사용방법을 위한 Temporary 테스트
   }
 
   @Test
-  void 여행_변경_이메일_전송_테스트() throws InterruptedException {
+  void 여행_등록_이메일_전송_테스트() throws InterruptedException {
     tripEmailService.send("rlfrmsdh1@gmail.com",
-        toMap(trip), MailType.UPDATE);
+        toMap(trip), MailType.REGISTER);
+    Thread.sleep(5000);
+  }
+
+  @Test
+  void 여행_취소_이메일_전송_테스트() throws InterruptedException {
+    tripEmailService.send("rlfrmsdh1@gmail.com",
+        toMap(trip), MailType.DELETE);
+    Thread.sleep(5000);
+  }
+
+  @Test
+  void 여행_등록_실패_이메일_전송_테스트() throws InterruptedException {
+    tripEmailService.send("rlfrmsdh1@gmail.com",
+        toMap(trip), MailType.FAIL);
     Thread.sleep(5000);
   }
 }

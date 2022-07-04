@@ -3,6 +3,7 @@ package com.gurudev.aircnc.domain.utils;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,5 +26,14 @@ public final class MapUtils {
         "totalPrice", trip.getTotalPrice(),
         "headCount", trip.getHeadCount(),
         "status", trip.getStatus());
+  }
+
+  public static Map<String, Object> toMap(TripEvent tripEvent) {
+    return Map.of(
+        "checkIn", tripEvent.getCheckIn(),
+        "checkOut", tripEvent.getCheckOut(),
+        "totalPrice", tripEvent.getTotalPrice(),
+        "headCount", tripEvent.getHeadCount(),
+        "status", tripEvent.getStatus());
   }
 }
