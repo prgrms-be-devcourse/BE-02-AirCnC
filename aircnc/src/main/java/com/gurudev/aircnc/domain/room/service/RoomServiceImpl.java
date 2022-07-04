@@ -106,6 +106,14 @@ public class RoomServiceImpl implements RoomService {
         .orElseThrow(() -> new NotFoundException(Room.class));
   }
 
+  @Override
+  public List<Room> getByHostId(Long hostId) {
+    Member host = memberRepository.findById(hostId)
+        .orElseThrow(() -> new NotFoundException(Member.class));
+
+    return roomRepository.findByHost(host);
+  }
+
   private Room findById(Long id) {
     return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(Room.class));
   }

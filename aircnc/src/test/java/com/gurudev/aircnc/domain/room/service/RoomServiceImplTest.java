@@ -231,4 +231,24 @@ class RoomServiceImplTest {
     //then
     assertThatNotFoundException().isThrownBy(() -> roomService.getDetailById(invalidRoomId));
   }
+
+  @Test
+  void 호스트가_자신의_숙소_조회() {
+    // given
+    Room roomA = roomService.register(defaultRoomRegisterCommand());
+    Room roomB = roomService.register(defaultRoomRegisterCommand());
+
+    Room yourRegisteredRoom = roomService.register(
+        Command.ofRegisterRoom(createRoom(), roomPhotos, fakeHost.getId()));
+
+    // when
+    List<Room> myRooms = roomService.getByHostId(host.getId());
+
+    // then
+    assertThat(myRooms).hasSize(2)
+        .containsExactly(roomA, roomB)
+        .extracting(Room::getHost)
+        .containsExactly(host, host);
+
+  }
 }
