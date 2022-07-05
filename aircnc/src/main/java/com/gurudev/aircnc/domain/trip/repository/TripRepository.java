@@ -1,12 +1,10 @@
 package com.gurudev.aircnc.domain.trip.repository;
 
+import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
-import com.gurudev.aircnc.domain.trip.entity.TripStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,10 +29,13 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "where t.id = :id and t.guest.id = :guestId")
   Optional<Trip> findTripByIdAndGuestId(Long id, Long guestId);
 
-  @Query("select t "
+  @Query("select count(t.id) > 0 "
       + "from Trip t "
-      + "where t.room.id = :roomId and t.status in :statusSet")
-  List<Trip> findByRoomIdAndStatusSet(Long roomId, Set<TripStatus> statusSet, Pageable pageable);
+      + "where t.room = :room "
+      + "     and t.status in "
+      + "      (com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING, "
+      + "      com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED)")
+  boolean existsByTravellingOrReserved(Room room);
 
   @Query("select t "
       + "from Trip t "

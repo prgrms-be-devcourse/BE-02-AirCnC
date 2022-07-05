@@ -106,7 +106,8 @@ public class Room extends BaseIdEntity {
   }
 
   /**
-   * 숙소의 이름, 1박 당 가격, 설명을 변경한다 <br> null 이라면 변경하지 않음
+   * 숙소의 이름, 1박 당 가격, 설명을 변경한다
+   * <br> null 이라면 변경하지 않음
    */
   public Room update(String name, String description, Integer pricePerDay) {
     Optional.ofNullable(name).ifPresent(this::setName);
@@ -115,4 +116,9 @@ public class Room extends BaseIdEntity {
 
     return this;
   }
+
+  public boolean isOwnedBy(Member host) {
+    return this.host.equals(host);
+  }
+
 }

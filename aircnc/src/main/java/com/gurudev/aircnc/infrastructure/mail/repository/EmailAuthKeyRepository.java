@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmailAuthKeyRepository extends JpaRepository<EmailAuthKey, Long> {
 
-    Optional<EmailAuthKey> findTopByEmail(String email, Sort sort);
+  Optional<EmailAuthKey> findTopByEmail(String email, Sort sort);
 
 }
