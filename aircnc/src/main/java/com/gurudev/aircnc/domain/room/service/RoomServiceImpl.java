@@ -1,7 +1,5 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
-import static com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
@@ -36,11 +34,11 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public Room register(RoomRegisterCommand roomRegisterCommand) {
     Room room = roomRegisterCommand.toEntity();
-
     Member host = findMemberById(roomRegisterCommand.getHostId());
-
     room.assignHost(host);
+
     roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.REGISTER);
+
     return roomRepository.save(room);
   }
 
@@ -56,20 +54,19 @@ public class RoomServiceImpl implements RoomService {
     Room room = roomRepository
         .findByIdAndHostId(roomUpdateCommand.getRoomId(), roomUpdateCommand.getHostId())
         .orElseThrow(() -> new NotFoundException(Room.class));
-
     Member host = room.getHost();
 
     roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.UPDATE);
-    return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
+
+    return room.update(roomUpdateCommand.getName(),
+        roomUpdateCommand.getDescription(),
         roomUpdateCommand.getPricePerDay());
   }
 
   @Transactional
   @Override
   public void delete(RoomDeleteCommand roomDeleteCommand) {
-    Room room = roomRepository.findById(roomDeleteCommand.getRoomId())
-        .orElseThrow(() -> new NotFoundException(Room.class));
-
+    Room room = findById(roomDeleteCommand.getRoomId());
     Member host = findMemberById(roomDeleteCommand.getHostId());
 
     checkArgument(deletable(room, host), "숙소를 삭제 할 수 없습니다");
@@ -113,6 +110,6 @@ public class RoomServiceImpl implements RoomService {
    * 자신의 숙소인 경우 삭제 가능
    */
   private boolean deletable(Room room, Member host) {
-    return !tripRepository.existsTravellingOrReservedByRoom(room) && room.isOwnedBy(host);
+    return !tripRepository.existsByTravellingOrReserved(room) && room.isOwnedBy(host);
   }
 }

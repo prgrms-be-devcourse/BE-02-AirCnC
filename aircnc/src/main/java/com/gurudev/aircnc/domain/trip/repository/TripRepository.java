@@ -35,7 +35,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "     and t.status in "
       + "      (com.gurudev.aircnc.domain.trip.entity.TripStatus.TRAVELLING, "
       + "      com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED)")
-  boolean existsTravellingOrReservedByRoom(Room room);
+  boolean existsByTravellingOrReserved(Room room);
 
   @Query("select t "
       + "from Trip t "
