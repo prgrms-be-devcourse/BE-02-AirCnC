@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
+import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
@@ -74,7 +75,7 @@ class RoomServiceImplTest {
 
     // 가짜 회원 세팅
     MemberRegisterCommand fakeHostRegisterCommand = Command.ofRegisterMember(createHost());
-    ReflectionTestUtils.setField(fakeHostRegisterCommand, "email", "fakeHost@email.com");
+    ReflectionTestUtils.setField(fakeHostRegisterCommand, "email", new Email("fakeHost@email.com"));
     fakeHost = memberService.register(fakeHostRegisterCommand);
 
     //숙소의 필드 세팅
