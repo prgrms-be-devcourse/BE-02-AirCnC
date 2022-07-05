@@ -34,7 +34,6 @@ public class TripServiceImpl implements TripService {
 
   private final EmailService tripEmailService;
 
-  @Transactional
   @Override
   public Trip reserve(TripEvent tripEvent) {
     Room room = findRoomById(tripEvent.getRoomId());
