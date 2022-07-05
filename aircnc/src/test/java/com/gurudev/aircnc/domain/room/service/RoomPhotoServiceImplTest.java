@@ -36,7 +36,7 @@ class RoomPhotoServiceImplTest {
   }
 
   @Test
-  void name() throws IOException {
+  void 파일_업로드_테스트() throws IOException {
     //given
     InputStream requestInputStream =
         new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
