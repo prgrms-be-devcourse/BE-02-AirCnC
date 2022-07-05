@@ -4,7 +4,10 @@ import com.gurudev.aircnc.infrastructure.mail.entity.EmailAuthKey;
 import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.repository.EmailAuthKeyRepository;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -61,8 +64,12 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   public boolean validateKey(String AuthKey, String email) {
-    EmailAuthKey key = emailAuthKeyRepository.findByEmail(email)
-        .orElseThrow(() -> new RuntimeException("해당 인증키가 존재하지 않습니다"));
-    return key.validateKey(AuthKey);
+    Optional<EmailAuthKey> keyList = emailAuthKeyRepository.findTopByEmail(
+        email, Sort.by(Direction.DESC, "createdAt"));
+    if (keyList.isEmpty()) {
+      return false;
+    }
+    EmailAuthKey latestKey = keyList.get();
+    return latestKey.validateKey(AuthKey);
   }
 }
