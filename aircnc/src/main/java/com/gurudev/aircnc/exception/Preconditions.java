@@ -13,6 +13,12 @@ public final class Preconditions {
     }
   }
 
+  public static void checkCondition(boolean condition, Object errorMessage) {
+    if (!condition) {
+      throw new AircncRuntimeException(String.valueOf(errorMessage));
+    }
+  }
+
   public static void checkState(boolean expression, Object errorMessage) {
     if (!expression) {
       throw new IllegalStateException(String.valueOf(errorMessage));

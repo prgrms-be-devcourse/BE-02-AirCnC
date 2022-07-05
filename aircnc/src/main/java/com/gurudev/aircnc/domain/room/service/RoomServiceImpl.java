@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.room.service;
 
 import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
-import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
+import static com.gurudev.aircnc.exception.Preconditions.checkCondition;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -68,7 +68,7 @@ public class RoomServiceImpl implements RoomService {
     Room room = findById(roomDeleteCommand.getRoomId());
     Member host = findMemberById(roomDeleteCommand.getHostId());
 
-    checkArgument(isDeletable(room, host), "숙소를 삭제 할 수 없습니다");
+    checkCondition(isDeletable(room, host), "숙소를 삭제 할 수 없습니다");
 
     roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.DELETE);
 
