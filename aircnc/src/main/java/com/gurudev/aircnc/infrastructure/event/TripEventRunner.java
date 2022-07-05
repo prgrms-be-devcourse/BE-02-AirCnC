@@ -30,21 +30,21 @@ public class TripEventRunner implements Runnable {
       TripEvent tripEvent = eventQueue.poll();
       try {
         tripService.reserve(tripEvent);
-        handlingInCaseOfSuccess(tripEvent);
+        handleSuccess(tripEvent);
       } catch (Exception e) {
-        handlingInCaseOfFailure(tripEvent);
+        handleFailure(tripEvent);
       }
     }
   }
 
-  private void handlingInCaseOfSuccess(TripEvent tripEvent) {
+  private void handleSuccess(TripEvent tripEvent) {
     log.info("여행이 예약되었습니다! ");
 
     Member member = memberService.getById(tripEvent.getGuestId());
     tripEmailService.send(Email.toString(member.getEmail()), toMap(tripEvent), MailType.REGISTER);
   }
 
-  private void handlingInCaseOfFailure(TripEvent tripEvent) {
+  private void handleFailure(TripEvent tripEvent) {
     log.info("여행 예약이 실패하였습니다! ");
 
     Member member = memberService.getById(tripEvent.getGuestId());

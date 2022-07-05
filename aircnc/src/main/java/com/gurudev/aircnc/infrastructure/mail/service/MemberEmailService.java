@@ -3,8 +3,8 @@ package com.gurudev.aircnc.infrastructure.mail.service;
 import com.gurudev.aircnc.infrastructure.mail.entity.EmailAuthKey;
 import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.repository.EmailAuthKeyRepository;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -64,12 +64,12 @@ public class MemberEmailService extends AbstractEmailService {
   }
 
   public boolean validateKey(String AuthKey, String email) {
-    List<EmailAuthKey> keyList = emailAuthKeyRepository.findByEmail(
+    Optional<EmailAuthKey> keyList = emailAuthKeyRepository.findTopByEmail(
         email, Sort.by(Direction.DESC, "createdAt"));
     if (keyList.isEmpty()) {
       return false;
     }
-    EmailAuthKey latestKey = keyList.get(0);
+    EmailAuthKey latestKey = keyList.get();
     return latestKey.validateKey(AuthKey);
   }
 }

@@ -51,8 +51,8 @@ public abstract class AbstractEmailService implements EmailService {
     }
   }
 
-  protected String getTemplateName(MailType mailType, String TEMPLATE_PREFIX) {
-    return TEMPLATE_PREFIX + mailType.name().toLowerCase();
+  protected String getTemplateName(MailType mailType, String templatePrefix) {
+    return templatePrefix + mailType.name().toLowerCase();
   }
 
   private String getContent(Map<String, Object> contentMap, String templateName) {
