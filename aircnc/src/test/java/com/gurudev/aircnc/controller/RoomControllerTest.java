@@ -31,14 +31,16 @@ class RoomControllerTest extends RestDocsTestSupport {
 
         //then
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.rooms[0].id").exists())
-        .andExpect(jsonPath("$.rooms[0].name").value("나의 숙소"))
-        .andExpect(jsonPath("$.rooms[0].address").value("달나라 1길 100호"))
-        .andExpect(jsonPath("$.rooms[0].description").value("달토끼가 사는 나의 숙소"))
-        .andExpect(jsonPath("$.rooms[0].pricePerDay").value("100000"))
-        .andExpect(jsonPath("$.rooms[0].capacity").value("2"))
-        .andExpect(jsonPath("$.rooms[1].name").value("나의 숙소2"))
-        .andExpect(jsonPath("$.rooms", hasSize(2)))
+        .andExpectAll(
+            jsonPath("$.rooms[0].id").exists(),
+            jsonPath("$.rooms[0].name").value("나의 숙소"),
+            jsonPath("$.rooms[0].address").value("달나라 1길 100호"),
+            jsonPath("$.rooms[0].description").value("달토끼가 사는 나의 숙소"),
+            jsonPath("$.rooms[0].pricePerDay").value("100000"),
+            jsonPath("$.rooms[0].capacity").value("2"),
+            jsonPath("$.rooms[1].name").value("나의 숙소2"),
+            jsonPath("$.rooms", hasSize(2))
+        )
 
         //docs
         .andDo(restDocs.document(
