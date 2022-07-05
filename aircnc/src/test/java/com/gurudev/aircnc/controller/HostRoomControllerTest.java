@@ -152,7 +152,7 @@ class HostRoomControllerTest extends RestDocsTestSupport {
                     fieldWithPath("room.address").type(STRING).description("주소"),
                     fieldWithPath("room.description").type(STRING).description("설명"),
                     fieldWithPath("room.pricePerDay").type(NUMBER).description("1박당 가격"),
-                    fieldWithPath("room.capacity").type(NUMBER).description("인원 수"),
+                    fieldWithPath("room.capacity").type(NUMBER).description("허용 인원 수"),
                     fieldWithPath("room.fileNames").type(ARRAY).description("등록한 파일의 이름")
                 )
             )
@@ -194,7 +194,6 @@ class HostRoomControllerTest extends RestDocsTestSupport {
 
     // when
     mockMvc.perform(get("/api/v1/hosts/rooms/")
-            .contentType(MediaType.APPLICATION_JSON)
             .header(AUTHORIZATION, token))
         .andExpect(status().isOk())
         .andExpectAll(
@@ -218,7 +217,7 @@ class HostRoomControllerTest extends RestDocsTestSupport {
                     fieldWithPath("rooms[].address").type(STRING).description("주소"),
                     fieldWithPath("rooms[].description").type(STRING).description("설명"),
                     fieldWithPath("rooms[].pricePerDay").type(NUMBER).description("1박당 가격"),
-                    fieldWithPath("rooms[].capacity").type(NUMBER).description("인원 수"),
+                    fieldWithPath("rooms[].capacity").type(NUMBER).description("허용 인원 수"),
                     fieldWithPath("rooms[].fileNames").type(ARRAY).description("등록된 파일의 이름")
                 )
             )
