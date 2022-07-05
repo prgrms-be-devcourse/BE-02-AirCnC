@@ -69,7 +69,7 @@ public class RoomServiceImpl implements RoomService {
     Room room = findById(roomDeleteCommand.getRoomId());
     Member host = findMemberById(roomDeleteCommand.getHostId());
 
-    checkArgument(deletable(room, host), "숙소를 삭제 할 수 없습니다");
+    checkArgument(isDeletable(room, host), "숙소를 삭제 할 수 없습니다");
 
     roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.DELETE);
     
@@ -109,7 +109,7 @@ public class RoomServiceImpl implements RoomService {
    * 여행중이거나 예약중인 여행이 없으면서
    * 자신의 숙소인 경우 삭제 가능
    */
-  private boolean deletable(Room room, Member host) {
+  private boolean isDeletable(Room room, Member host) {
     return !tripRepository.existsByTravellingOrReserved(room) && room.isOwnedBy(host);
   }
 }
