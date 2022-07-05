@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
-class RoomControllerTest extends RestDocsTestSupport {
+class HostRoomControllerTest extends RestDocsTestSupport {
 
   @Test
   void 숙소_등록_API() throws Exception {

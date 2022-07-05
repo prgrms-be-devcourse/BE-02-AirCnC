@@ -40,7 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/hosts/rooms")
 @RequiredArgsConstructor
-public class RoomController {
+public class HostRoomController {
 
   private final RoomService roomService;
   private final RoomPhotoService roomPhotoService;
