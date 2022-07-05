@@ -1,5 +1,6 @@
 package com.gurudev.aircnc.domain.room.service;
 
+import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
@@ -37,11 +38,10 @@ public class RoomServiceImpl implements RoomService {
     Member host = findMemberById(roomRegisterCommand.getHostId());
     room.assignHost(host);
 
-    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.REGISTER);
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.REGISTER);
 
     return roomRepository.save(room);
   }
-
 
   @Override
   public List<Room> getAll() {
@@ -56,10 +56,9 @@ public class RoomServiceImpl implements RoomService {
         .orElseThrow(() -> new NotFoundException(Room.class));
     Member host = room.getHost();
 
-    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.UPDATE);
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.UPDATE);
 
-    return room.update(roomUpdateCommand.getName(),
-        roomUpdateCommand.getDescription(),
+    return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
         roomUpdateCommand.getPricePerDay());
   }
 
@@ -71,8 +70,8 @@ public class RoomServiceImpl implements RoomService {
 
     checkArgument(isDeletable(room, host), "숙소를 삭제 할 수 없습니다");
 
-    roomEmailService.send(Email.toString(host.getEmail()), room.toMap(), MailType.DELETE);
-    
+    roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.DELETE);
+
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
 

@@ -10,7 +10,6 @@ import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -116,14 +115,6 @@ public class Room extends BaseIdEntity {
     Optional.ofNullable(pricePerDay).ifPresent(this::setPricePerDay);
 
     return this;
-  }
-
-  public Map<String, Object> toMap() {
-    return Map.of("name", name,
-        "address", Address.toString(address),
-        "description", description,
-        "pricePerDay", pricePerDay,
-        "capacity", capacity);
   }
 
   public boolean isOwnedBy(Member host) {
