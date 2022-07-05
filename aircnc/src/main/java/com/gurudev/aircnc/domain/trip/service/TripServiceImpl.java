@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
+import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
 
@@ -39,7 +40,9 @@ public class TripServiceImpl implements TripService {
     Room room = findRoomById(tripEvent.getRoomId());
     Member guest = findMemberById(tripEvent.getGuestId());
 
-    //TODO: 예약 겹치는지 검증 로직 필요
+    boolean tripOverlapped = tripRepository.overlappedByReservedTrip(
+        tripEvent.getCheckIn(), tripEvent.getCheckOut());
+    checkArgument(!tripOverlapped, "예약이 중복되었습니다");
 
     return tripRepository.save(
         new Trip(guest, room,
