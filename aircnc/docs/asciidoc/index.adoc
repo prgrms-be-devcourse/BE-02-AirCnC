@@ -9,5 +9,6 @@
 
 include::overview.adoc[]
 include::api/Member-API.adoc[]
+include::api/HostRoom-API.adoc[]
 include::api/Room-API.adoc[]
 include::api/Trip-API.adoc[]
