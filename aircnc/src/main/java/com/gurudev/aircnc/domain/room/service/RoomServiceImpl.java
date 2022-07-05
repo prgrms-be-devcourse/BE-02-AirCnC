@@ -39,7 +39,6 @@ public class RoomServiceImpl implements RoomService {
     room.assignHost(host);
 
     roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.REGISTER);
-
     return roomRepository.save(room);
   }
 
@@ -51,14 +50,14 @@ public class RoomServiceImpl implements RoomService {
   @Transactional
   @Override
   public Room update(RoomUpdateCommand roomUpdateCommand) {
-    Room room = roomRepository
-        .findByIdAndHostId(roomUpdateCommand.getRoomId(), roomUpdateCommand.getHostId())
-        .orElseThrow(() -> new NotFoundException(Room.class));
-    Member host = room.getHost();
+    Room room = findById(roomUpdateCommand.getRoomId());
+    Member host = findMemberById(roomUpdateCommand.getHostId());
+
+    checkArgument(room.isOwnedBy(host), "숙소를 수정 할 수 없습니다");
 
     roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.UPDATE);
-
-    return room.update(roomUpdateCommand.getName(), roomUpdateCommand.getDescription(),
+    return room.update(roomUpdateCommand.getName(),
+        roomUpdateCommand.getDescription(),
         roomUpdateCommand.getPricePerDay());
   }
 
@@ -71,7 +70,6 @@ public class RoomServiceImpl implements RoomService {
     checkArgument(isDeletable(room, host), "숙소를 삭제 할 수 없습니다");
 
     roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.DELETE);
-
     roomRepository.deleteById(roomDeleteCommand.getRoomId());
   }
 
@@ -96,7 +94,8 @@ public class RoomServiceImpl implements RoomService {
   }
 
   private Room findById(Long id) {
-    return roomRepository.findById(id).orElseThrow(() -> new NotFoundException(Room.class));
+    return roomRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException(Room.class));
   }
 
   private Member findMemberById(Long id) {
