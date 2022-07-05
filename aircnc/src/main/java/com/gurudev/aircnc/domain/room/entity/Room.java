@@ -118,6 +118,14 @@ public class Room extends BaseIdEntity {
     return this;
   }
 
+  public Map<String, Object> toMap() {
+    return Map.of("name", name,
+        "address", Address.toString(address),
+        "description", description,
+        "pricePerDay", pricePerDay,
+        "capacity", capacity);
+  }
+
   public boolean isOwnedBy(Member host) {
     return this.host.equals(host);
   }
