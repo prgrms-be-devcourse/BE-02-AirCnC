@@ -19,6 +19,7 @@ public class RoomController {
 
   private final RoomService roomService;
 
+  /* 모든 숙소 조회 */
   @GetMapping
   public ResponseEntity<RoomResponseList> getAllRooms() {
     List<Room> rooms = roomService.getAll();
