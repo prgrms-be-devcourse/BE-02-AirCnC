@@ -101,16 +101,20 @@ path prefix : `/api/v1`
 | 로그인   | `/login`   | `POST` |
 | 회원 정보 | `/me`      | `GET`  |
 
-- ### 숙소
+- ### 호스트 숙소
 
 | 기능                     | path                    | method   |
 |------------------------|-------------------------|----------|
 | 숙소 등록                  | `/hosts/rooms`          | `POST`   |
-| 숙소 목록 조회               | `/rooms`                | `POST`   |
 | 호스트가 자신의 <br> 숙소 목록 조회 | `/hosts/rooms`          | `GET`    |
-| 숙소 상세 조회               | `/rooms/{roomId}`       | `GET`    |
 | 숙소 변경                  | `/hosts/rooms/{roomId}` | `PATCH`  |
 | 숙소 삭제                  | `/hosts/rooms/{roomId}` | `DELETE` |
+
+- ## 숙소
+| 기능                     | path                    | method   |
+|------------------------|-------------------------|----------|
+| 숙소 목록 조회               | `/rooms`                | `POST`   |
+| 숙소 상세 조회               | `/rooms/{roomId}`       | `GET`    |
 
 - ### 여행
 
@@ -138,7 +142,7 @@ path prefix : `/api/v1`
   - [회고 PR#67](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/pull/67)
 
 - 스프린트 3 (22.07.02 ~ 22.07.06) 
-  - 회고 TBD
+  - [회고 PR#81](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/pull/81)
 
 ### 규칙
   - [규칙](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/%EA%B7%9C%EC%B9%99)
