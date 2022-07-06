@@ -24,6 +24,7 @@ import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -84,11 +85,11 @@ class RoomControllerTest extends RestDocsTestSupport {
 
     //여행 등록
     Long guestId = 로그인("guest@naver.com", "guest1234!");
-    여행_등록(LocalDate.now().plusDays(0), LocalDate.now().plusDays(1),100000,2,roomId,guestId);
-    여행_등록(LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),200000,2,roomId,guestId);
+    여행_등록_서비스(LocalDate.now().plusDays(0), LocalDate.now().plusDays(1),100000,2,roomId,guestId);
+    여행_등록_서비스(LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),200000,2,roomId,guestId);
 
     //when
-    mockMvc.perform(get("/api/v1/rooms/{roomId}",roomId))
+    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/rooms/{roomId}",roomId))
 
       //then
       .andExpect(status().isOk())
@@ -98,6 +99,10 @@ class RoomControllerTest extends RestDocsTestSupport {
         jsonPath("$.room.pricePerDay").value("100000"),
         jsonPath("$.room.capacity").value("2"),
         jsonPath("$.room.unAvailableDays",hasSize(4)),
+        jsonPath("$.room.unAvailableDays[0]").value(LocalDate.now().plusDays(0).toString()),
+        jsonPath("$.room.unAvailableDays[1]").value(LocalDate.now().plusDays(1).toString()),
+        jsonPath("$.room.unAvailableDays[2]").value(LocalDate.now().plusDays(2).toString()),
+        jsonPath("$.room.unAvailableDays[3]").value(LocalDate.now().plusDays(4).toString()),
         jsonPath("$.room.photoUrls",hasSize(1)),
         jsonPath("$.room.description").value("달토끼가 사는 나의 숙소"))
       .andDo(print())
@@ -105,9 +110,9 @@ class RoomControllerTest extends RestDocsTestSupport {
       //docs
       .andDo(
         restDocs.document(
-//            pathParameters(
-//                parameterWithName("roomId").description("숙소 아이디")
-//            ),
+            pathParameters(
+                parameterWithName("roomId").description("숙소 아이디")
+            ),
             responseFields(
                 fieldWithPath("room.name").type(STRING).description("숙소 이름"),
                 fieldWithPath("room.address").type(STRING).description("숙소 주소"),
@@ -119,15 +124,5 @@ class RoomControllerTest extends RestDocsTestSupport {
             )
         )
     );
-  }
-
-  private Long 여행_등록(LocalDate checkIn, LocalDate checkOut,
-      int totalPrice, int headCount, Long roomId, Long guestId) {
-
-    Trip reservedTrip = tripService.reserve(
-        new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice));
-
-    return reservedTrip.getId();
-
   }
 }
