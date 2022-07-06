@@ -159,7 +159,7 @@ class RoomServiceImplTest {
     //then
     RoomUpdateCommand roomUpdateCommand =
         new RoomUpdateCommand(fakeHost.getId(), room.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
-    assertThatNotFoundException()
+    assertThatIllegalArgumentException()
         .isThrownBy(() -> roomService.update(roomUpdateCommand));
   }
 
@@ -167,9 +167,9 @@ class RoomServiceImplTest {
   void 숙소_삭제_성공() {
     //given
     RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
 
     //when
-    Room room = roomService.register(command);
     roomService.delete(Command.ofDeleteRoom(host.getId(), room.getId()));
 
     //then
@@ -205,10 +205,6 @@ class RoomServiceImplTest {
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
-  private RoomRegisterCommand defaultRoomRegisterCommand() {
-    return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
-  }
-
   @Test
   void 숙소_상세_조회_성공() {
     //given
@@ -233,14 +229,18 @@ class RoomServiceImplTest {
     assertThatNotFoundException().isThrownBy(() -> roomService.getDetailById(invalidRoomId));
   }
 
+  private RoomRegisterCommand defaultRoomRegisterCommand() {
+    return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
+  }
+
   @Test
   void 호스트가_자신의_숙소_조회() {
     // given
     Room roomA = roomService.register(defaultRoomRegisterCommand());
     Room roomB = roomService.register(defaultRoomRegisterCommand());
 
-    Room yourRegisteredRoom = roomService.register(
-        Command.ofRegisterRoom(createRoom(), roomPhotos, fakeHost.getId()));
+    Room anotherRoom
+        = roomService.register(Command.ofRegisterRoom(createRoom(), roomPhotos, fakeHost.getId()));
 
     // when
     List<Room> myRooms = roomService.getByHostId(host.getId());

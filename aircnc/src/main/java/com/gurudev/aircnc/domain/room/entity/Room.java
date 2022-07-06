@@ -4,11 +4,9 @@ import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
-import static org.springframework.util.StringUtils.hasText;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.Embedded;
@@ -30,9 +28,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Room extends BaseIdEntity {
 
-  public static final int ROOM_DESCRIPTION_MIN_LENGTH = 10;
-  public static final int ROOM_PRICE_PER_DAY_MIN_VALUE = 10000;
-
   private String name;
 
   @Embedded
@@ -48,61 +43,25 @@ public class Room extends BaseIdEntity {
   @ManyToOne(optional = false, fetch = LAZY)
   private Member host;
 
-  private int reviewCount;
-
   @OneToMany(cascade = ALL)
   @JoinColumn(name = "room_id")
-  private final List<RoomPhoto> roomPhotos = new ArrayList<>();
+  private List<RoomPhoto> roomPhotos;
 
-  public Room(String name, Address address, String description, int pricePerDay, int capacity) {
-    setName(name);
-    setDescription(description);
-    setPricePerDay(pricePerDay);
-    setCapacity(capacity);
+  public Room(String name, Address address, String description, int pricePerDay, int capacity,
+      List<RoomPhoto> roomPhotos) {
 
+    this.name = name;
+    this.pricePerDay = pricePerDay;
+    this.description = description;
+    this.capacity = capacity;
     this.address = address;
-    this.reviewCount = 0;
+    this.roomPhotos = roomPhotos;
   }
 
   public void assignHost(Member host) {
-    setHost(host);
-  }
-
-  private void setHost(Member host) {
     checkArgument(host.isHost(), "숙소 생성은 호스트만 할 수 있습니다");
 
     this.host = host;
-  }
-
-  private void setCapacity(int capacity) {
-    checkArgument(capacity >= 1, "인원수는 한명 이상이어야 합니다");
-
-    this.capacity = capacity;
-  }
-
-  private void setName(String name) {
-    checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
-
-    this.name = name;
-  }
-
-  private void setDescription(String description) {
-    checkArgument(hasText(description), "설명은 공백이 될 수 없습니다");
-    checkArgument(description.length() >= ROOM_DESCRIPTION_MIN_LENGTH,
-        String.format("설명은 %d 자 이상이어야 합니다", ROOM_DESCRIPTION_MIN_LENGTH));
-
-    this.description = description;
-  }
-
-  private void setPricePerDay(int pricePerDay) {
-    checkArgument(pricePerDay >= ROOM_PRICE_PER_DAY_MIN_VALUE,
-        String.format("가격은 %d원 이상이어야 합니다", ROOM_PRICE_PER_DAY_MIN_VALUE));
-
-    this.pricePerDay = pricePerDay;
-  }
-
-  public void addRoomPhoto(RoomPhoto roomPhoto) {
-    roomPhotos.add(roomPhoto);
   }
 
   /**
@@ -110,9 +69,9 @@ public class Room extends BaseIdEntity {
    * <br> null 이라면 변경하지 않음
    */
   public Room update(String name, String description, Integer pricePerDay) {
-    Optional.ofNullable(name).ifPresent(this::setName);
-    Optional.ofNullable(description).ifPresent(this::setDescription);
-    Optional.ofNullable(pricePerDay).ifPresent(this::setPricePerDay);
+    Optional.ofNullable(name).ifPresent(name1 -> this.name = name1);
+    Optional.ofNullable(description).ifPresent(description1 -> this.description = description1);
+    Optional.ofNullable(pricePerDay).ifPresent(pricePerDay1 -> this.pricePerDay = pricePerDay1);
 
     return this;
   }

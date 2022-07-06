@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-  Optional<Room> findByIdAndHostId(Long id, Long hostId);
-
   @Query("select distinct r "
       + "from Room r "
       + "join fetch r.roomPhotos "
