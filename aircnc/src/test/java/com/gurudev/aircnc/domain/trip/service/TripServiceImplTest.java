@@ -2,11 +2,11 @@ package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.domain.util.Command;
@@ -35,34 +35,31 @@ class TripServiceImplTest extends BaseTripServiceTest {
   @Test
   void 여행기간_중복_시_예약_실패() {
     //given
-    LocalDate reservedCheckIn = now().plusDays(2);
-    LocalDate reservedCheckOut = now().plusDays(5);
-    LocalDate tryCheckIn = now().plusDays(1);
-    LocalDate tryCheckOut = now().plusDays(3);
+    LocalDate checkIn = now().plusDays(2);
+    LocalDate checkOut = now().plusDays(5);
+    int totalPrice = between(checkIn, checkOut).getDays() * room.getPricePerDay();
+    Trip trip = new Trip(guest, room, checkIn, checkOut, totalPrice, headCount);
 
-    TripEvent tripEvent = Command.ofReserveTrip(
-        new Trip(guest, room,
-            reservedCheckIn, reservedCheckOut,
-            between(reservedCheckIn, reservedCheckOut).getDays() * room.getPricePerDay(),
-            headCount));
+    TripEvent tripEvent = Command.ofReserveTrip(trip);
     tripService.reserve(tripEvent);
 
     // when
-    TripEvent newTripEvent = Command.ofReserveTrip(
-        new Trip(guest, room,
-            tryCheckIn, tryCheckOut,
-            between(tryCheckIn, tryCheckOut).getDays() * room.getPricePerDay(),
-            headCount));
+    LocalDate tryCheckIn = now().plusDays(1);
+    LocalDate tryCheckOut = now().plusDays(3);
+    int tryTotalPrice = between(tryCheckIn, tryCheckOut).getDays() * room.getPricePerDay();
+    Trip tryTrip = new Trip(guest, room, tryCheckIn, tryCheckOut, tryTotalPrice, headCount);
 
     //then
-    assertThatIllegalArgumentException().isThrownBy(() -> tripService.reserve(newTripEvent));
+    TripEvent tryTripEvent = Command.ofReserveTrip(tryTrip);
+    assertThatAircncRuntimeException()
+        .isThrownBy(() -> tripService.reserve(tryTripEvent));
   }
 
   @Test
   void 게스트의_여행_목록_조회() {
     //given
-    TripEvent tripEvent1 = defaultTripEvent();
-    TripEvent tripEvent2 = defaultTripEvent();
+    TripEvent tripEvent1 = defaultTripEvent(now(), now().plusDays(1L));
+    TripEvent tripEvent2 = defaultTripEvent(now().plusDays(2L), now().plusDays(3L));
 
     Trip trip1 = tripService.reserve(tripEvent1);
     Trip trip2 = tripService.reserve(tripEvent2);
