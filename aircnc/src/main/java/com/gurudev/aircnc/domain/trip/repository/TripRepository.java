@@ -37,6 +37,17 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
       + "      com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED)")
   boolean existsByTravellingOrReserved(Room room);
 
+  @Query("select count(t.id) > 0 from Trip t "
+      + "where :checkIn <= t.checkIn "
+      + "and t.checkIn <= :checkOut " // 기존 예약기간과 왼쪽에서 중복
+      + "or :checkIn <= t.checkOut "
+      + "and t.checkOut <= :checkOut "  // 기존 예약기간과 오른쪽에서 중복
+      + "or t.checkIn <= :checkIn "
+      + "and :checkOut <= t.checkOut " // 기존 예약기간의 일부 로 중복
+      + "or :checkIn <= t.checkIn " //기존 예약기간을 포함하며 중복
+      + "and t.checkOut <= :checkOut")
+  boolean overlappedByReservedTrip(LocalDate checkIn, LocalDate checkOut);
+
   @Query("select t "
       + "from Trip t "
       + "where t.room.id = :roomId "

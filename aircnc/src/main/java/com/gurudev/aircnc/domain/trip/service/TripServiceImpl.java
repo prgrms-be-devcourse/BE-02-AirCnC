@@ -1,6 +1,7 @@
 package com.gurudev.aircnc.domain.trip.service;
 
 import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
+import static com.gurudev.aircnc.exception.Preconditions.checkCondition;
 import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
 
@@ -33,13 +34,12 @@ public class TripServiceImpl implements TripService {
 
   private final EmailService tripEmailService;
 
-  @Transactional
   @Override
   public Trip reserve(TripEvent tripEvent) {
     Room room = findRoomById(tripEvent.getRoomId());
     Member guest = findMemberById(tripEvent.getGuestId());
 
-    //TODO: 예약 겹치는지 검증 로직 필요
+    checkCondition(isReservable(tripEvent), "예약이 중복되었습니다");
 
     return tripRepository.save(
         new Trip(guest, room,
@@ -48,6 +48,11 @@ public class TripServiceImpl implements TripService {
             tripEvent.getTotalPrice(),
             tripEvent.getHeadCount())
     );
+  }
+
+  private boolean isReservable(TripEvent event) {
+    return !tripRepository.overlappedByReservedTrip(
+        event.getCheckIn(), event.getCheckOut());
   }
 
   @Override
