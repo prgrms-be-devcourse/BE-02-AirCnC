@@ -49,6 +49,5 @@ public final class TripCommand {
       return new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice);
     }
 
-
   }
 }
