@@ -1,7 +1,9 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import static java.time.LocalDate.*;
-import static java.util.stream.Collectors.*;
+import static com.gurudev.aircnc.exception.Preconditions.checkCondition;
+import static com.gurudev.aircnc.infrastructure.mail.utils.MapUtils.toMap;
+import static java.time.LocalDate.now;
+import static java.util.stream.Collectors.toList;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -32,15 +34,13 @@ public class TripServiceImpl implements TripService {
 
   private final EmailService tripEmailService;
 
-  @Transactional
   @Override
   public Trip reserve(TripEvent tripEvent) {
     Room room = findRoomById(tripEvent.getRoomId());
     Member guest = findMemberById(tripEvent.getGuestId());
 
-    //TODO: 예약 겹치는지 검증 로직 필요
+    checkCondition(isReservable(tripEvent), "예약이 중복되었습니다");
 
-    tripEmailService.send(Email.toString(guest.getEmail()), room.toMap(), MailType.REGISTER);
     return tripRepository.save(
         new Trip(guest, room,
             tripEvent.getCheckIn(),
@@ -69,7 +69,7 @@ public class TripServiceImpl implements TripService {
     trip.cancel();
 
     Member guest = trip.getGuest();
-    tripEmailService.send(Email.toString(guest.getEmail()), trip.toMap(), MailType.DELETE);
+    tripEmailService.send(Email.toString(guest.getEmail()), toMap(trip), MailType.DELETE);
     return trip;
   }
 
@@ -92,5 +92,10 @@ public class TripServiceImpl implements TripService {
   private Trip findTripByIdAndGuestId(Long id, Long guestId) {
     return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
+  }
+
+  private boolean isReservable(TripEvent event) {
+    return !tripRepository.overlappedByReservedTrip(
+        event.getCheckIn(), event.getCheckOut());
   }
 }

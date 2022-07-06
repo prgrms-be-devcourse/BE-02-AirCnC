@@ -2,7 +2,6 @@ package com.gurudev.aircnc.controller;
 
 import static com.gurudev.aircnc.controller.ApiResponse.noContent;
 
-import com.gurudev.aircnc.exception.AircncRuntimeException;
 import com.gurudev.aircnc.infrastructure.mail.entity.MailType;
 import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.util.Collections;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/emails")
 @RequiredArgsConstructor
-public class EmailController {
+public class EmailAuthController {
 
   private final EmailService memberEmailService;
 
@@ -32,7 +31,7 @@ public class EmailController {
     if (memberEmailService.validateKey(codeAndEmail.get("code"), codeAndEmail.get("email"))) {
       return noContent();
     }
-    throw new AircncRuntimeException("인증키가 올바르지 않습니다");
+    throw new IllegalArgumentException("인증키가 올바르지 않습니다");
   }
 
 }

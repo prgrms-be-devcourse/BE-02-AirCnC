@@ -1,15 +1,11 @@
 package com.gurudev.aircnc.domain.member.entity;
 
-import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
-import static com.gurudev.aircnc.exception.Preconditions.checkNotNull;
-import static org.springframework.util.StringUtils.hasText;
+import static javax.persistence.EnumType.STRING;
 
-import com.gurudev.aircnc.domain.base.BaseIdEntity;
+import com.gurudev.aircnc.domain.common.BaseIdEntity;
 import java.time.LocalDate;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,27 +27,21 @@ public class Member extends BaseIdEntity {
   @Embedded
   private Password password;
 
-  @Column(length = 20, nullable = false)
   private String name;
 
-  @Column(nullable = false)
   private LocalDate birthDate;
 
   @Embedded
   private PhoneNumber phoneNumber;
 
-  @Enumerated(value = EnumType.STRING)
-  @Column(nullable = false)
+  @Enumerated(value = STRING)
   private Role role;
 
   /**
    * 회원 가입시 사용되는 생성자 <br> 회원 가입을 위해 이메일, 비밀번호, 이름, 생년월일, 전화번호, 역할을 제공해야 한다.
    */
-
   public Member(Email email, Password password, String name, LocalDate birthDate,
       PhoneNumber phoneNumber, Role role) {
-    checkArgument(hasText(name), "이름은 공백이 될 수 없습니다");
-    checkNotNull(birthDate, "생일은 null 이 될 수 없습니다");
 
     this.email = email;
     this.name = name;

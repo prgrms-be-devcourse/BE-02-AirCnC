@@ -264,16 +264,6 @@ class TripControllerTest extends RestDocsTestSupport {
             )
         );
   }
-
-  private Long 여행_등록_서비스(LocalDate checkIn, LocalDate checkOut,
-      int totalPrice, int headCount, Long roomId, Long guestId) {
-
-    Trip reservedTrip = tripService.reserve(
-        new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice));
-
-    return reservedTrip.getId();
-
-  }
 }
 
 

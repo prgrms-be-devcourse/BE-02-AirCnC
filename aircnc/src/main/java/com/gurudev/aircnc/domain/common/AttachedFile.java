@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.base;
+package com.gurudev.aircnc.domain.common;
 
 import static org.springframework.util.StringUtils.hasText;
 

@@ -4,12 +4,13 @@ import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
+import static com.gurudev.aircnc.util.AssertionUtil.assertThatAircncRuntimeException;
 import static com.gurudev.aircnc.util.AssertionUtil.assertThatNotFoundException;
 import static java.time.Period.between;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
+import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.member.service.MemberService;
 import com.gurudev.aircnc.domain.member.service.command.MemberCommand.MemberRegisterCommand;
@@ -74,7 +75,7 @@ class RoomServiceImplTest {
 
     // 가짜 회원 세팅
     MemberRegisterCommand fakeHostRegisterCommand = Command.ofRegisterMember(createHost());
-    ReflectionTestUtils.setField(fakeHostRegisterCommand, "email", "fakeHost@email.com");
+    ReflectionTestUtils.setField(fakeHostRegisterCommand, "email", new Email("fakeHost@email.com"));
     fakeHost = memberService.register(fakeHostRegisterCommand);
 
     //숙소의 필드 세팅
@@ -158,7 +159,7 @@ class RoomServiceImplTest {
     //then
     RoomUpdateCommand roomUpdateCommand =
         new RoomUpdateCommand(fakeHost.getId(), room.getId(), "변경할 숙소 이름", "변경할 숙소 설명입니다", 25000);
-    assertThatNotFoundException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> roomService.update(roomUpdateCommand));
   }
 
@@ -166,9 +167,9 @@ class RoomServiceImplTest {
   void 숙소_삭제_성공() {
     //given
     RoomRegisterCommand command = defaultRoomRegisterCommand();
+    Room room = roomService.register(command);
 
     //when
-    Room room = roomService.register(command);
     roomService.delete(Command.ofDeleteRoom(host.getId(), room.getId()));
 
     //then
@@ -188,7 +189,7 @@ class RoomServiceImplTest {
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(host.getId(), room.getId());
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
   }
 
@@ -200,12 +201,8 @@ class RoomServiceImplTest {
 
     //then
     RoomDeleteCommand roomDeleteCommand = Command.ofDeleteRoom(fakeHost.getId(), room.getId());
-    assertThatIllegalArgumentException()
+    assertThatAircncRuntimeException()
         .isThrownBy(() -> roomService.delete(roomDeleteCommand));
-  }
-
-  private RoomRegisterCommand defaultRoomRegisterCommand() {
-    return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
   }
 
   @Test
@@ -230,5 +227,29 @@ class RoomServiceImplTest {
 
     //then
     assertThatNotFoundException().isThrownBy(() -> roomService.getDetailById(invalidRoomId));
+  }
+
+  private RoomRegisterCommand defaultRoomRegisterCommand() {
+    return Command.ofRegisterRoom(createRoom(), roomPhotos, host.getId());
+  }
+
+  @Test
+  void 호스트가_자신의_숙소_조회() {
+    // given
+    Room roomA = roomService.register(defaultRoomRegisterCommand());
+    Room roomB = roomService.register(defaultRoomRegisterCommand());
+
+    Room anotherRoom
+        = roomService.register(Command.ofRegisterRoom(createRoom(), roomPhotos, fakeHost.getId()));
+
+    // when
+    List<Room> myRooms = roomService.getByHostId(host.getId());
+
+    // then
+    assertThat(myRooms).hasSize(2)
+        .containsExactly(roomA, roomB)
+        .extracting(Room::getHost)
+        .containsExactly(host, host);
+
   }
 }

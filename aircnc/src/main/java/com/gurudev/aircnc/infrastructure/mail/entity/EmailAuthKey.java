@@ -2,6 +2,7 @@ package com.gurudev.aircnc.infrastructure.mail.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,18 +21,21 @@ public class EmailAuthKey {
   private Long id;
 
   @Column(unique = true, length = 8, nullable = false)
-  private String key;
+  private String authKey;
 
   @Column(nullable = false)
   private String email;
 
-  public EmailAuthKey(String key, String email) {
-    this.key = key;
+  private LocalDateTime createdAt;
+
+  public EmailAuthKey(String authKey, String email) {
+    this.authKey = authKey;
     this.email = email;
+    this.createdAt = LocalDateTime.now();
   }
 
   public boolean validateKey(String key) {
-    return this.key.equals(key);
+    return this.authKey.equals(key);
   }
 
 }

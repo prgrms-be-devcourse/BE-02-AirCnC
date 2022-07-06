@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
@@ -59,42 +61,56 @@ public final class RoomDto {
     public static RoomRegisterResponse of(Room room) {
       return new RoomRegisterResponse(Response.of(room));
     }
+  }
 
-    @Getter
-    public static class Response {
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class RoomResponseList {
 
-      private final long id;
-      private final String name;
-      private final String address;
-      private final String description;
-      private final int pricePerDay;
-      private final int capacity;
-      private final List<String> fileNames;
+    @JsonProperty("rooms")
+    private final List<Response> response;
 
-      @Builder
-      public Response(long id, String name, String address, String description, int pricePerDay,
-          int capacity, List<String> fileNames) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.description = description;
-        this.pricePerDay = pricePerDay;
-        this.capacity = capacity;
-        this.fileNames = fileNames;
-      }
+    public static RoomResponseList of(List<Room> rooms) {
+      return new RoomResponseList(
+          rooms.stream().map(Response::of).collect(Collectors.toList())
+      );
+    }
+  }
 
-      public static Response of(Room room) {
-        return Response.builder()
-            .id(room.getId())
-            .name(room.getName())
-            .address(Address.toString(room.getAddress()))
-            .description(room.getDescription())
-            .pricePerDay(room.getPricePerDay())
-            .capacity(room.getCapacity())
-            .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
-                .collect(Collectors.toList()))
-            .build();
-      }
+  @Getter
+  public static class Response {
+
+    private final long id;
+    private final String name;
+    private final String address;
+    private final String description;
+    private final int pricePerDay;
+    private final int capacity;
+    private final List<String> fileNames;
+
+    @Builder
+    public Response(long id, String name, String address, String description, int pricePerDay,
+        int capacity, List<String> fileNames) {
+      this.id = id;
+      this.name = name;
+      this.address = address;
+      this.description = description;
+      this.pricePerDay = pricePerDay;
+      this.capacity = capacity;
+      this.fileNames = fileNames;
+    }
+
+    public static Response of(Room room) {
+      return Response.builder()
+          .id(room.getId())
+          .name(room.getName())
+          .address(Address.toString(room.getAddress()))
+          .description(room.getDescription())
+          .pricePerDay(room.getPricePerDay())
+          .capacity(room.getCapacity())
+          .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
+              .collect(Collectors.toList()))
+          .build();
     }
   }
 
@@ -157,6 +173,55 @@ public final class RoomDto {
             .pricePerDay(room.getPricePerDay())
             .capacity(room.getCapacity())
             .fileNames(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
+                .collect(Collectors.toList()))
+            .build();
+      }
+    }
+  }
+  @Getter
+  @RequiredArgsConstructor(access = PRIVATE)
+  public static class RoomDetailResponse {
+
+    @JsonProperty("room")
+    private final Response response;
+
+    public static RoomDetailResponse of(Room room, List<LocalDate> reservedDays) {
+      return new RoomDetailResponse(Response.of(room,reservedDays));
+    }
+
+    @Getter
+    public static class Response {
+
+      private final String name;
+      private final String address;
+      private final int pricePerDay;
+      private final int capacity;
+      private final List<LocalDate> unAvailableDays;
+      private final String description;
+      private final List<String> photoUrls;
+
+      @Builder
+      public Response(String name, String address, int pricePerDay, boolean isWishlist,
+          int capacity,
+          List<LocalDate> unAvailableDays, String description, List<String> photoUrls) {
+        this.name = name;
+        this.address = address;
+        this.pricePerDay = pricePerDay;
+        this.capacity = capacity;
+        this.unAvailableDays = unAvailableDays;
+        this.description = description;
+        this.photoUrls = photoUrls;
+      }
+
+      public static Response of(Room room, List<LocalDate> reservedDays) {
+        return Response.builder()
+            .name(room.getName())
+            .address(Address.toString(room.getAddress()))
+            .pricePerDay(room.getPricePerDay())
+            .capacity(room.getCapacity())
+            .unAvailableDays(reservedDays)
+            .description(room.getDescription())
+            .photoUrls(room.getRoomPhotos().stream().map(RoomPhoto::getFileName)
                 .collect(Collectors.toList()))
             .build();
       }

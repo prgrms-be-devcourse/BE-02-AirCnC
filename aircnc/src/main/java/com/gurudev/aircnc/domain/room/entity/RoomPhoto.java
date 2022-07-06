@@ -4,7 +4,7 @@ import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasText;
 
-import com.gurudev.aircnc.domain.base.BaseIdEntity;
+import com.gurudev.aircnc.domain.common.BaseIdEntity;
 import javax.persistence.Entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

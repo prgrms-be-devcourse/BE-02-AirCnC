@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum MailType {
   REGISTER("등록"),
   UPDATE("변경"),
-  DELETE("삭제");
+  DELETE("삭제"),
+
+  FAIL("실패");
 
   private final String status;
 }

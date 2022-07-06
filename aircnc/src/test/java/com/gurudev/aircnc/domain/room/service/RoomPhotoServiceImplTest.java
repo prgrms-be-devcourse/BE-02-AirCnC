@@ -8,7 +8,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gurudev.aircnc.domain.base.AttachedFile;
+import com.gurudev.aircnc.domain.common.AttachedFile;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.infrastructure.aws.s3.S3Client;
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ class RoomPhotoServiceImplTest {
   }
 
   @Test
-  void name() throws IOException {
+  void 파일_업로드_테스트() throws IOException {
     //given
     InputStream requestInputStream =
         new FileInputStream("src/test/resources/room-photos-src/photo1.jpeg");
