@@ -127,7 +127,7 @@ path prefix : `/api/v1`
 
 - 더 자세한 API 명세를 확인 하시려면 [위키](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/AirCnC-api-v1-%EB%AA%85%EC%84%B8) 를 확인해주세요:
 
-### 회의 결과 및 스프린트 회고
+### 회의 결과 및 회고
 - 스프린트 0 (22.06.15 ~ 22.06.17) 회의 결과<br>
   - [22.06.13 회의록](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/22.06.13-%ED%9A%8C%EC%9D%98%EB%A1%9D)
   - [22.06.14 회의록](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/22.06.14-%ED%9A%8C%EC%9D%98%EB%A1%9D)
@@ -143,6 +143,9 @@ path prefix : `/api/v1`
 
 - 스프린트 3 (22.07.02 ~ 22.07.06) 
   - [회고 PR#81](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/pull/81)
+
+- 프로젝트 (22.06.18 ~ 22.07.06)
+  - [프로젝트 회고](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%9A%8C%EA%B3%A0)
 
 ### 규칙
   - [규칙](https://github.com/prgrms-be-devcourse/BE-02-AirCnC/wiki/%EA%B7%9C%EC%B9%99)
