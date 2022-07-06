@@ -31,7 +31,7 @@ public class EmailAuthController {
     if (memberEmailService.validateKey(codeAndEmail.get("code"), codeAndEmail.get("email"))) {
       return noContent();
     }
-    throw new IllegalStateException("인증키가 올바르지 않습니다");
+    throw new IllegalArgumentException("인증키가 올바르지 않습니다");
   }
 
 }
