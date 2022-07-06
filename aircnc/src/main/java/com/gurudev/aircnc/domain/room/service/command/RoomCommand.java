@@ -74,7 +74,7 @@ public final class RoomCommand {
     }
 
     public Room toEntity() {
-      return new Room(name, address, description, pricePerDay, capacity, roomPhotos);
+      return new Room(name, address, description, pricePerDay, capacity);
     }
   }
 

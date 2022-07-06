@@ -10,7 +10,6 @@ import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import java.time.LocalDate;
-import java.util.List;
 
 public class Fixture {
 
@@ -45,7 +44,7 @@ public class Fixture {
         createAddress(),
         "아주 멋진 한옥마을입니다.",
         100000,
-        4, List.of(createRoomPhoto()));
+        4);
   }
 
   public static RoomPhoto createRoomPhoto() {
