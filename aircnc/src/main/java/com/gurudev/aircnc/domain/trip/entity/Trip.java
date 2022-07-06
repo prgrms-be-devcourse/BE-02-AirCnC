@@ -3,7 +3,6 @@ package com.gurudev.aircnc.domain.trip.entity;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.exception.Preconditions.checkArgument;
-import static java.time.LocalDate.now;
 import static java.time.Period.between;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
@@ -30,8 +29,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Trip extends BaseIdEntity {
 
-  public static final int TRIP_TOTAL_PRICE_MIN_VALUE = 10000;
-
   @ManyToOne(fetch = LAZY)
   private Member guest;
 
@@ -51,16 +48,9 @@ public class Trip extends BaseIdEntity {
 
   public Trip(Member guest, Room room, LocalDate checkIn, LocalDate checkOut,
       int totalPrice, int headCount) {
-    checkArgument(checkOut.isAfter(checkIn), "체크아웃은 체크인 이전이 될 수 없습니다");
-    checkArgument(checkIn.isEqual(now()) || checkIn.isAfter(now()),
-        "체크인 날짜는" + now() + " 이전이 될 수 없습니다.");
 
-    checkArgument(totalPrice >= TRIP_TOTAL_PRICE_MIN_VALUE,
-        String.format("총 가격은 %d원 미만이 될 수 없습니다", TRIP_TOTAL_PRICE_MIN_VALUE));
     checkTotalPrice(checkIn, checkOut, totalPrice, room);
     checkHeadCount(headCount, room);
-
-    checkArgument(headCount >= 1, "인원은 1명 이상이여야 합니다");
 
     this.guest = guest;
     this.room = room;

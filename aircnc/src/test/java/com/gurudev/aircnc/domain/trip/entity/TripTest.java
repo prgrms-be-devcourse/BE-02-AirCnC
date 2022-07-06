@@ -1,6 +1,5 @@
 package com.gurudev.aircnc.domain.trip.entity;
 
-import static com.gurudev.aircnc.domain.trip.entity.Trip.TRIP_TOTAL_PRICE_MIN_VALUE;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.CANCELLED;
 import static com.gurudev.aircnc.domain.trip.entity.TripStatus.RESERVED;
 import static com.gurudev.aircnc.domain.util.Fixture.createGuest;
@@ -57,35 +56,6 @@ class TripTest {
         .isEqualTo(List.of(guest, room, checkIn, checkOut, totalPrice, headCount, RESERVED));
   }
 
-  @Test
-  void CheckIn이_CheckOut_이전_이여야_한다() {
-    //given
-    LocalDate invalidCheckOut = checkIn.minusDays(1);
-
-    //then
-    assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Trip(guest, room, checkIn, invalidCheckOut, totalPrice, headCount));
-  }
-
-  @Test
-  void 인원이_0명_이하_일_수_없다() {
-    //given
-    int invalidHeadCount = 0;
-
-    //then
-    assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, totalPrice, invalidHeadCount));
-  }
-
-  @Test
-  void 총_가격은_제한가격_미만일_수_없다() {
-    //given
-    int invalidTotalPrice = TRIP_TOTAL_PRICE_MIN_VALUE - 1;
-
-    //then
-    assertThatIllegalArgumentException()
-        .isThrownBy(() -> new Trip(guest, room, checkIn, checkOut, invalidTotalPrice, headCount));
-  }
 
   @Test
   void 계산된_가격과_요청된_가격이_같아야_한다() {
