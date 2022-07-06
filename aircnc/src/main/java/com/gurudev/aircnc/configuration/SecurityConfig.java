@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         .authorizeRequests(
             auth -> {
-              auth.antMatchers("/api/v1/members", "/api/v1/login", "/api/v1/rooms","/api/v1/rooms/**").permitAll();
+              auth.antMatchers("/api/v1/members", "/api/v1/login", "/api/v1/rooms/**").permitAll();
               auth.antMatchers("/api/v1/hosts/**")
                   .hasAuthority("HOST"); // .access("hasRole('HOST')")
               auth.anyRequest().authenticated();
