@@ -1,4 +1,4 @@
-package com.gurudev.aircnc.domain.base;
+package com.gurudev.aircnc.domain.common;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

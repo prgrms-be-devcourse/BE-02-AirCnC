@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import com.gurudev.aircnc.domain.base.AttachedFile;
+import com.gurudev.aircnc.domain.common.AttachedFile;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.infrastructure.aws.s3.S3Client;
 import lombok.RequiredArgsConstructor;

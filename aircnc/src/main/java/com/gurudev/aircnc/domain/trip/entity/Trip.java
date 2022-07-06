@@ -9,7 +9,7 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.gurudev.aircnc.domain.base.BaseIdEntity;
+import com.gurudev.aircnc.domain.common.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.exception.TripCancelException;
