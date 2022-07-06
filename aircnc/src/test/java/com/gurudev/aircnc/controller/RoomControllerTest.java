@@ -1,20 +1,37 @@
 package com.gurudev.aircnc.controller;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gurudev.aircnc.controller.support.RestDocsTestSupport;
 import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 class RoomControllerTest extends RestDocsTestSupport {
+
+  @Autowired
+  private TripService tripService;
 
   @Test
   void 모든_숙소_조회() throws Exception {
@@ -55,5 +72,57 @@ class RoomControllerTest extends RestDocsTestSupport {
                 fieldWithPath("rooms[].fileNames").type(ARRAY).description("등록된 파일의 이름")
             ))
         );
+  }
+
+
+  @Test
+  void 숙소_상세_조회() throws Exception {
+    //given
+    //숙소 등록
+    로그인("host@naver.com", "host1234!");
+    Long roomId = 숙소_등록("나의 숙소", new Address("달나라 1번지", "달나라 1길", "100호", "1234"),
+        "달토끼가 사는 나의 숙소", "100000", "2");
+
+    //여행 등록
+    Long guestId = 로그인("guest@naver.com", "guest1234!");
+    여행_등록_서비스(LocalDate.now().plusDays(0), LocalDate.now().plusDays(1),100000,2,roomId,guestId);
+    여행_등록_서비스(LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),200000,2,roomId,guestId);
+
+    //when
+    mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/rooms/{roomId}",roomId))
+
+      //then
+      .andExpect(status().isOk())
+      .andExpectAll(
+        jsonPath("$.room.name").value("나의 숙소"),
+        jsonPath("$.room.address").value("달나라 1길 100호"),
+        jsonPath("$.room.pricePerDay").value("100000"),
+        jsonPath("$.room.capacity").value("2"),
+        jsonPath("$.room.unAvailableDays",hasSize(4)),
+        jsonPath("$.room.unAvailableDays[0]").value(LocalDate.now().plusDays(0).toString()),
+        jsonPath("$.room.unAvailableDays[1]").value(LocalDate.now().plusDays(1).toString()),
+        jsonPath("$.room.unAvailableDays[2]").value(LocalDate.now().plusDays(2).toString()),
+        jsonPath("$.room.unAvailableDays[3]").value(LocalDate.now().plusDays(4).toString()),
+        jsonPath("$.room.photoUrls",hasSize(1)),
+        jsonPath("$.room.description").value("달토끼가 사는 나의 숙소"))
+      .andDo(print())
+
+      //docs
+      .andDo(
+        restDocs.document(
+            pathParameters(
+                parameterWithName("roomId").description("숙소 아이디")
+            ),
+            responseFields(
+                fieldWithPath("room.name").type(STRING).description("숙소 이름"),
+                fieldWithPath("room.address").type(STRING).description("숙소 주소"),
+                fieldWithPath("room.pricePerDay").type(NUMBER).description("1박당 가격"),
+                fieldWithPath("room.capacity").type(NUMBER).description("허용 인원 수"),
+                fieldWithPath("room.unAvailableDays").type(ARRAY).description("이용 불가능 일자 목록"),
+                fieldWithPath("room.description").type(STRING).description("설명"),
+                fieldWithPath("room.photoUrls").type(ARRAY).description("숙소 사진의 파일 이름 목록")
+            )
+        )
+    );
   }
 }
