@@ -12,9 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gurudev.aircnc.domain.room.entity.Address;
+import com.gurudev.aircnc.domain.trip.entity.Trip;
+import com.gurudev.aircnc.domain.trip.service.TripService;
+import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import com.gurudev.aircnc.infrastructure.mail.service.EmailService;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,6 +40,9 @@ public class BaseControllerTest {
 
   @Autowired
   protected ObjectMapper objectMapper;
+
+  @Autowired
+  private TripService tripService;
 
   protected static String token;
 
@@ -118,5 +125,14 @@ public class BaseControllerTest {
     String content = mvcResult.getResponse().getContentAsString();
 
     return objectMapper.readValue(content, JsonNode.class).get("room").get("id").asLong();
+  }
+
+  protected Long 여행_등록_서비스(LocalDate checkIn, LocalDate checkOut,
+      int totalPrice, int headCount, Long roomId, Long guestId) {
+
+    Trip reservedTrip = tripService.reserve(
+        new TripEvent(guestId, roomId, checkIn, checkOut, headCount, totalPrice));
+
+    return reservedTrip.getId();
   }
 }
