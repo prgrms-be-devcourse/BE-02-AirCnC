@@ -83,6 +83,7 @@ See 유저스토리, MosCow [@wiki](https://github.com/prgrms-be-devcourse/BE-02
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=Plastic&logo=github&logoColor=white)
 ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=Plastic&logo=jira&logoColor=white)
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=Plastic&logo=slack&logoColor=white)
+![Gather](https://img.shields.io/badge/Gather-%230A0FFF.svg?style=Plastic&logoColor=white)
 
 ### ERD
 
