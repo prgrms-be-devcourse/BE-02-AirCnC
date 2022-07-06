@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.infrastructure.mail;
 
-import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
+import static com.gurudev.aircnc.infrastructure.mail.utils.MapUtils.toMap;
 
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.trip.entity.Trip;

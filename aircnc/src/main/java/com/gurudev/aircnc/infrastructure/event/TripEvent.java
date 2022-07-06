@@ -52,7 +52,7 @@ public class TripEvent {
     this.status = status;
   }
 
-  public static enum EventStatus {
+  public enum EventStatus {
     STAND_BY, QUEUE, QUEUE_WAIT
   }
 }

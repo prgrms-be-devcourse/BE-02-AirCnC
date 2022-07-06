@@ -19,7 +19,6 @@ public class TripServiceForSchedulerImpl implements TripServiceForScheduler {
   public void bulkStatusToTravelling() {
     int count = tripRepository.bulkStatusToTravelling(LocalDate.now());
 
-
     log.info("{}개의 여행 : 여행 예약 -> 여행 중", count);
   }
 

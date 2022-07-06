@@ -35,6 +35,7 @@ public class MemberController {
   @PostMapping("/members")
   public ResponseEntity<MemberResponse> registerMember(
       @RequestBody MemberRegisterRequest memberDto) {
+
     Member registeredMember = memberService.register(memberDto.toCommand());
 
     return created(MemberResponse.of(registeredMember));
@@ -42,7 +43,8 @@ public class MemberController {
 
   /* 로그인 */
   @PostMapping("/login")
-  public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+  public ResponseEntity<LoginResponse> login(
+      @RequestBody LoginRequest request) {
 
     Request loginRequest = request.getRequest();
 
@@ -64,6 +66,7 @@ public class MemberController {
   @GetMapping("/me")
   public ResponseEntity<MemberResponse> memberInfo(
       @AuthenticationPrincipal JwtAuthentication authentication) {
+
     Member getMember = memberService.getById(authentication.id);
 
     return ok(MemberResponse.of(getMember));

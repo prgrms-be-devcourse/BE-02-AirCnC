@@ -9,7 +9,7 @@ import com.gurudev.aircnc.controller.dto.RoomDto.RoomRegisterResponse;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomResponseList;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateRequest;
 import com.gurudev.aircnc.controller.dto.RoomDto.RoomUpdateResponse;
-import com.gurudev.aircnc.domain.base.AttachedFile;
+import com.gurudev.aircnc.domain.common.AttachedFile;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.room.entity.RoomPhoto;
 import com.gurudev.aircnc.domain.room.service.RoomPhotoService;
@@ -21,7 +21,6 @@ import com.gurudev.aircnc.infrastructure.security.jwt.JwtAuthentication;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/hosts/rooms")
 @RequiredArgsConstructor
@@ -61,6 +59,7 @@ public class HostRoomController {
     //숙소, S3에 저장된 숙소 사진의 파일 이름을 DB에 저장
     Room room =
         roomService.register(RoomRegisterCommand.of(request, roomPhotos, authentication.id));
+
     return created(RoomRegisterResponse.of(room));
   }
 
@@ -73,6 +72,7 @@ public class HostRoomController {
 
     Room room = roomService.update(new RoomUpdateCommand(authentication.id, roomId,
         request.getName(), request.getDescription(), request.getPricePerDay()));
+
     return ok(RoomUpdateResponse.of(room));
   }
 
@@ -81,8 +81,8 @@ public class HostRoomController {
   public ResponseEntity<?> deleteRoom(
       @AuthenticationPrincipal JwtAuthentication authentication,
       @PathVariable("roomId") Long roomId) {
-
     roomService.delete(new RoomDeleteCommand(authentication.id, roomId));
+
     return noContent();
   }
 
@@ -90,6 +90,7 @@ public class HostRoomController {
   @GetMapping
   public ResponseEntity<RoomResponseList> getHostRooms(
       @AuthenticationPrincipal JwtAuthentication authentication) {
+
     List<Room> rooms = roomService.getByHostId(authentication.id);
 
     return ok(RoomResponseList.of(rooms));

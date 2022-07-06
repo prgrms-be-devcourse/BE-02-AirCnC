@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.room.service;
 
-import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
 import static com.gurudev.aircnc.exception.Preconditions.checkCondition;
+import static com.gurudev.aircnc.infrastructure.mail.utils.MapUtils.toMap;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -55,7 +55,7 @@ public class RoomServiceImpl implements RoomService {
     Room room = findById(roomUpdateCommand.getRoomId());
     Member host = findMemberById(roomUpdateCommand.getHostId());
 
-    checkArgument(room.isOwnedBy(host), "숙소를 수정 할 수 없습니다");
+    checkCondition(room.isOwnedBy(host), "숙소를 수정 할 수 없습니다");
 
     roomEmailService.send(Email.toString(host.getEmail()), toMap(room), MailType.UPDATE);
     return room.update(roomUpdateCommand.getName(),

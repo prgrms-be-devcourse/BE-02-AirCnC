@@ -41,8 +41,6 @@ public class CustomControllerAdvice {
   public ErrorResponse handleServerException(RuntimeException ex) {
     log.error(ex.getMessage(), ex);
 
-    // TODO: 2022/06/25 이메일 혹은 슬랙으로 에러메시지 보내기
-
     return ErrorResponse.of(INTERNAL_SERVER_ERROR, "알 수 없는 에러가 발생했습니다. 고객센터에 문의하세요.");
   }
 

@@ -79,6 +79,10 @@ public abstract class BaseTripServiceTest {
   }
 
   protected TripEvent defaultTripEvent() {
+    return defaultTripEvent(checkIn, checkOut);
+  }
+
+  protected TripEvent defaultTripEvent(LocalDate checkIn, LocalDate checkOut) {
     return Command.ofReserveTrip(new Trip(guest, room, checkIn, checkOut, totalPrice, headCount));
   }
 }

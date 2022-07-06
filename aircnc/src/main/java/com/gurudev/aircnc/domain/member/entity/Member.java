@@ -2,7 +2,7 @@ package com.gurudev.aircnc.domain.member.entity;
 
 import static javax.persistence.EnumType.STRING;
 
-import com.gurudev.aircnc.domain.base.BaseIdEntity;
+import com.gurudev.aircnc.domain.common.BaseIdEntity;
 import java.time.LocalDate;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;

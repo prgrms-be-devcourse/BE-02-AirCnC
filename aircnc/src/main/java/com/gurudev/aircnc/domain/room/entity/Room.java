@@ -5,7 +5,7 @@ import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.gurudev.aircnc.domain.base.BaseIdEntity;
+import com.gurudev.aircnc.domain.common.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
 import java.util.ArrayList;
 import java.util.List;
