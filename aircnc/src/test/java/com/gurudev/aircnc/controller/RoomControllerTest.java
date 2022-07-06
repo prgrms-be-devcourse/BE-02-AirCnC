@@ -24,6 +24,7 @@ import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 class RoomControllerTest extends RestDocsTestSupport {
@@ -98,7 +99,25 @@ class RoomControllerTest extends RestDocsTestSupport {
         jsonPath("$.room.capacity").value("2"),
         jsonPath("$.room.unAvailableDays",hasSize(4)),
         jsonPath("$.room.photoUrls",hasSize(1)),
-        jsonPath("$.room.description").value("달토끼가 사는 나의 숙소")
+        jsonPath("$.room.description").value("달토끼가 사는 나의 숙소"))
+      .andDo(print())
+
+      //docs
+      .andDo(
+        restDocs.document(
+//            pathParameters(
+//                parameterWithName("roomId").description("숙소 아이디")
+//            ),
+            responseFields(
+                fieldWithPath("room.name").type(STRING).description("숙소 이름"),
+                fieldWithPath("room.address").type(STRING).description("숙소 주소"),
+                fieldWithPath("room.pricePerDay").type(NUMBER).description("1박당 가격"),
+                fieldWithPath("room.capacity").type(NUMBER).description("허용 인원 수"),
+                fieldWithPath("room.unAvailableDays").type(ARRAY).description("이용 불가능 일자 목록"),
+                fieldWithPath("room.description").type(STRING).description("설명"),
+                fieldWithPath("room.photoUrls").type(ARRAY).description("숙소 사진의 파일 이름 목록")
+            )
+        )
     );
   }
 
