@@ -1,6 +1,6 @@
 package com.gurudev.aircnc.infrastructure.event;
 
-import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
+import static com.gurudev.aircnc.infrastructure.mail.utils.MapUtils.toMap;
 
 import com.gurudev.aircnc.domain.member.entity.Email;
 import com.gurudev.aircnc.domain.member.entity.Member;

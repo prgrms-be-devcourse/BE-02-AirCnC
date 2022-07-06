@@ -1,7 +1,7 @@
 package com.gurudev.aircnc.domain.trip.service;
 
-import static com.gurudev.aircnc.domain.utils.MapUtils.toMap;
 import static com.gurudev.aircnc.exception.Preconditions.checkCondition;
+import static com.gurudev.aircnc.infrastructure.mail.utils.MapUtils.toMap;
 import static java.time.LocalDate.now;
 import static java.util.stream.Collectors.toList;
 
@@ -50,11 +50,6 @@ public class TripServiceImpl implements TripService {
     );
   }
 
-  private boolean isReservable(TripEvent event) {
-    return !tripRepository.overlappedByReservedTrip(
-        event.getCheckIn(), event.getCheckOut());
-  }
-
   @Override
   public Trip getDetailedById(Long id, Long guestId) {
     return tripRepository.findByIdAndGuestId(id, guestId)
@@ -97,5 +92,10 @@ public class TripServiceImpl implements TripService {
   private Trip findTripByIdAndGuestId(Long id, Long guestId) {
     return tripRepository.findTripByIdAndGuestId(id, guestId)
         .orElseThrow(() -> new NotFoundException(Trip.class));
+  }
+
+  private boolean isReservable(TripEvent event) {
+    return !tripRepository.overlappedByReservedTrip(
+        event.getCheckIn(), event.getCheckOut());
   }
 }

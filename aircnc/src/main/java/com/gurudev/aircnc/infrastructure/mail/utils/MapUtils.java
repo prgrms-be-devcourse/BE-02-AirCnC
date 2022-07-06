@@ -1,14 +1,15 @@
-package com.gurudev.aircnc.domain.utils;
+package com.gurudev.aircnc.infrastructure.mail.utils;
+
+import static lombok.AccessLevel.PRIVATE;
 
 import com.gurudev.aircnc.domain.room.entity.Address;
 import com.gurudev.aircnc.domain.room.entity.Room;
 import com.gurudev.aircnc.domain.trip.entity.Trip;
 import com.gurudev.aircnc.infrastructure.event.TripEvent;
 import java.util.Map;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public final class MapUtils {
 
   public static Map<String, Object> toMap(Room room) {
