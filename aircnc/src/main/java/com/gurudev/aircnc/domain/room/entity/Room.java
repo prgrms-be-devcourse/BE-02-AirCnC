@@ -7,6 +7,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.gurudev.aircnc.domain.base.BaseIdEntity;
 import com.gurudev.aircnc.domain.member.entity.Member;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.Embedded;
@@ -45,17 +46,19 @@ public class Room extends BaseIdEntity {
 
   @OneToMany(cascade = ALL)
   @JoinColumn(name = "room_id")
-  private List<RoomPhoto> roomPhotos;
+  private List<RoomPhoto> roomPhotos = new ArrayList<>();
 
-  public Room(String name, Address address, String description, int pricePerDay, int capacity,
-      List<RoomPhoto> roomPhotos) {
+  public Room(String name, Address address, String description, int pricePerDay, int capacity) {
 
     this.name = name;
     this.pricePerDay = pricePerDay;
     this.description = description;
     this.capacity = capacity;
     this.address = address;
-    this.roomPhotos = roomPhotos;
+  }
+
+  public void addRoomPhoto(RoomPhoto roomPhoto) {
+    roomPhotos.add(roomPhoto);
   }
 
   public void assignHost(Member host) {

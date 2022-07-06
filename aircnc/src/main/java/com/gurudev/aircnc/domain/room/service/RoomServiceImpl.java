@@ -35,6 +35,8 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public Room register(RoomRegisterCommand roomRegisterCommand) {
     Room room = roomRegisterCommand.toEntity();
+    roomRegisterCommand.getRoomPhotos().forEach(room::addRoomPhoto);
+
     Member host = findMemberById(roomRegisterCommand.getHostId());
     room.assignHost(host);
 

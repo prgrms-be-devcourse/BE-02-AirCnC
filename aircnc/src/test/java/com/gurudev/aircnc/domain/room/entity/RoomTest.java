@@ -3,7 +3,6 @@ package com.gurudev.aircnc.domain.room.entity;
 import static com.gurudev.aircnc.domain.util.Fixture.createAddress;
 import static com.gurudev.aircnc.domain.util.Fixture.createHost;
 import static com.gurudev.aircnc.domain.util.Fixture.createRoom;
-import static com.gurudev.aircnc.domain.util.Fixture.createRoomPhoto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gurudev.aircnc.domain.member.entity.Member;
@@ -18,7 +17,6 @@ class RoomTest {
   private String description;
   private int capacity;
   private int pricePerDay;
-  private List<RoomPhoto> roomPhotos;
 
   @BeforeEach
   void setUp() {
@@ -27,13 +25,12 @@ class RoomTest {
     description = "아주 멋진 한옥마을입니다.";
     capacity = 4;
     pricePerDay = 100000;
-    roomPhotos = List.of(createRoomPhoto());
   }
 
   @Test
   void 숙소_생성() {
     //when
-    Room room = new Room(name, address, description, pricePerDay, capacity, roomPhotos);
+    Room room = new Room(name, address, description, pricePerDay, capacity);
 
     //then
     assertThat(room)
